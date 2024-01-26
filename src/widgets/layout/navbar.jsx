@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export function Navbar({ brandName, routes, action }) {
+export function Navbar({ brandName, routes, action, logoSrc }) {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
@@ -63,13 +63,23 @@ export function Navbar({ brandName, routes, action }) {
     <MTNavbar color="transparent" className="p-3">
       <div className="container mx-auto flex items-center justify-between text-white">
         <Link to="/">
-          <Typography className="mr-4 ml-2 cursor-pointer py-1.5 font-bold">
-            {brandName}
-          </Typography>
+          <div className="flex items-center">
+            <img
+              src={logoSrc}
+              alt="CollabHub Logo"
+              className="h-8 w-8 mr-2"
+            />
+            <Typography
+              className="mr-4 ml-2 cursor-pointer py-1.5 font-bold"
+              style={{ color: "#FFFFFF" }}
+            >
+              {brandName}
+            </Typography>
+          </div>
+          
         </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden gap-2 lg:flex">
-         
           {React.cloneElement(action, {
             className: "hidden lg:inline-block",
           })}
@@ -91,9 +101,7 @@ export function Navbar({ brandName, routes, action }) {
       <MobileNav
         className="rounded-xl bg-white px-4 pt-2 pb-4 text-blue-gray-900"
         open={openNav}
-      >
-    
-      </MobileNav>
+      ></MobileNav>
     </MTNavbar>
   );
 }
@@ -104,9 +112,7 @@ Navbar.defaultProps = {
     <a
       href="https://www.creative-tim.com/product/material-tailwind-kit-react"
       target="_blank"
-    >
-    
-    </a>
+    ></a>
   ),
 };
 
@@ -114,6 +120,7 @@ Navbar.propTypes = {
   brandName: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
   action: PropTypes.node,
+  logoSrc: PropTypes.string.isRequired, // Chemin de l'image du logo
 };
 
 Navbar.displayName = "/src/widgets/layout/navbar.jsx";

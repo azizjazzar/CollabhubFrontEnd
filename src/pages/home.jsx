@@ -1,40 +1,38 @@
-import React from "react";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Typography,
-  Button,
-  IconButton,
-  Input,
-  Textarea,
-  Checkbox,
-} from "@material-tailwind/react";
+import React, { useState, useEffect } from "react";
+import { Card, CardBody, CardHeader, Typography, Button, IconButton, Input, Textarea, Checkbox } from "@material-tailwind/react";
 import { FingerPrintIcon, UsersIcon } from "@heroicons/react/24/solid";
 import { PageTitle, Footer } from "@/widgets/layout";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
 
 export function Home() {
+  const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
+  const images = ['/img/back1.jpg', '/img/back2.avif', '/img/back3.jpg'];
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setBackgroundImage(prevImage => {
+        const nextImageIndex = (images.indexOf(prevImage) + 1) % images.length;
+        return images[nextImageIndex];
+      });
+    }, 4000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
       <div className="relative flex h-screen content-center items-center justify-center pt-16 pb-32">
-        <div className="absolute top-0 h-full w-full bg-[url('/img/back3.jpg')] bg-cover bg-center" />
+        <div className="absolute top-0 h-full w-full" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
         <div className="max-w-8xl container relative mx-auto">
           <div className="flex flex-wrap items-center">
             <div className="ml-auto mr-auto w-full px-4 text-center lg:w-8/12">
-              <Typography
-                variant="h1"
-                color="white"
-                className="mb-6 font-black"
-              >
+              <Typography variant="h1" color="white" className="mb-6 font-black">
                 Your story starts with us.
               </Typography>
               <Typography variant="lead" color="white" className="opacity-80">
-                This is a simple example of a Landing Page you can build using
-                Material Tailwind. It features multiple components based on the
-                Tailwind CSS and Material Design by Google.
+                Forget the hurdles in collaboration with our experts on CollabHub, achieving excellence is simpler than ever.
               </Typography>
             </div>
           </div>
@@ -44,15 +42,7 @@ export function Home() {
         <div className="container mx-auto">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuresData.map(({ color, title, icon, description }) => (
-              <FeatureCard
-                key={title}
-                color={color}
-                title={title}
-                icon={React.createElement(icon, {
-                  className: "w-5 h-5 text-white",
-                })}
-                description={description}
-              />
+              <FeatureCard key={title} color={color} title={title} icon={React.createElement(icon, { className: "w-5 h-5 text-white" })} description={description} />
             ))}
           </div>
           <div className="mt-32 flex flex-wrap items-center">
@@ -60,47 +50,28 @@ export function Home() {
               <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-gray-900 p-2 text-center shadow-lg">
                 <FingerPrintIcon className="h-8 w-8 text-white " />
               </div>
-              <Typography
-                variant="h3"
-                className="mb-3 font-bold"
-                color="blue-gray"
-              >
+              <Typography variant="h3" className="mb-3 font-bold" color="blue-gray">
                 Working with us is a pleasure
               </Typography>
               <Typography className="mb-8 font-normal text-blue-gray-500">
-                Don't let your uses guess by attaching tooltips and popoves to
-                any element. Just make sure you enable them first via
-                JavaScript.
-                <br />
-                <br />
-                The kit comes with three pre-built pages to help you get started
-                faster. You can change the text and images and you're good to
-                go. Just make sure you enable them first via JavaScript.
+                Don't let your uses guess by attaching tooltips and popoves to any element. Just make sure you enable them first via JavaScript.
+                <br /><br />
+                The kit comes with three pre-built pages to help you get started faster. You can change the text and images and you're good to go. Just make sure you enable them first via JavaScript.
               </Typography>
               <Button variant="filled">read more</Button>
             </div>
             <div className="mx-auto mt-24 flex w-full justify-center px-4 md:w-4/12 lg:mt-0">
               <Card className="shadow-lg border shadow-gray-500/10 rounded-lg">
                 <CardHeader floated={false} className="relative h-56">
-                  <img
-                    alt="Card Image"
-                    src="/img/teamwork.png"
-                    className="h-full w-full"
-                  />
+                  <img alt="Card Image" src="/img/teamwork.png" className="h-full w-full" />
                 </CardHeader>
                 <CardBody>
                   <Typography variant="small" color="blue-gray" className="font-normal">Enterprise</Typography>
-                  <Typography
-                    variant="h5"
-                    color="blue-gray"
-                    className="mb-3 mt-2 font-bold"
-                  >
+                  <Typography variant="h5" color="blue-gray" className="mb-3 mt-2 font-bold">
                     Top Notch Services
                   </Typography>
                   <Typography className="font-normal text-blue-gray-500">
-                    The Arctic Ocean freezes every winter and much of the
-                    sea-ice then thaws every summer, and that process will
-                    continue whatever happens.
+                    The Arctic Ocean freezes every winter and much of the sea-ice then thaws every summer, and that process will continue whatever happens.
                   </Typography>
                 </CardBody>
               </Card>
@@ -111,9 +82,7 @@ export function Home() {
       <section className="px-4 pt-20 pb-48">
         <div className="container mx-auto">
           <PageTitle section="Our Team" heading="Here are our heroes">
-            According to the National Oceanic and Atmospheric Administration,
-            Ted, Scambos, NSIDClead scentist, puts the potentially record
-            maximum.
+            According to the National Oceanic and Atmospheric Administration, Ted, Scambos, NSIDClead scentist, puts the potentially record maximum.
           </PageTitle>
           <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {teamData.map(({ img, name, position, socials }) => (
@@ -139,9 +108,7 @@ export function Home() {
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">
           <PageTitle section="Co-Working" heading="Build something">
-            Put the potentially record low maximum sea ice extent tihs year down
-            to low ice. According to the National Oceanic and Atmospheric
-            Administration, Ted, Scambos.
+            Put the potentially record low maximum sea ice extent tihs year down to low ice. According to the National Oceanic and Atmospheric Administration, Ted, Scambos.
           </PageTitle>
           <div className="mx-auto mt-20 mb-48 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
             {contactData.map(({ title, icon, description }) => (

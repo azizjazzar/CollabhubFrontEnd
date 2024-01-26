@@ -6,11 +6,31 @@ export const routes = [
     path: "/home",
     element: <Home />,
   },
+
   {
-    name: "profile",
-    path: "/profile",
+    name: "Find Talent",
+    path: "/consultation",
+    element: <Profile />,//changer ici  votre page
+  },
+
+  {
+    name: "Find Work",
+    path: "/consultation",
     element: <Profile />,
   },
+
+  {
+    name: "Why CollabHub",
+    path: "/sign-up",
+    element: <SignUp />,
+  },
+
+  {
+    name: "About Us",
+    path: "/sign-up",
+    element: <SignUp />,
+  },
+
   {
     name: "Sign In",
     path: "/sign-in",
@@ -21,12 +41,9 @@ export const routes = [
     path: "/sign-up",
     element: <SignUp />,
   },
-  {
-    name: "Docs",
-    href: "https://www.material-tailwind.com/docs/react/installation",
-    target: "_blank",
-    element: "",
-  },
+
+
+
 ];
 
 export default routes;
