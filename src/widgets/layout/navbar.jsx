@@ -99,7 +99,7 @@ export function Navbar({ brandName, routes, action }) {
 }
 
 Navbar.defaultProps = {
-  brandName: "CollubHub",
+  brandName: "CollabHub",
   action: (
     <a
       href="https://www.creative-tim.com/product/material-tailwind-kit-react"
