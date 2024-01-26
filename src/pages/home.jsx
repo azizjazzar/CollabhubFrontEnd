@@ -39,10 +39,10 @@ export function Home() {
         </div>
       </div>
       <section className="-mt-32 bg-white px-4 pb-20 pt-4">
-        <div className="container mx-auto">
+        <div className="container mx-auto mt-44 bg">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuresData.map(({ color, title, icon, description }) => (
-              <FeatureCard key={title} color={color} title={title} icon={React.createElement(icon, { className: "w-5 h-5 text-white" })} description={description} />
+              <FeatureCard key={title} color={color} title={title} icon={React.createElement(icon, { className: "w-5 h-5 text-" })} description={description} />
             ))}
           </div>
           <div className="mt-32 flex flex-wrap items-center">
