@@ -7,7 +7,7 @@ import { featuresData, teamData, contactData } from "@/data";
 
 export function Home() {
   const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
-  const images = ['/img/back1.jpg', '/img/back2.avif', '/img/back3.jpg'];
+  const images = ['/img/back1.jpg', '/img/back2.jpg', '/img/back3.jpg'];
 
   useEffect(() => {
     const intervalId = setInterval(() => {
