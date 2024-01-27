@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import logoSrc from "/public/img/logo4.png";
+import logoSrc from "/public/img/logoshih.png";
 
 import { Link } from "react-router-dom";
 import {
