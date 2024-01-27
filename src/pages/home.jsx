@@ -8,6 +8,7 @@ import { featuresData, teamData, contactData } from "@/data";
 export function Home() {
   const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
   const images = ['/img/back1.jpg', '/img/back2.jpg', '/img/back3.jpg'];
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -19,6 +20,10 @@ export function Home() {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  const toggleDropDown = () => {
+    setIsDropDownOpen(!isDropDownOpen);
+  };
 
   return (
     <>
@@ -105,6 +110,37 @@ export function Home() {
           </div>
         </div>
       </section>
+      <div className="relative group">
+  <a
+    href="#"
+    onClick={toggleDropDown}
+    className="text-blue-gray-100 group-hover:text-white hover:text-white"
+  >
+    Find Talent
+  </a>
+  {isDropDownOpen && (
+    <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg z-10">
+      <ul>
+        <li>
+          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
+            Post a job
+          </a>
+        </li>
+        <li>
+          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
+            Browse and buy project
+          </a>
+        </li>
+        <li>
+          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
+            Get advice
+          </a>
+        </li>
+      </ul>
+    </div>
+  )}
+</div>
+
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">
           <PageTitle section="Co-Working" heading="Build something">
@@ -112,64 +148,66 @@ export function Home() {
           </PageTitle>
           <div className="mx-auto mt-20 mb-48 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
             {contactData.map(({ title, icon, description }) => (
-              <Card
-                key={title}
-                color="transparent"
-                shadow={false}
-                className="text-center text-blue-gray-900"
-              >
-                <div className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-full bg-blue-gray-900 shadow-lg shadow-gray-500/20">
-                  {React.createElement(icon, {
-                    className: "w-5 h-5 text-white",
-                  })}
-                </div>
-                <Typography variant="h5" color="blue-gray" className="mb-2">
-                  {title}
-                </Typography>
-                <Typography className="font-normal text-blue-gray-500">
-                  {description}
-                </Typography>
-              </Card>
-            ))}
-          </div>
-          <PageTitle section="Contact Us" heading="Want to work with us?">
-            Complete this form and we will get back to you in 24 hours.
-          </PageTitle>
-          <form className="mx-auto w-full mt-12 lg:w-5/12">
-            <div className="mb-8 flex gap-8">
-              <Input variant="outlined" size="lg" label="Full Name" />
-              <Input variant="outlined" size="lg" label="Email Address" />
-            </div>
-            <Textarea variant="outlined" size="lg" label="Message" rows={8} />
-            <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center font-normal"
-                >
-                  I agree the
-                  <a
-                    href="#"
-                    className="font-medium transition-colors hover:text-gray-900"
-                  >
-                    &nbsp;Terms and Conditions
-                  </a>
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            />
-            <Button variant="gradient" size="lg" className="mt-8" fullWidth>
-              Send Message
-            </Button>
-          </form>
-        </div>
-      </section>
-      <div className="bg-white">
-        <Footer />
+      <Card
+      key={title}
+      color="transparent"
+      shadow={false}
+      className="text-center text-blue-gray-900"
+    >
+      <div className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-full bg-blue-gray-900 shadow-lg shadow-gray-500/20">
+        {React.createElement(icon, {
+          className: "w-5 h-5 text-white",
+        })}
       </div>
-    </>
-  );
+      <Typography variant="h5" color="blue-gray" className="mb-2">
+        {title}
+      </Typography>
+      <Typography className="font-normal text-blue-gray-500">
+        {description}
+      </Typography>
+    </Card>
+    ))}
+    
+  
+      </div>
+      <PageTitle section="Contact Us" heading="Want to work with us?">
+        Complete this form and we will get back to you in 24 hours.
+      </PageTitle>
+      <form className="mx-auto w-full mt-12 lg:w-5/12">
+        <div className="mb-8 flex gap-8">
+          <Input variant="outlined" size="lg" label="Full Name" />
+          <Input variant="outlined" size="lg" label="Email Address" />
+        </div>
+        <Textarea variant="outlined" size="lg" label="Message" rows={8} />
+        <Checkbox
+          label={
+            <Typography
+              variant="small"
+              color="gray"
+              className="flex items-center font-normal"
+            >
+              I agree the
+              <a
+                href="#"
+                className="font-medium transition-colors hover:text-gray-900"
+              >
+                &nbsp;Terms and Conditions
+              </a>
+            </Typography>
+          }
+          containerProps={{ className: "-ml-2.5" }}
+        />
+        <Button variant="gradient" size="lg" className="mt-8" fullWidth>
+          Send Message
+        </Button>
+      </form>
+    </div>
+  </section>
+  <div className="bg-white">
+    <Footer />
+  </div>
+</>
+);
 }
 
 export default Home;
