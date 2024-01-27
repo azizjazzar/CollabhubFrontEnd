@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import logoSrc from "/public/img/logo4.png";
+
 import { Link } from "react-router-dom";
 import {
   Navbar as MTNavbar,
@@ -27,7 +29,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           as="li"
           variant="small"
           color="inherit"
-          className="capitalize"
+          className="capitalize hover:border-b-2 hover:border-orange-500"
         >
           {href ? (
             <a
@@ -67,16 +69,9 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <img
               src={logoSrc}
               alt="CollabHub Logo"
-              className="h-8 w-8 mr-2"
+              className="h-16 w-25 mr-2 flex items-center"
             />
-            <Typography
-              className="mr-4 ml-2 cursor-pointer py-1.5 font-bold"
-              style={{ color: "#FFFFFF" }}
-            >
-              {brandName}
-            </Typography>
           </div>
-          
         </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden gap-2 lg:flex">
@@ -114,13 +109,14 @@ Navbar.defaultProps = {
       target="_blank"
     ></a>
   ),
+  logoSrc: logoSrc,
 };
 
 Navbar.propTypes = {
   brandName: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
   action: PropTypes.node,
-  logoSrc: PropTypes.string.isRequired, // Chemin de l'image du logo
+  logoSrc: PropTypes.string,
 };
 
 Navbar.displayName = "/src/widgets/layout/navbar.jsx";

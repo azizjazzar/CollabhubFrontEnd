@@ -5,24 +5,24 @@ import {
 export const featuresData = [
   {
     color: "gray",
-    title: "Consultations ->",
+    title: "Consultations",
     icon: ChatBubbleBottomCenterTextIcon,
     description:
       "Get advice from an industry expert",
   },
   {
     color: "gray",
-    title: "Free Revisions",
+    title: "Project catalogue",
     icon: ChatBubbleBottomCenterTextIcon,
     description:
-      "Keep you user engaged by providing meaningful information. Remember that by this time, the user is curious.",
+      "Browse and buy projects",
   },
   {
     color: "gray",
-    title: "Verified Company",
+    title: "Talent Marketplace",
     icon: ChatBubbleBottomCenterTextIcon,
     description:
-      "Write a few lines about each one. A paragraph describing a feature will be enough. Keep you user engaged!",
+      "Post a job and hire pro",
   },
 ];
 
