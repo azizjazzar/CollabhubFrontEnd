@@ -30,6 +30,10 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
     setShowList(false); // Hide the list when clicking on any navbar element
   };
 
+  const handleNavLinkClick = () => {
+    setShowList(false); // Close the list when clicking on a different nav item
+  };
+
   const navList = (
     <ul
       className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6"
@@ -61,12 +65,16 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
                   <Link to="/find-a-project" className="text-sm hover:underline">
                     Find a Project
                   </Link>
+
+                  
                   <Link
                     to="/do-a-quick-consultation"
                     className="text-sm hover:underline"
                   >
                     Do a Quick Consultation
                   </Link>
+
+
                   <Link to="/buy-a-project" className="text-sm hover:underline">
                     Buy a Project
                   </Link>
@@ -77,6 +85,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <a
               href={href}
               target={target}
+              onClick={handleNavLinkClick} // Close the list when clicking on a different nav item
               className="flex items-center gap-1 p-1 font-bold"
             >
               {icon &&
@@ -89,6 +98,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <Link
               to={path}
               target={target}
+              onClick={handleNavLinkClick} // Close the list when clicking on a different nav item
               className="flex items-center gap-1 p-1 font-bold"
             >
               {icon &&
