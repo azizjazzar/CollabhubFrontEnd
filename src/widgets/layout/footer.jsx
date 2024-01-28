@@ -79,9 +79,9 @@ export function Footer({ title, description, socials, menus, copyright }) {
 }
 
 Footer.defaultProps = {
-  title: "Material Tailwind",
+  title: "CollabHub for every one",
   description:
-    "Easy to use React components for Tailwind CSS and Material Design.",
+    "Easy to use Join us rigth now.",
   socials: [
     {
       color: "gray",
@@ -144,13 +144,13 @@ Footer.defaultProps = {
   ],
   copyright: (
     <>
-      Copyright © {year} Material Tailwind by{" "}
+      Copyright © {year} Created by{" "}
       <a
-        href="https://www.creative-tim.com?ref=mtk"
+        href="https://esprit.tn/"
         target="_blank"
         className="text-blue-gray-500 transition-colors hover:text-blue-500"
       >
-        Creative Tim
+        Esprit
       </a>
       .
     </>
