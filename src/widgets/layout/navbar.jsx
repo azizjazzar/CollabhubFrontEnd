@@ -65,16 +65,12 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
                   <Link to="/find-a-project" className="text-sm hover:underline">
                     Find a Project
                   </Link>
-
-                  
                   <Link
                     to="/do-a-quick-consultation"
                     className="text-sm hover:underline"
                   >
                     Do a Quick Consultation
                   </Link>
-
-
                   <Link to="/buy-a-project" className="text-sm hover:underline">
                     Buy a Project
                   </Link>
@@ -114,8 +110,12 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   );
 
   return (
-    <MTNavbar color="transparent" className="p-3">
-      <div className="container mx-auto flex items-center justify-between text-white">
+    <MTNavbar
+      color="transparent"
+      className="p-2 w-auto"
+      style={{ backgroundColor: "white", color: "gray" }}
+    >
+      <div className="container mx-auto w-full flex items-center justify-between text-gray">
         <Link to="/">
           <div className="flex items-center">
             <img

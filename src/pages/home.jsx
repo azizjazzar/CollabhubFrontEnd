@@ -110,36 +110,7 @@ export function Home() {
           </div>
         </div>
       </section>
-      <div className="relative group">
-  <a
-    href="#"
-    onClick={toggleDropDown}
-    className="text-blue-gray-100 group-hover:text-white hover:text-white"
-  >
-    Find Talent
-  </a>
-  {isDropDownOpen && (
-    <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg z-10">
-      <ul>
-        <li>
-          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
-            Post a job
-          </a>
-        </li>
-        <li>
-          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
-            Browse and buy project
-          </a>
-        </li>
-        <li>
-          <a href="#" className="block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100">
-            Get advice
-          </a>
-        </li>
-      </ul>
-    </div>
-  )}
-</div>
+
 
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">

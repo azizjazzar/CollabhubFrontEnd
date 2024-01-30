@@ -1,6 +1,7 @@
 import React from "react";
 import { Home, Profile, SignIn, SignUp } from "@/pages";
-import QuickConsultationPage from "@/pages/QuickConsultationPage"; // Importez votre page QuickConsultationPage
+import QuickConsultationPage from "@/pages/QuickConsultationPage";
+import DetailsConsultation from "@/pages/DetailsConsultation";  // Importez votre page QuickConsultationPage
 
 export const routes = [
   {
@@ -42,6 +43,12 @@ export const routes = [
     name: "Do a Quick Consultation",
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />, // Utilisez votre page QuickConsultationPage ici
+  },
+
+  {
+  
+    path: "/details-consultation", // Le chemin que vous voulez pour la page de consultation
+    element: <DetailsConsultation />,
   },
 ];
 
