@@ -1,29 +1,20 @@
-import React from 'react'
-import Lottie from 'lottie-react'
-import AnimationData from "../assets/Animation.json";
+import React from "react";
+import { Carousel } from 'flowbite-react';
 
-export  function Bienvenu() {
+export function Bienvenu() {
   return (
-    <>
-    <section>
-     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-     <Lottie className="mx-auto mt-1 max-w-md" style={ { height: 150, width: 150 }} animationData={AnimationData} /> 
-           <header className="text-center">
-           <p className="mx-auto mt-1 max-w-md text-gray-500">
-                28/01/2024
-             </p>
-                <h3 className="text-xl font-bold text-gray-900 sm:text-3xl">Hello,Aziz   </h3>
-           </header>
-           
-    
-        
-           
-     </div>
-    </section>
-</>
-  )
+    <div className="flex flex-col items-center justify-center h-auto ">
+  
+      <div className="text-center mt-15">
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+          We invest in the <span className="underline underline-offset-3 decoration-8 decoration-orange-300 dark:decoration-orange-200">world’s potential</span>
+        </h1>
+        <p className="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
+          Here at CollabHub we focus on  technology, innovation, and can unlock long-term collaborations and drive economic growth.
+        </p>
+      </div>
+    </div>
+  );
 }
-
-
 
 export default Bienvenu;

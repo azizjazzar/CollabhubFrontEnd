@@ -16,7 +16,7 @@ export function Cardsgrids() {
       {projects.map((project, index) => (
        
        <div
-         className="mx-3 mt-6 flex flex-col self-start rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 sm:shrink-0 sm:grow sm:basis-0 " key={project.index} >
+         className="mx-3 mt-6 flex flex-col self-start rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 sm:shrink-0 sm:grow sm:basis-0 " key={index} >
        
          <div className="p-6 group border rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white">
            <h5

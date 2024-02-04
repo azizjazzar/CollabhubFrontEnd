@@ -4,7 +4,7 @@ import {
   BriefcaseIcon,
   BuildingLibraryIcon,
 } from "@heroicons/react/24/solid";
-import { Footer } from "@/widgets/layout";
+import { Footer } from "@/index";
 
 export function Profile() {
   return (

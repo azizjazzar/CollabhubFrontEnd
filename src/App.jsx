@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { Navbar } from "@/widgets/layout";
+import { Navbar } from "@/index";
 import routes from "@/routes";
 
 
