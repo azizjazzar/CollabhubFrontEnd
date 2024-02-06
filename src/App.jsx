@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar } from "@/index";
 import routes from "@/routes";
+import { FreelancerCollab } from "./pages";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             element && <Route key={key} exact path={path} element={element} />
         )}
         <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="/freelancer_collab" element={<FreelancerCollab/>} />
       </Routes>
     </>
   );

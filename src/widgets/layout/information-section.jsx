@@ -1,4 +1,6 @@
 "use client";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 import { Typography } from "@material-tailwind/react";
 import {
   AcademicCapIcon,
@@ -114,9 +116,19 @@ export function InformationSection() {
             </Typography>
           </div>
           <div className="container mx-auto grid grid-cols-1 gap-16 gap-y-12">
-            {EDUCATION.map((props, idx) => (
+          
+ 
+
+          {EDUCATION.map((props, idx) => (
+            <Link to="/freelancer_collab" className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+              
               <InfoCard key={idx} {...props} />
+              </Link>
             ))}
+
+
+        
+       
           </div>
         </div>
         
