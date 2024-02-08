@@ -40,7 +40,7 @@ export function Home() {
     <>
       <div className="relative h-screen container mx-auto  top-[100px]">
       <div className="absolute h-full w-full z-0" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="container pt-24 mx-auto flex flex-col justify-center items-center h-full">
+        <div className="container  mx-auto flex flex-col justify-center items-center h-full">
           <Typography variant="h1" color="white" className="font-black text-5xl mb-8 z-40">
             Your story starts{' '}
             <ReactTyped
@@ -55,24 +55,25 @@ export function Home() {
             Forget the hurdles in collaboration with our experts on CollabHub, achieving excellence is simpler than ever.
           </Typography>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 z-40" style={{ userSelect: 'none' }}>
-            {/* Button 1 */}
-            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(1)}>
-              <p className="text-white text-4xl font-bold mb-2">Post a job and hire a Pro</p>
-              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Talent Marketplace</p>
+              {/* Button 1 */}
+              <div className="group border p-2 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(1)}>
+                <p className="text-white text-3xl font-bold mb-1">Post a job and hire a Pro</p>
+                <p className="text-orange-400 text-lg group-hover:text-white">Talent Marketplace</p>
+              </div>
+
+              {/* Button 2 */}
+              <div className="group border p-2 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(2)}>
+                <p className="text-white text-xl font-bold mb-1">Browse and buy projects</p>
+                <p className="text-orange-400 text-sm group-hover:text-white">Project Catalog</p>
+              </div>
+
+              {/* Button 3 */}
+              <div className="group border p-2 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(3)}>
+                <p className="text-white text-xl font-bold mb-1">Get advice from an industry expert</p>
+                <p className="text-orange-400 text-sm group-hover:text-white">Consultations</p>
+              </div>
             </div>
 
-            {/* Button 2 */}
-            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(2)}>
-              <p className="text-white text-4xl font-bold mb-2">Browse and buy projects</p>
-              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Project Catalog</p>
-            </div>
-
-            {/* Button 3 */}
-            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(3)}>
-              <p className="text-white text-4xl font-bold mb-2">Get advice from an industry expert</p>
-              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Consultations</p>
-            </div>
-          </div>
         </div>
       </div>
 

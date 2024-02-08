@@ -8,10 +8,9 @@ function App() {
 
   return (
     <>
-      {!(pathname == '/sign-in' || pathname == '/sign-up') && (
+    
         <Navbar routes={routes} />
-      )
-      }
+      
       <Routes>
         {routes.map(
           ({ path, element }, key) =>
