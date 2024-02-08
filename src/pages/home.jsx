@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { FingerPrintIcon, UsersIcon } from "@heroicons/react/24/solid";
+import { PageTitle, Footer } from "@/widgets/layout";
+import { FeatureCard, TeamCard } from "@/widgets/cards";
+import { featuresData, teamData, contactData } from "@/data";
+import { ReactTyped } from "react-typed";
+
 import {
   Card,
   CardBody,
@@ -10,15 +16,14 @@ import {
   Textarea,
   Checkbox,
 } from "@material-tailwind/react";
-import { FingerPrintIcon, UsersIcon } from "@heroicons/react/24/solid";
-import { PageTitle, Footer } from "@/widgets/layout";
-import { FeatureCard, TeamCard } from "@/widgets/cards";
-import { featuresData, teamData, contactData } from "@/data";
-import { ReactTyped } from "react-typed";
 
 export function Home() {
   const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
   const images = ['/img/back1.jpg', '/img/back2.jpg', '/img/back3.jpg'];
+
+  const handleButtonClick = (buttonIndex) => {
+    // Fonction à exécuter lorsque le bouton est cliqué
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -33,86 +38,48 @@ export function Home() {
 
   return (
     <>
-      <div className="relative flex h-screen content-center items-center justify-center pt-16 pb-32">
-        <div className="absolute top-0 h-full w-full" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-        <div className="max-w-8xl container relative mx-auto mt-80">
-          <div className="flex flex-wrap items-center">
-            <div className="ml-auto mr-auto w-full px-4 text-center lg:w-8/12">
-              <Typography variant="h1" color="white" className="pl-32 font-black relative">
-                <div className="absolute text-xl sm:pl-10 sm:text-xl md:text-3xl lg:text-3xl xl:text-5xl">
-                  Your story start{' '}
-                  <ReactTyped
-                    className="text-orange-400"
-                    strings={['Right now', 'With Us']}
-                    typeSpeed={80}
-                    backSpeed={80}
-                    loop
-                  />
-                </div>
-              </Typography>
-              <Typography variant="lead" color="white" className="opacity-80 pt-20">
-                Forget the hurdles in collaboration with our experts on CollabHub, achieving excellence is simpler than ever.
-              </Typography>
-            
-          
+      <div className="relative h-screen container mx-auto  top-[100px]">
+      <div className="absolute h-full w-full z-0" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div className="container pt-24 mx-auto flex flex-col justify-center items-center h-full">
+          <Typography variant="h1" color="white" className="font-black text-5xl mb-8 z-40">
+            Your story starts{' '}
+            <ReactTyped
+              className="text-orange-400"
+              strings={['Right now', 'With Us']}
+              typeSpeed={80}
+              backSpeed={80}
+              loop
+            />
+          </Typography>
+          <Typography variant="lead" color="white" className="opacity-80 mb-16 text-center">
+            Forget the hurdles in collaboration with our experts on CollabHub, achieving excellence is simpler than ever.
+          </Typography>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 z-40" style={{ userSelect: 'none' }}>
+            {/* Button 1 */}
+            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(1)}>
+              <p className="text-white text-4xl font-bold mb-2">Post a job and hire a Pro</p>
+              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Talent Marketplace</p>
+            </div>
+
+            {/* Button 2 */}
+            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(2)}>
+              <p className="text-white text-4xl font-bold mb-2">Browse and buy projects</p>
+              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Project Catalog</p>
+            </div>
+
+            {/* Button 3 */}
+            <div className="group border p-4 rounded-lg cursor-pointer hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(3)}>
+              <p className="text-white text-4xl font-bold mb-2">Get advice from an industry expert</p>
+              <p className="text-orange-400 text-xl group-hover:text-white pt-3">Consultations</p>
             </div>
           </div>
-          <div className="my-24 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" style={{ userSelect: 'none' }}>
-              {/* Button 1 */}
-              <div className="group border p-4 rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(1)}>
-                <p className="text-white text-4xl font-bold mb-2">Post a job and hire a Pro</p>
-                <p className="text-orange-400 text-xl group-hover:text-white pt-3">Talent Market place</p>
-              </div>
-
-              {/* Button 2 */}
-              <div className="group border p-4 rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(2)}>
-                <p className="text-white text-4xl font-bold mb-2">Browse and buy projects</p>
-                <p className="text-orange-400 text-xl group-hover:text-white pt-3">Project Catalog</p>
-              </div>
-
-              {/* Button 3 */}
-              <div className="group border p-4 rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(3)}>
-                <p className="text-white text-4xl font-bold mb-2">Get advice from an industry expert</p>
-                <p className="text-orange-400 text-xl group-hover:text-white pt-3">Consultations</p>
-              </div>
-            </div>
-
-
         </div>
       </div>
-
-      <section className="px-4 pt-20 pb-48">
-        <div className="container mx-auto">
-          <PageTitle section="Our Team" heading="Here are our heroes">
-            According to the National Oceanic and Atmospheric Administration, Ted, Scambos, NSIDClead scentist, puts the potentially record maximum.
-          </PageTitle>
-          <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
-            {teamData.map(({ img, name, position, socials }) => (
-              <TeamCard
-                key={name}
-                img={img}
-                name={name}
-                position={position}
-                socials={
-                  <div className="flex items-center gap-2">
-                    {socials.map(({ color, name }) => (
-                      <IconButton key={name} color={color} variant="text">
-                        <i className={`fa-brands text-xl fa-${name}`} />
-                      </IconButton>
-                    ))}
-                  </div>
-                }
-              />
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">
           <PageTitle section="Co-Working" heading="Build something">
-            Put the potentially record low maximum sea ice extent tihs year down to low ice. According to the National Oceanic and Atmospheric Administration, Ted, Scambos.
+            Put the potentially record low maximum sea ice extent this year down to low ice. According to the National Oceanic and Atmospheric Administration, Ted, Scambos.
           </PageTitle>
           <div className="mx-auto mt-20 mb-48 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
             {contactData.map(({ title, icon, description }) => (
@@ -136,8 +103,6 @@ export function Home() {
               </Card>
             ))}
           </div>
-          
-          
         </div>
       </section>
 

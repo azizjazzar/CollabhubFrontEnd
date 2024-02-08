@@ -22,7 +22,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   }, []);
 
   const navList = (
-    <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="mb-4  flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }) => (
         <Typography
           key={name}
@@ -47,7 +47,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <Link
               to={path}
               target={target}
-              className="flex items-center gap-1 p-1 font-bold"
+              className="flex items-center gap-1 p-1 "
             >
               {icon &&
                 React.createElement(icon, {
@@ -62,8 +62,9 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   );
 
   return (
-    <MTNavbar color="transparent" className="p-3">
-      <div className="container mx-auto flex items-center justify-between text-white">
+    <div className="w-full fixed z-50 bg-white top-0">
+    <MTNavbar color="transparent">
+      <div className=" mx-auto flex items-center justify-between text-black">
         <Link to="/">
           <div className="flex items-center">
             <img
@@ -92,12 +93,19 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <Bars3Icon strokeWidth={2} className="h-6 w-6" />
           )}
         </IconButton>
+
       </div>
+
       <MobileNav
-        className="rounded-xl bg-white px-4 pt-2 pb-4 text-blue-gray-900"
+        className="rounded-xl bg-white px-4  text-blue-gray-900"
         open={openNav}
       ></MobileNav>
+
     </MTNavbar>
+    <hr  /> {/* Horizontal line with the specified class */}
+
+    </div>
+    
   );
 }
 
@@ -105,7 +113,6 @@ Navbar.defaultProps = {
   brandName: "CollabHub",
   action: (
     <a
-      href="https://www.creative-tim.com/product/material-tailwind-kit-react"
       target="_blank"
     ></a>
   ),
