@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar } from "@/index";
 import routes from "@/routes";
-import { FreelancerCollab } from "./pages";
+import { FreelancerCollab, ProjectCollab } from "./pages";
 
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
         )}
         <Route path="*" element={<Navigate to="/home" replace />} />
         <Route path="/freelancer_collab" element={<FreelancerCollab/>} />
+        <Route path="/projectcollab" element={<ProjectCollab/>} />
       </Routes>
     </>
   );

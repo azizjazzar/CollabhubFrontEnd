@@ -4,12 +4,7 @@ import { RechercheCollab } from "@/widgets/layout/recherche-collab";
 import React, { useState } from 'react';
 
 
-export function showFooter(model){
-  if (!model) return <Footer/>
-  else 
-  return null;
 
-}
 
 export function Collaboration() {
   const [openModal, setOpenModal] = useState(false);
@@ -54,9 +49,9 @@ export function Collaboration() {
                 </section>  
 
               
-                       
-           <showFooter openModal/>
-           <showFooter RechercheCollab/>
+                    { (!openModal && !openRechercheCollab) ? <Footer/> : null}   
+         
+         
 
            
                
