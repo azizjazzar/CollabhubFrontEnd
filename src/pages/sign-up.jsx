@@ -1,41 +1,173 @@
-import {
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import React, { useState, useMemo } from 'react';
+import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import countryList from 'react-select-country-list';
+import axios from 'axios';
 
+function CountrySelector() {
+  const [value, setValue] = useState('');
+  const options = useMemo(() => countryList().getData(), []);
 
+  const countryOptions = [
+    ...options,
+  ];
+
+  const changeHandler = (selectedOption) => {
+    setValue(selectedOption);
+  };
+
+  return <Select placeholder="Select your Country" options={countryOptions} value={value} onChange={changeHandler} />;
+}
 export function SignUp() {
+
+  const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '' ,Email:'',ConfirmPassword:'',Country:'',Checkbox:false,Type:"Utilisateur"});
+
+  const getUserbyEmail = async () => {
+    try {
+      const apiUrl = `https://colabhub.onrender.com/api/auth/user/${user.Email}`;
+      const response = await axios.get(apiUrl);
+  
+      if (response.data.success === false) {
+        console.log("Aucun utilisateur trouvé");
+        // Gérer le cas où l'utilisateur n'est pas trouvé
+        return false;
+      } else {
+        return true
+        // Gérer le cas où l'utilisateur est trouvé
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête API:', error);
+    }
+  }
+  
+  
+  const Register = async () => {
+    const userExists = await getUserbyEmail(); // Appel de la fonction getUserbyEmail pour obtenir le résultat
+    
+    if (!userExists) {
+      try {
+        const apiUrl = 'https://colabhub.onrender.com/api/auth/register';
+        const apiPayload = {
+          nom: user.FirstName,
+          prenom: user.LastName,
+          email: user.Email,
+          mot_passe: user.ConfirmPassword,
+          type: user.Type,
+        };
+    
+        const response = await axios.post(apiUrl, apiPayload);
+    
+        console.log('API Response:', response.data);
+      } catch (error) {
+        console.error('Error during API request:', error);
+      }
+    } else {
+      console.log("Email déjà utilisé");
+    }
+  };
+  
+ 
   return (
-    <section className="m-8 flex">
-            <div className="w-2/5 h-full hidden lg:block">
-        <img
-          src="/img/pattern.png"
-          className="h-full w-full object-cover rounded-3xl"
-        />
-      </div>
+    <div className='pt-24 '>
+    <section className="m-8 flex ">
+      {/* Section Image (masquée sur les petits écrans) */}
+      <div className="hidden md:block w-[500px] h-[50px] ml-11">
+  <img
+    src="/img/ba.jpg"
+    className="object-cover rounded-2xl"
+    alt="Pattern"
+  />
+</div>
+
+
+      {/* Section du Formulaire */}
       <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
-        <div className="text-center">
-          <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
-          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
+        <div className="text-center mb-4">
+          <Typography variant="h2" className="font-bold">
+            Join Us Today
+          </Typography>
+          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
+            Enter your email and password to register.
+          </Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
-          <div className="mb-1 flex flex-col gap-6">
-            <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              Your email
-            </Typography>
-            <Input
+
+        <form className="mx-auto w-80 max-w-screen-lg lg:w-1/2">
+          {/* Champs "First Name" et "Last Name" */}
+          <div className="flex flex-col sm:flex-row ">
+            <div className="flex-1 mr-1">
+              <Input
+              value={user.FirstName}
+              onChange={(e) => setUser({ ...user, FirstName: e.target.value })}                
               size="lg"
-              placeholder="name@mail.com"
+                placeholder="First Name"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row mt-5 sm:mt-0">
+              <Input
+                value={user.LastName}
+                onChange={(e) => setUser({ ...user, LastName: e.target.value })}                
+                size="lg"
+                placeholder="Last Name"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            </div>
+
+          </div>
+
+          {/* Champs "Email" et "Password" */}
+          <div className=" flex flex-col gap-6 py-6">
+            <Input
+              value={user.Email}
+              onChange={(e) => setUser({ ...user, Email: e.target.value })}                
+              size="lg"
+              placeholder="Email"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
             />
           </div>
-          <Checkbox
+          <div className="mb-1 flex flex-col gap-6 pb-4">
+            <Input
+              value={user.Password}
+              onChange={(e) => setUser({ ...user, Password: e.target.value })}                
+              size="lg"
+              type="password"
+              placeholder="Password"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+          </div>
+          <div className="mb-1 flex flex-col gap-6 pb-4">
+            <Input
+              value={user.ConfirmPassword}
+              onChange={(e) => setUser({ ...user, ConfirmPassword: e.target.value })}                
+              size="lg"
+              type="password"
+              placeholder="Confirm password"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+          </div>    
+          {/* Menu déroulant pour les pays */}
+          <CountrySelector ></CountrySelector>
+
+          {/* Checkbox "Terms and Conditions" */}
+          <div className='pt-3'>
+          <Checkbox 
             label={
               <Typography
                 variant="small"
@@ -53,40 +185,36 @@ export function SignUp() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          </div>
+
+          {/* Bouton "Register Now" */}
+          <Button className="mt-6 bg-orange-400" fullWidth onClick={Register}>
             Register Now
           </Button>
 
+          {/* Boutons de connexion avec Google et Twitter */}
           <div className="space-y-4 mt-8">
-            <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
+            <Button onClick={getUserbyEmail} size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clipPath="url(#clip0_1156_824)">
-                  <path d="M16.3442 8.18429C16.3442 7.64047 16.3001 7.09371 16.206 6.55872H8.66016V9.63937H12.9813C12.802 10.6329 12.2258 11.5119 11.3822 12.0704V14.0693H13.9602C15.4741 12.6759 16.3442 10.6182 16.3442 8.18429Z" fill="#4285F4" />
-                  <path d="M8.65974 16.0006C10.8174 16.0006 12.637 15.2922 13.9627 14.0693L11.3847 12.0704C10.6675 12.5584 9.7415 12.8347 8.66268 12.8347C6.5756 12.8347 4.80598 11.4266 4.17104 9.53357H1.51074V11.5942C2.86882 14.2956 5.63494 16.0006 8.65974 16.0006Z" fill="#34A853" />
-                  <path d="M4.16852 9.53356C3.83341 8.53999 3.83341 7.46411 4.16852 6.47054V4.40991H1.51116C0.376489 6.67043 0.376489 9.33367 1.51116 11.5942L4.16852 9.53356Z" fill="#FBBC04" />
-                  <path d="M8.65974 3.16644C9.80029 3.1488 10.9026 3.57798 11.7286 4.36578L14.0127 2.08174C12.5664 0.72367 10.6469 -0.0229773 8.65974 0.000539111C5.63494 0.000539111 2.86882 1.70548 1.51074 4.40987L4.1681 6.4705C4.8001 4.57449 6.57266 3.16644 8.65974 3.16644Z" fill="#EA4335" />
-                </g>
-                <defs>
-                  <clipPath id="clip0_1156_824">
-                    <rect width="16" height="16" fill="white" transform="translate(0.5)" />
-                  </clipPath>
-                </defs>
+                {/* ... (icône Google) */}
               </svg>
               <span>Sign in With Google</span>
             </Button>
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
+              <img src="/img/twitter-logo.svg" height={24} width={24} alt="Twitter" />
               <span>Sign in With Twitter</span>
             </Button>
           </div>
+
+          {/* Texte "Already have an account?" avec lien vers la page de connexion */}
           <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
             Already have an account?
             <Link to="/sign-in" className="text-gray-900 ml-1">Sign in</Link>
           </Typography>
         </form>
-
       </div>
     </section>
+    </div>
   );
 }
 
