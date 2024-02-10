@@ -3,48 +3,81 @@ import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import countryList from 'react-select-country-list';
+import { GoogleLogin } from 'react-google-login'
 import axios from 'axios';
 
-function CountrySelector() {
-  const [value, setValue] = useState('');
-  const options = useMemo(() => countryList().getData(), []);
+export function SignUp() {
+  const clientId ="932936140177-958d507k9pfvmkd53o46and5uv941q8l.apps.googleusercontent.com"
+  const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '', Email: '', ConfirmPassword: '', Country: '', Checkbox: true, Type: "Utilisateur" });
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [errors, setErrors] = useState({});
 
-  const countryOptions = [
-    ...options,
-  ];
+  const onSuccess = (res)=>{
+    console.log("Login Succes curent user:",res.profileobj)
 
-  const changeHandler = (selectedOption) => {
-    setValue(selectedOption);
+  }
+  const onFailure = (res)=>{
+    console.log("Login Failed ! res :",res)
+
+  }
+
+  const CountrySelector = () => {
+    const options = useMemo(() => countryList().getData(), []);
+  
+    const changeHandler = (selectedOption) => {
+      setSelectedCountry(selectedOption);
+      setErrors({ ...errors, countryError: '' }); // Reset country error when a country is selected
+    };
+  
+    return <Select placeholder="Select your Country" options={options} value={selectedCountry} onChange={changeHandler} />;
+  }
+
+  const validateField = (fieldName, value) => {
+    switch (fieldName) {
+      case 'FirstName':
+        return value ? '' : 'Please enter your first name.';
+      case 'LastName':
+        return value ? '' : 'Please enter your last name.';
+      case 'Email':
+        return value ? (/^\S+@\S+\.\S+$/.test(value) ? '' : 'Please enter a valid email address.') : 'Please enter your email address.';
+      case 'Password':
+        return value ? (value.length >= 8 && /\d{3}/.test(value) ? '' : 'Password must be at least 8 characters long and contain 3 digits.') : 'Please enter your password.';
+      case 'ConfirmPassword':
+        return value ? (value === user.Password ? '' : 'Passwords do not match.') : 'Please confirm your password.';
+      default:
+        return '';
+    }
   };
 
-  return <Select placeholder="Select your Country" options={countryOptions} value={value} onChange={changeHandler} />;
-}
-export function SignUp() {
+  const handleChange = (fieldName, value) => {
+    setUser({ ...user, [fieldName]: value });
+    setErrors({ ...errors, [`${fieldName}Error`]: validateField(fieldName, value) });
+  };
 
-  const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '' ,Email:'',ConfirmPassword:'',Country:'',Checkbox:false,Type:"Utilisateur"});
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const fieldNames = ['FirstName', 'LastName', 'Email', 'Password', 'ConfirmPassword'];
+    const newErrors = {};
+    let hasError = false;
 
-  const getUserbyEmail = async () => {
-    try {
-      const apiUrl = `https://colabhub.onrender.com/api/auth/user/${user.Email}`;
-      const response = await axios.get(apiUrl);
-  
-      if (response.data.success === false) {
-        console.log("Aucun utilisateur trouvé");
-        // Gérer le cas où l'utilisateur n'est pas trouvé
-        return false;
-      } else {
-        return true
-        // Gérer le cas où l'utilisateur est trouvé
-      }
-    } catch (error) {
-      console.error('Erreur lors de la requête API:', error);
+    fieldNames.forEach(fieldName => {
+      const error = validateField(fieldName, user[fieldName]);
+      newErrors[`${fieldName}Error`] = error;
+      if (error) hasError = true;
+    });
+
+    if (!selectedCountry) {
+      newErrors.countryError = "Please select your country.";
+      hasError = true;
     }
-  }
-  
-  
-  const Register = async () => {
-    const userExists = await getUserbyEmail(); // Appel de la fonction getUserbyEmail pour obtenir le résultat
-    
+
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const userExists = await getUserbyEmail();
+
     if (!userExists) {
       try {
         const apiUrl = 'https://colabhub.onrender.com/api/auth/register';
@@ -52,12 +85,12 @@ export function SignUp() {
           nom: user.FirstName,
           prenom: user.LastName,
           email: user.Email,
+          adresse: selectedCountry.label,
           mot_passe: user.ConfirmPassword,
           type: user.Type,
         };
-    
         const response = await axios.post(apiUrl, apiPayload);
-    
+
         console.log('API Response:', response.data);
       } catch (error) {
         console.error('Error during API request:', error);
@@ -66,154 +99,182 @@ export function SignUp() {
       console.log("Email déjà utilisé");
     }
   };
-  
- 
+
+  const getUserbyEmail = async () => {
+    try {
+      const apiUrl = `https://colabhub.onrender.com/api/auth/user/${user.Email}`;
+      const response = await axios.get(apiUrl);
+
+      if (response.data.success === false) {
+        console.log("Aucun utilisateur trouvé");
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête API:', error);
+    }
+  };
+
   return (
-    <div className='pt-24 '>
-    <section className="m-8 flex ">
-      {/* Section Image (masquée sur les petits écrans) */}
-      <div className="hidden md:block w-[500px] h-[50px] ml-11">
-  <img
-    src="/img/ba.jpg"
-    className="object-cover rounded-2xl"
-    alt="Pattern"
-  />
-</div>
-
-
-      {/* Section du Formulaire */}
-      <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
-        <div className="text-center mb-4">
-          <Typography variant="h2" className="font-bold">
-            Join Us Today
-          </Typography>
-          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
-            Enter your email and password to register.
-          </Typography>
+    <div className='pt-24'>
+      <section className="m-8 flex">
+        {/* Section Image (masquée sur les petits écrans) */}
+        <div className="hidden md:block w-[500px] h-[50px] ml-11">
+          <img
+            src="/img/ba.jpg"
+            className="object-cover rounded-2xl"
+            alt="Pattern"
+          />
         </div>
 
-        <form className="mx-auto w-80 max-w-screen-lg lg:w-1/2">
-          {/* Champs "First Name" et "Last Name" */}
-          <div className="flex flex-col sm:flex-row ">
-            <div className="flex-1 mr-1">
-              <Input
-              value={user.FirstName}
-              onChange={(e) => setUser({ ...user, FirstName: e.target.value })}                
-              size="lg"
-                placeholder="First Name"
-                className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
+        {/* Section du Formulaire */}
+        <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
+          <div className="text-center mb-4">
+            <Typography variant="h2" className="font-bold">
+              Join Us Today
+            </Typography>
+            <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
+              Enter your email and password to register.
+            </Typography>
+          </div>
+
+          <form className="mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>
+            <div className="flex flex-col sm:flex-row">
+              <div className="flex-1 mr-1">
+                <Input
+                  value={user.FirstName}
+                  onChange={(e) => handleChange('FirstName', e.target.value)}
+                  size="lg"
+                  placeholder="First Name"
+                  className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
+                  labelProps={{
+                    className: "before:content-none after:content-none",
+                  }}
+                />
+              {errors.FirstNameError && <p className="text-red-500">{errors.FirstNameError}</p>}
+              {!errors.FirstNameError && errors.LastNameError && <p className="text-red-500">{errors.LastNameError}</p>}
+
+
+              </div>
+              <div className="flex flex-col sm:flex-row mt-5 sm:mt-0">
+                
+                <Input
+                  value={user.LastName}
+                  onChange={(e) => handleChange('LastName', e.target.value)}
+                  size="lg"
+                  placeholder="Last Name"
+                  className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
+                  labelProps={{
+                    className: "before:content-none after:content-none",
+                  }}
+                />
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row mt-5 sm:mt-0">
+            <div className="flex flex-col gap-6 py-6">
+              <div>
               <Input
-                value={user.LastName}
-                onChange={(e) => setUser({ ...user, LastName: e.target.value })}                
+                value={user.Email}
+                onChange={(e) => handleChange('Email', e.target.value)}
                 size="lg"
-                placeholder="Last Name"
-                className="!border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
+                placeholder="Email"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
               />
+              {errors.EmailError && <p className="text-red-500 mt-0">{errors.EmailError}</p>}
+              </div>
             </div>
 
-          </div>
+            <div className="mb-1 flex flex-col gap-6 pb-4">
+               <div>
+              <Input
+                value={user.Password}
+                onChange={(e) => handleChange('Password', e.target.value)}
+                size="lg"
+                type="password"
+                placeholder="Password"
+                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+              {errors.PasswordError && <p className="text-red-500">{errors.PasswordError}</p>}
+              </div>
 
-          {/* Champs "Email" et "Password" */}
-          <div className=" flex flex-col gap-6 py-6">
-            <Input
-              value={user.Email}
-              onChange={(e) => setUser({ ...user, Email: e.target.value })}                
-              size="lg"
-              placeholder="Email"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
-          </div>
-          <div className="mb-1 flex flex-col gap-6 pb-4">
-            <Input
-              value={user.Password}
-              onChange={(e) => setUser({ ...user, Password: e.target.value })}                
-              size="lg"
-              type="password"
-              placeholder="Password"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
-          </div>
-          <div className="mb-1 flex flex-col gap-6 pb-4">
-            <Input
-              value={user.ConfirmPassword}
-              onChange={(e) => setUser({ ...user, ConfirmPassword: e.target.value })}                
-              size="lg"
-              type="password"
-              placeholder="Confirm password"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
-          </div>    
-          {/* Menu déroulant pour les pays */}
-          <CountrySelector ></CountrySelector>
+            </div>
 
-          {/* Checkbox "Terms and Conditions" */}
-          <div className='pt-3'>
-          <Checkbox 
-            label={
-              <Typography
-                variant="small"
-                color="gray"
-                className="flex items-center justify-start font-medium"
-              >
-                I agree the&nbsp;
-                <a
-                  href="#"
-                  className="font-normal text-black transition-colors hover:text-gray-900 underline"
+            <div className="mb-1 flex flex-col gap-6 pb-4">
+              <div>
+              <Input
+                value={user.ConfirmPassword}
+                onChange={(e) => handleChange('ConfirmPassword', e.target.value)}
+                size="lg"
+                type="password"
+                placeholder="Confirm password"
+                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+              {errors.ConfirmPasswordError && <p className="text-red-500">{errors.ConfirmPasswordError}</p>}
+              </div>
+            </div>
+
+            <CountrySelector />
+            {errors.countryError && <p className="text-red-500">{errors.countryError}</p>}
+
+            <div className='pt-3'>
+            <Checkbox
+              value={user.Checkbox}
+              onClick={() => {setUser({ ...user, Checkbox: !user.Checkbox })
+              }}
+              label={
+                <Typography
+                  variant="small"
+                  color="gray"
+                  className="flex items-center justify-start font-medium  p-2"
                 >
-                  Terms and Conditions
-                </a>
-              </Typography>
-            }
-            containerProps={{ className: "-ml-2.5" }}
-          />
-          </div>
+                  I agree the&nbsp;
+                  <a
+                    href="#"
+                    className="font-normal text-black transition-colors  underline "
+                  >
+                    Terms and Conditions
+                  </a>
+                </Typography>
+              }
+              containerProps={{ className: "-ml-2.5" }}
+            />
+            </div>
 
-          {/* Bouton "Register Now" */}
-          <Button className="mt-6 bg-orange-400" fullWidth onClick={Register}>
-            Register Now
-          </Button>
-
-          {/* Boutons de connexion avec Google et Twitter */}
-          <div className="space-y-4 mt-8">
-            <Button onClick={getUserbyEmail} size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* ... (icône Google) */}
-              </svg>
-              <span>Sign in With Google</span>
+            <Button type="submit" className="mt-6 bg-orange-400" fullWidth>
+              Register Now
             </Button>
-            <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <img src="/img/twitter-logo.svg" height={24} width={24} alt="Twitter" />
-              <span>Sign in With Twitter</span>
-            </Button>
-          </div>
 
-          {/* Texte "Already have an account?" avec lien vers la page de connexion */}
-          <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
-            Already have an account?
-            <Link to="/sign-in" className="text-gray-900 ml-1">Sign in</Link>
-          </Typography>
-        </form>
-      </div>
-    </section>
+            <div className="space-y-4 mt-8 w-[420px] flex items-center justify-center">
+              <div className='w-[420px]  ' style={{ textAlign: 'center' }}>
+                <GoogleLogin
+                  clientId={clientId}
+                  buttonText="Login with Google"
+                  onSuccess={onSuccess}
+                  onFailure={onFailure}
+                  cookiePolicy={'single_host_origin'}
+                />
+              </div>
+            </div>
+
+
+
+            <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
+              Already have an account?
+              <Link to="/sign-in" className="text-gray-900 ml-1">Sign in</Link>
+            </Typography>
+          </form>
+        </div>
+      </section>
     </div>
   );
 }
