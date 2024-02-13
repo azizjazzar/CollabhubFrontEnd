@@ -5,3 +5,4 @@ export * from "@/pages/sign-up";
 export * from "@/pages/collaboration";
 export * from "@/pages/freelancer-collab";
 export * from "@/pages/project-collab";
+

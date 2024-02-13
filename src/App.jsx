@@ -2,6 +2,8 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar } from "@/index";
 import routes from "@/routes";
 import { FreelancerCollab, ProjectCollab } from "./pages";
+import Forum from "./widgets/blog/forum";
+
 
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
         <Route path="*" element={<Navigate to="/home" replace />} />
         <Route path="/freelancer_collab" element={<FreelancerCollab/>} />
         <Route path="/projectcollab" element={<ProjectCollab/>} />
+        <Route path="/blog" element={<Forum/>} />
       </Routes>
     </>
   );

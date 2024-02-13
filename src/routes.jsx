@@ -1,4 +1,7 @@
-import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
+import { Home, Profile, SignIn, SignUp , Collaboration} from "@/pages";
+import Forum from "./widgets/blog/forum";
+
+
 
 
 export const routes = [
@@ -11,7 +14,7 @@ export const routes = [
   {
     name: "Find Talent",
     path: "/consultation",
-    element: <Profile />,//changer ici  votre page
+    element: <Profile />,
   },
 
   {
@@ -29,8 +32,8 @@ export const routes = [
 
   {
     name: "About Us",
-    path: "/sign-up",
-    element: <SignUp />,
+    path: "/forum",
+    element: <Forum />,
   },
 
   {
