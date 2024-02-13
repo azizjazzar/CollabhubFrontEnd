@@ -1,34 +1,39 @@
-import React from "react";
-import { Home, Profile, SignIn, SignUp } from "@/pages";
+import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
 import QuickConsultationPage from "@/pages/QuickConsultationPage";
-import DetailsConsultation from "@/pages/DetailsConsultation";  // Importez votre page QuickConsultationPage
+import DetailsConsultation from "@/pages/DetailsConsultation"; 
 
 export const routes = [
   {
-    name: "Home",
+    name: "home",
     path: "/home",
     element: <Home />,
   },
+
   {
     name: "Find Talent",
-    path: "/find-talent", // Modifiez le chemin pour "Find Talent"
-    element: <Profile />,
+    path: "/consultation",
+    element: <Profile />,//changer ici  votre page
   },
+
   {
     name: "Find Work",
-    path: "/find-work", // Modifiez le chemin pour "Find Work"
+    path: "/consultation",
     element: <Profile />,
   },
+
   {
-    name: "Why CollabHub",
-    path: "/why-collabhub", // Modifiez le chemin pour "Why CollabHub"
-    element: <SignUp />,
+    name: "Collaboration",
+    path: "/collaboration",
+    element: <Collaboration/>,
   },
+  
+
   {
     name: "About Us",
-    path: "/about-us",
+    path: "/sign-up",
     element: <SignUp />,
   },
+
   {
     name: "Sign In",
     path: "/sign-in",
@@ -50,6 +55,9 @@ export const routes = [
     path: "/details-consultation", // Le chemin que vous voulez pour la page de consultation
     element: <DetailsConsultation />,
   },
+
+
+
 ];
 
 export default routes;

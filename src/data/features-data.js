@@ -24,6 +24,7 @@ export const featuresData = [
     description:
       "Post a job and hire pro",
   },
+
 ];
 
 export default featuresData;

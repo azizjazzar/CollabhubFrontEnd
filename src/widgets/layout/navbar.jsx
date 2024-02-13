@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import logoSrc from "/public/img/logoshih.png";
+
 import { Link } from "react-router-dom";
 import {
   Navbar as MTNavbar,
@@ -11,8 +12,7 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export function Navbar({ brandName, routes, action, logoSrc }) {
-  const [openNav, setOpenNav] = useState(false);
-  const [showList, setShowList] = useState(false);
+  const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
     window.addEventListener(
@@ -21,67 +21,20 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
     );
   }, []);
 
-  const handleFindTalentClick = () => {
-    setShowList(!showList);
-  };
-
-  const handleNavClick = () => {
-    setOpenNav(!openNav);
-    setShowList(false); // Hide the list when clicking on any navbar element
-  };
-
-  const handleNavLinkClick = () => {
-    setShowList(false); // Close the list when clicking on a different nav item
-  };
-
   const navList = (
-    <ul
-      className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6"
-    >
+    <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }) => (
         <Typography
           key={name}
           as="li"
           variant="small"
           color="inherit"
-          className={`capitalize hover:border-b-2 hover:border-orange-500 ${
-            name === "Find Talent" ? "group" : ""
-          }`}
+          className="capitalize hover:border-b-2 hover:border-orange-500"
         >
-          {name === "Find Talent" ? (
-            <div
-              onClick={handleFindTalentClick}
-              className="group inline-block relative cursor-pointer"
-            >
-              <div className="flex items-center gap-1 p-1 font-bold">
-                {icon &&
-                  React.createElement(icon, {
-                    className: "w-[18px] h-[18px] opacity-75 mr-1",
-                  })}
-                {name}
-              </div>
-              {showList && (
-                <div className="absolute left-0 bg-white text-gray-700 border border-gray-300 mt-2 space-x-2 p-4 rounded-md flex">
-                  <Link to="/find-a-project" className="text-sm hover:underline">
-                    Find a Project
-                  </Link>
-                  <Link
-                    to="/do-a-quick-consultation"
-                    className="text-sm hover:underline"
-                  >
-                    Do a Quick Consultation
-                  </Link>
-                  <Link to="/buy-a-project" className="text-sm hover:underline">
-                    Buy a Project
-                  </Link>
-                </div>
-              )}
-            </div>
-          ) : href ? (
+          {href ? (
             <a
               href={href}
               target={target}
-              onClick={handleNavLinkClick} // Close the list when clicking on a different nav item
               className="flex items-center gap-1 p-1 font-bold"
             >
               {icon &&
@@ -94,7 +47,6 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             <Link
               to={path}
               target={target}
-              onClick={handleNavLinkClick} // Close the list when clicking on a different nav item
               className="flex items-center gap-1 p-1 font-bold"
             >
               {icon &&
@@ -110,12 +62,8 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   );
 
   return (
-    <MTNavbar
-      color="transparent"
-      className="p-2 w-auto"
-      style={{ backgroundColor: "white", color: "gray" }}
-    >
-      <div className="container mx-auto w-full flex items-center justify-between text-gray">
+    <MTNavbar color="transparent" className="p-3">
+      <div className="container mx-auto flex items-center justify-between text-white">
         <Link to="/">
           <div className="flex items-center">
             <img
@@ -136,7 +84,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           size="sm"
           color="white"
           className="ml-auto text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-          onClick={handleNavClick}
+          onClick={() => setOpenNav(!openNav)}
         >
           {openNav ? (
             <XMarkIcon strokeWidth={2} className="h-6 w-6" />
