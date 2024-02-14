@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const posts = [
   {
@@ -57,7 +58,7 @@ const handleShareOnTwitter = (post) => {
   window.open(`https://twitter.com/intent/tweet?url=URL_DE_VOTRE_PUBLICATION&text=${post.title} - ${post.description} par ${post.author}`, '_blank');
 };
 
-const Post = ({ post }) => (
+const Post = ({ post, onToggleFavorite }) => (
   <div className="bg-white shadow-lg p-6 rounded-md mb-4">
     <div className="flex items-center mb-2">
       <img
@@ -73,6 +74,12 @@ const Post = ({ post }) => (
         </div>
         <h2 className="text-xl font-semibold">{post.title}</h2>
       </div>
+      <button
+        onClick={() => onToggleFavorite(post.id)}
+        className="text-red-600"
+      >
+        <FontAwesomeIcon icon={faHeart} className={`text-${post.isFavorite ? 'red' : 'white'} fill-current`} />
+      </button>
     </div>
     <p className="text-gray-600">{post.description}</p>
     <div className="mt-4 flex items-center space-x-4">
@@ -91,7 +98,7 @@ const Post = ({ post }) => (
         Twitter
       </button>
       {/* Bouton Comment */}
-      <button className="flex items-center bg-green-500 text-white px-3 py-1 rounded">
+      <button className="flex items-center bg-gray-200 text-black px-3 py-1 rounded">
         Comment
       </button>
     </div>
@@ -100,9 +107,20 @@ const Post = ({ post }) => (
 
 const Forum = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [favorites, setFavorites] = useState([]);
   const indexOfLastPost = currentPage * itemsPerPage;
   const indexOfFirstPost = indexOfLastPost - itemsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const toggleFavorite = (postId) => {
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(postId)) {
+        return prevFavorites.filter((id) => id !== postId);
+      } else {
+        return [...prevFavorites, postId];
+      }
+    });
+  };
 
   return (
     <div className="bg-white-900">
@@ -116,10 +134,27 @@ const Forum = () => {
 
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-6 text-center">Welcome to our Blog</h1>
+
         <p className="text-lg text-center text-gray-500 mb-8">Explore the latest news and trends in the field of technology.</p>
+        
+        {/* Elargir l'image à gauche et à droite */}
+        {currentPage === 1 && (
+          <div className="mx-[-1rem] mb-8">
+            <img
+              src="/img/blogbk.jpg"
+              alt="Blog Background"
+              className="mx-auto rounded-lg"
+            />
+          </div>
+        )}
+        
         <div>
           {currentPosts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post
+              key={post.id}
+              post={{ ...post, isFavorite: favorites.includes(post.id) }}
+              onToggleFavorite={toggleFavorite}
+            />
           ))}
         </div>
         {/* Pagination */}

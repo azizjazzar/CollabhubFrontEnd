@@ -31,7 +31,7 @@ export const routes = [
   
 
   {
-    name: "About Us",
+    name: "Blog",
     path: "/forum",
     element: <Forum />,
   },
