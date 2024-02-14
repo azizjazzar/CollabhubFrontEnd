@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
+import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import countryList from 'react-select-country-list';
@@ -11,6 +12,7 @@ export function SignUp() {
   const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '', Email: '', ConfirmPassword: '', Country: '', Checkbox: true, Type: "Utilisateur" });
   const [selectedCountry, setSelectedCountry] = useState('');
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate(); 
 
   const onSuccess = (res)=>{
     console.log("Login Succes curent user:",res.profileobj)
@@ -26,7 +28,7 @@ export function SignUp() {
   
     const changeHandler = (selectedOption) => {
       setSelectedCountry(selectedOption);
-      setErrors({ ...errors, countryError: '' }); // Reset country error when a country is selected
+      setErrors({ ...errors, countryError: '' }); 
     };
   
     return <Select placeholder="Select your Country" options={options} value={selectedCountry} onChange={changeHandler} />;
@@ -48,7 +50,7 @@ export function SignUp() {
         return '';
     }
   };
-
+  
   const handleChange = (fieldName, value) => {
     setUser({ ...user, [fieldName]: value });
     setErrors({ ...errors, [`${fieldName}Error`]: validateField(fieldName, value) });
@@ -90,16 +92,18 @@ export function SignUp() {
           type: user.Type,
         };
         const response = await axios.post(apiUrl, apiPayload);
-
+        alert('Inscription réussie !');
         console.log('API Response:', response.data);
+        navigate("/sign-in")
+
       } catch (error) {
         console.error('Error during API request:', error);
       }
     } else {
-      console.log("Email déjà utilisé");
+      setErrors({ ...errors, EmailError: 'Email already exists.' });
     }
-  };
-
+  }
+    
   const getUserbyEmail = async () => {
     try {
       const apiUrl = `https://colabhub.onrender.com/api/auth/user/${user.Email}`;
@@ -129,14 +133,12 @@ export function SignUp() {
         </div>
 
         {/* Section du Formulaire */}
-        <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
+        <div className="w-full lg:w-3/5 flex flex-col items-center justify-center mt-14">
           <div className="text-center mb-4">
             <Typography variant="h2" className="font-bold">
               Join Us Today
             </Typography>
-            <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
-              Enter your email and password to register.
-            </Typography>
+           
           </div>
 
           <form className="mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>
