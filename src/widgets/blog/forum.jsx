@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import twitterLogo from "/img/twitter-logo.svg";
 
 const posts = [
   {
@@ -58,6 +59,8 @@ const handleShareOnTwitter = (post) => {
   window.open(`https://twitter.com/intent/tweet?url=URL_DE_VOTRE_PUBLICATION&text=${post.title} - ${post.description} par ${post.author}`, '_blank');
 };
 
+// ... (votre importation de bibliothèques et de données)
+
 const Post = ({ post, onToggleFavorite }) => (
   <div className="bg-white shadow-lg p-6 rounded-md mb-4">
     <div className="flex items-center mb-2">
@@ -76,34 +79,38 @@ const Post = ({ post, onToggleFavorite }) => (
       </div>
       <button
         onClick={() => onToggleFavorite(post.id)}
-        className="text-red-600"
+        className={`text-${post.isFavorite ? 'red' : 'gray'}-500`}
       >
-        <FontAwesomeIcon icon={faHeart} className={`text-${post.isFavorite ? 'red' : 'white'} fill-current`} />
+        <FontAwesomeIcon icon={faHeart} className="fill-current" />
       </button>
+
     </div>
     <p className="text-gray-600">{post.description}</p>
     <div className="mt-4 flex items-center space-x-4">
       <button
         onClick={() => handleShareOnFacebook(post)}
-        className="flex items-center bg-blue-600 text-white px-3 py-1 rounded"
+        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
       >
         <FontAwesomeIcon icon={faFacebook} className="mr-2" />
         Facebook
       </button>
       <button
         onClick={() => handleShareOnTwitter(post)}
-        className="flex items-center bg-blue-400 text-white px-3 py-1 rounded"
+        className="flex items-center bg-gray-700 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
       >
-        <FontAwesomeIcon icon={faTwitter} className="mr-2" style={{ fontSize: '20px' }} />
+        <img src={twitterLogo} alt="Twitter Logo" className="h-6 w-6 mr-2" />
         Twitter
       </button>
       {/* Bouton Comment */}
-      <button className="flex items-center bg-gray-200 text-black px-3 py-1 rounded">
+      <button className="flex items-center bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-300 transition">
         Comment
       </button>
     </div>
   </div>
 );
+
+// ... (le reste de votre composant Forum)
+
 
 const Forum = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,7 +134,7 @@ const Forum = () => {
       {/* Barre de navigation */}
       <nav className="bg-black p-12">
         <div className="container mx-auto flex justify-between items-center">
-          <a href="/" className="text-white text-lg font-bold"></a>
+          <a href="/" className="text-white text-lg font-bold">Your Logo/Brand</a>
           {/* Ajoutez des liens/boutons de navigation supplémentaires ici */}
         </div>
       </nav>
