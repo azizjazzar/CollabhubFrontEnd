@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import nft from '/img/card.jpg';
+import React, { useState, useEffect } from 'react';
+import nft1 from '/img/details.jpg';
+import nft2 from '/img/details2.jpg';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -15,6 +16,15 @@ import {
 export function FormulaireConsultation({ open, onClose }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [currentImage, setCurrentImage] = useState(nft1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prevImage) => prevImage === nft1 ? nft2 : nft1);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (!open) return null;
 
@@ -25,13 +35,12 @@ export function FormulaireConsultation({ open, onClose }) {
           e.stopPropagation();
         }}
         className='max-w-2xl w-full bg-white rounded-lg shadow-md flex overflow-y-auto' // Add overflow-y-auto for scrollbar
-        style={{ maxHeight: '80vh' , maxWidth :'120vh' }}
-        // Fixed height for the container
+        style={{ maxHeight: '80vh', maxWidth: '120vh' }}
       >
-      <img src={nft} alt='/' style={{ width: '400px', objectFit: 'cover', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px' }} />{/* Adjust width to occupy half of the container */}
+        <img src={currentImage} alt='/' style={{ width: '50%', height: '100%', objectFit: 'cover', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px', marginTop: '100px', marginBottom: 'auto' ,marginLeft: '10px' }} />
         <div className='flex flex-col p-4 w-1/2'> {/* Set width to occupy the other half of the container */}
           <Card color="transparent" shadow={false}>
-            <Typography variant="h4" color="blue-gray">
+            <Typography variant="h4" color="orange">
               New Consultation
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
