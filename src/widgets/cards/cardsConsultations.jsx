@@ -1,64 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export function CardsConsultations({ handleSearchInput, handleBookConsultationClick }) {
-  const freelancers = [
-    {
-      id: 1,
-      name: "John Doe",
-      image: "/img/user1.jpg",
-      domain: "Web Development",
-      reviews: 10,
-      description: "Experienced web developer with expertise in frontend and backend technologies.",
-    },
-    {
-        id: 2,
-        name: "John Doe",
-        image: "/img/user2.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-      {
-        id: 3,
-        name: "John Doe",
-        image: "/img/user3.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-      {
-        id: 4,
-        name: "John Doe",
-        image: "/img/user4.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-      {
-        id: 5,
-        name: "John Doe",
-        image: "/img/user5.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-      {
-        id: 6,
-        name: "John Doe",
-        image: "/img/user6.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-      {
-        id: 7,
-        name: "John Doe",
-        image: "/img/user7.PNG",
-        domain: "Web Development",
-        reviews: 10,
-        description: "Experienced web developer with expertise in frontend and backend technologies.",
-      },
-  ];
+  const [consultations, setConsultations] = useState([]);
+
+  useEffect(() => {
+
+    fetch("http://localhost:3000/consultations/Consultations")
+      .then(response => response.json())
+      .then(data => setConsultations(data))
+      .catch(error => console.error("Error fetching consultations:", error));
+  }, []); 
 
   return (
     <main className="w-3/4 p-4 space-y-3">
@@ -84,56 +35,58 @@ export function CardsConsultations({ handleSearchInput, handleBookConsultationCl
         </button>
       </div>
 
-      {freelancers.map((freelancer) => (
+      {consultations.map(consultation => (
         <div
-          key={freelancer.id}
+          key={consultation._id} // Assurez-vous de fournir une clé unique pour chaque élément dans le tableau
           className="bg-white rounded-lg shadow-md p-4 space-y-2 transition duration-300 ease-in-out hover:shadow-lg"
           tabIndex={0}
-          onClick={() => console.log(`Booking consultation with ${freelancer.name}`)}
+          onClick={() => handleBookConsultationClick(consultation._id)} // Passer l'ID de la consultation à la fonction de gestion du clic
           onKeyPress={(event) => {
             if (event.key === 'Enter') {
-              console.log(`Booking consultation with ${freelancer.name}`);
+              handleBookConsultationClick(consultation._id); // Passer l'ID de la consultation à la fonction de gestion du clic
             }
           }}
         >
+          
+
+            {/* image de user */}
           <div className="flex items-center">
             <img
-              src={freelancer.image}
-              alt={`Profile of ${freelancer.name}`}
+              src={consultation.image} // Assurez-vous que votre backend renvoie l'URL de l'image
+              alt={`Profile of ${consultation.titre}`}
               className="rounded-full"
               style={{ width: "60px", height: "60px" }}
             />
+           {/* nom de user et domaine  */}
             <div className="flex-grow ml-2">
-              <h3 className="text-xl font-bold">{freelancer.name}</h3>
-              <div className="text-gray-600 mb-1 text-sm">{freelancer.domain}</div>
+              <h3 className="text-xl font-bold">{consultation.titre}</h3>
+              <div className="text-gray-600 mb-1 text-sm">{consultation.statut}</div>
             </div>
             <button
               className="bg-orange-500 text-white active:bg-orange-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md focus:outline-none"
               type="button"
-              onClick={handleBookConsultationClick}
+              onClick={() => handleBookConsultationClick(consultation._id)} // Passer l'ID de la consultation à la fonction de gestion du clic
             >
               Book a Consultation
             </button>
           </div>
           <div className="flex items-center text-gray-500">
             <i className="fas fa-video mr-1"></i>
-            $40 per 30 min Zoom meeting
+            {consultation.prixParMinute} per minute {/* Afficher le prix par minute */}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <div className="flex items-center text-orange-500">
-              <i className="fas fa-star text-orange-400"></i> 4.9 ({freelancer.reviews} reviews)
+              <i className="fas fa-star text-orange-400"></i> 4.9 ({consultation.reviews} reviews)
             </div>
           </div>
           <div className="mt-4 flex items-center">
             <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
             <div className="flex space-x-4">
-              <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">eCommerce Development</div>
-              <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">IT Support & Services</div>
-              <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">Web Programming</div>
-              <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">Website Builders & CMS</div>
-              <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">WordPress</div>
+            {consultation.topics && consultation.topics.map((topic, index) => (
+                <div key={index} className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">{topic}</div>
+              ))}
             </div>
           </div>
-          <div className="text-gray-600 mb-1 text-sm">{freelancer.description}</div>
+          <div className="text-gray-600 mb-1 text-sm">{consultation.description}</div>
         </div>
       ))}
     </main>

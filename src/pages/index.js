@@ -4,4 +4,5 @@ export * from "@/pages/sign-in";
 export * from "@/pages/sign-up";
 export * from "@/pages/collaboration";
 export * from "@/pages/freelancer-collab";
-export * from "@/pages/QuickConsultationPage";
+export * from "@/Components/Consultations/QuickConsultationPage";
+

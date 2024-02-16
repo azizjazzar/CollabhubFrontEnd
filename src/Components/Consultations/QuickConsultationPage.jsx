@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import '../widgets/assets/animation.scss';
-import '../widgets/assets/style.scss';
+import '../../widgets/assets/animation.scss';
+import '../../widgets/assets/style.scss';
 import { Modal } from "@/index";
 import { TitleConsultations, SideBarConsultations } from "@/index";
 import { CardsConsultations } from "@/widgets/cards/cardsConsultations";

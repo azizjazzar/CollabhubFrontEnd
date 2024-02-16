@@ -1,5 +1,5 @@
 import React from "react";
-import { FaVideo } from "react-icons/fa"; // Import de l'icône de la caméra
+import { FaVideo } from "react-icons/fa"; 
 
 export function TitleConsultations() {
   return (

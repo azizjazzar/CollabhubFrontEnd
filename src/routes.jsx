@@ -1,6 +1,6 @@
 import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
-import QuickConsultationPage from "@/pages/QuickConsultationPage";
-import DetailsConsultation from "@/pages/DetailsConsultation"; 
+import QuickConsultationPage from "@/Components/Consultations/QuickConsultationPage";
+import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
 
 export const routes = [
   {
@@ -45,7 +45,7 @@ export const routes = [
     element: <SignUp />,
   },
   {
-    name: "Do a Quick Consultation",
+   
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />, // Utilisez votre page QuickConsultationPage ici
   },
