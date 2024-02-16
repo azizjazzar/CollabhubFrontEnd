@@ -15,11 +15,23 @@ import { PageTitle, Footer } from "@/index";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
 import { ReactTyped } from "react-typed";
+import { useNavigate } from "react-router-dom"; // Import de useNavigate
+
 
 export function Home() {
   const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
   const images = ['/img/back1.jpg', '/img/back2.jpg', '/img/back3.jpg'];
-
+  const navigate = useNavigate(); // Initialisation de la fonction navigate
+  const handleButtonClick = (buttonNumber) => {
+    if (buttonNumber === 1) {
+      // Traitement pour le bouton 1
+    } else if (buttonNumber === 2) {
+      // Navigation vers la page "Buy Project"
+      navigate("/buyProject"); // Utilisation de la fonction navigate
+    } else if (buttonNumber === 3) {
+      // Traitement pour le bouton 3
+    }
+  };
   useEffect(() => {
     const intervalId = setInterval(() => {
       setBackgroundImage(prevImage => {
