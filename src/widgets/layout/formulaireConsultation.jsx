@@ -68,9 +68,13 @@ export function FormulaireConsultation({ open, onClose }) {
     if (!titre) {
       setTitreError('Please enter a title');
       isValid = false;
+    } else if (!/^[a-zA-Z\s]*$/.test(titre)) {
+      setTitreError('Title must contain only letters');
+      isValid = false;
     } else {
       setTitreError('');
     }
+    
 
     if (!description) {
       setDescriptionError('Please enter a description');
@@ -92,9 +96,13 @@ export function FormulaireConsultation({ open, onClose }) {
     if (!domaineExpertise) {
       setDomaineExpertiseError('Please enter an expertise field');
       isValid = false;
+    } else if (!/^[a-zA-Z\s]*$/.test(domaineExpertise)) {
+      setDomaineExpertiseError('Expertise field must contain only letters');
+      isValid = false;
     } else {
       setDomaineExpertiseError('');
     }
+    
 
     if (startDate >= endDate) {
       setStartDateError('Availability start must be before availability end');
@@ -135,7 +143,12 @@ export function FormulaireConsultation({ open, onClose }) {
                   size="lg"
                   placeholder="Consultation Title"
                   value={titre}
-                  onChange={(e) => setTitre(e.target.value)}
+                  onChange={(e) => {
+                    setTitre(e.target.value);
+                    if (e.target.value) {
+                      setTitreError('');
+                    }
+                  }}
                   className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                   labelProps={{
                     className: "before:content-none after:content-none",
@@ -149,7 +162,12 @@ export function FormulaireConsultation({ open, onClose }) {
                   size="lg"
                   placeholder="Enter description"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (e.target.value) {
+                      setDescriptionError('');
+                    }
+                  }}
                   className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                   labelProps={{
                     className: "before:content-none after:content-none",
@@ -163,7 +181,12 @@ export function FormulaireConsultation({ open, onClose }) {
                   size="lg"
                   placeholder="Enter your price per 30 minutes"
                   value={prixParMinute}
-                  onChange={(e) => setPrixParMinute(e.target.value)}
+                  onChange={(e) => {
+                    setPrixParMinute(e.target.value);
+                    if (e.target.value) {
+                      setPrixParMinuteError('');
+                    }
+                  }}
                   className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                   labelProps={{
                     className: "before:content-none after:content-none",
@@ -177,7 +200,12 @@ export function FormulaireConsultation({ open, onClose }) {
                   size="lg"
                   placeholder="Expertise field"
                   value={domaineExpertise}
-                  onChange={(e) => setDomaineExpertise(e.target.value)}
+                  onChange={(e) => {
+                    setDomaineExpertise(e.target.value);
+                    if (e.target.value) {
+                      setDomaineExpertiseError('');
+                    }
+                  }}
                   className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                   labelProps={{
                     className: "before:content-none after:content-none",
@@ -191,7 +219,19 @@ export function FormulaireConsultation({ open, onClose }) {
                 </Typography>
                 <DatePicker
                   selected={startDate}
-                  onChange={(date) => setStartDate(date)}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    if (date) {
+                      setStartDateError('');
+                      if (endDate && date >= endDate) {
+                        setEndDateError('Availability end must be after availability start');
+                      } else {
+                        setEndDateError('');
+                      }
+                    } else {
+                      setStartDateError('Please select availability start date');
+                    }
+                  }}
                   showTimeSelect
                   timeFormat="HH:mm"
                   timeIntervals={15}
@@ -207,7 +247,19 @@ export function FormulaireConsultation({ open, onClose }) {
                 </Typography>
                 <DatePicker
                   selected={endDate}
-                  onChange={(date) => setEndDate(date)}
+                  onChange={(date) => {
+                    setEndDate(date);
+                    if (date) {
+                      setEndDateError('');
+                      if (startDate && date <= startDate) {
+                        setStartDateError('Availability start must be before availability end');
+                      } else {
+                        setStartDateError('');
+                      }
+                    } else {
+                      setEndDateError('Please select availability end date');
+                    }
+                  }}
                   showTimeSelect
                   timeFormat="HH:mm"
                   timeIntervals={15}
@@ -237,7 +289,7 @@ export function FormulaireConsultation({ open, onClose }) {
                 containerProps={{ className: "-ml-2.5" }}
               />
               <Button className="mt-6" fullWidth color="orange" type="submit">
-                Add Collaboration
+                Add Consultation
               </Button>
             </form>
           </Card>
