@@ -1,31 +1,23 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { Navbar } from "@/index";
-import routes from "@/routes";
-import { FreelancerCollab, ProjectCollab } from "./pages";
+import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
+import Navbar from "./Components/Navbar/Navbar";
 
 
 function App() {
-  const { pathname } = useLocation();
-
+  const routes = [
+    { name: 'Home', path: '/' },
+    { name: 'Dhia', path: '/jobs' },
+    { name: 'Adem', path: '/jobs' },
+    { name: 'Idriss', path: '/blog' },
+    { name: 'Tmimi', path: '/about' },
+    { name: 'sign in', path: '/login' },
+    { name: 'sign up', path: '/sign-up' },
+    
+  ];
   return (
     <>
-      {!(pathname == '/sign-in' || pathname == '/sign-up') && (
-        <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
-          <Navbar routes={routes} />
-        </div>
-      )
-      }
-      <Routes>
-        {routes.map(
-          ({ path, element }, key) =>
-            element && <Route key={key} exact path={path} element={element} />
-        )}
-        <Route path="*" element={<Navigate to="/home" replace />} />
-        <Route path="/freelancer_collab" element={<FreelancerCollab/>} />
-        <Route path="/projectcollab" element={<ProjectCollab/>} />
-      </Routes>
+      <Navbar routes={routes} />
+      <Outlet />
     </>
   );
 }
-
 export default App;
