@@ -65,15 +65,14 @@ const ProjectPage = () => {
 
   const sortProjects = (projects, criteria) => {
     switch (criteria) {
-      case 'rate':
-        return [...projects].sort((a, b) => a.rate - b.rate);
+
       case 'budget':
-        return [...projects].sort((a, b) => a.budget - b.budget);
+        return [...projects].sort((b, a) => a.budget - b.budget);
       case 'postedDate':
-        return [...projects].sort((a, b) => new Date(a.posted) - new Date(b.posted));
+        return [...projects].sort((b, a) => new Date(a.posted) - new Date(b.posted));
       case 'expertiseLevel':
         const expertiseOrder = ['Junior', 'Intermediate', 'Senior', 'Expert'];
-        return [...projects].sort((a, b) => expertiseOrder.indexOf(a.expertiseLevel) - expertiseOrder.indexOf(b.expertiseLevel));
+        return [...projects].sort((b, a) => expertiseOrder.indexOf(a.expertiseLevel) - expertiseOrder.indexOf(b.expertiseLevel));
       default:
         return projects;
     }
@@ -83,7 +82,7 @@ const ProjectPage = () => {
   const startIndex = (currentPage - 1) * pageSize;
   const currentProjects = filteredProjects.slice(startIndex, startIndex + pageSize);
 
-  
+ 
   return (
     <div className="grid grid-cols-4 gap-8 p-20">
       <div className="col-span-1 p-6 bg-white rounded-lg shadow-sm">
@@ -111,8 +110,7 @@ const ProjectPage = () => {
     onChange={(e) => setSortCriteria(e.target.value)}
     className="border p-2 rounded"
   >
-    <option value="">Select</option>
-    <option value="rate">Rate</option>
+    <option value="">All</option>
     <option value="budget">Budget</option>
     <option value="postedDate">Posted Date</option>
     <option value="expertiseLevel">Expertise Level</option>

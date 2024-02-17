@@ -35,7 +35,7 @@ const ProjectCard = ({ project }) => {
       <p className='text-gray-700 mb-4 line-clamp-3'>{project.description}</p> {/* Tailwind CSS line clamp for multiline ellipsis */}
       <div className='flex justify-between items-center text-gray-600'>
         <span>Location: {project.location.city}, {project.location.state}</span>
-        <span className='font-bold'>Budget: ${project.budget}</span>
+        <span className=' font-semibold text-green-700 ml-20'>Budget: ${project.budget}</span>
       </div>
       <div className='mt-4 flex flex-wrap gap-2'>
         {project.technologies.map((tech, index) => (
