@@ -4,6 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
+
+
   Card,
   Input,
   Checkbox,
@@ -175,7 +177,7 @@ export function FormulaireConsultation({ open, onClose }) {
                 />
                 {descriptionError && <Typography color="red">{descriptionError}</Typography>}
                 <Typography variant="h6" color="blue-gray" className="-mb-3">
-                  Price per minute
+                  Price per 30 minutes
                 </Typography>
                 <Input
                   size="lg"

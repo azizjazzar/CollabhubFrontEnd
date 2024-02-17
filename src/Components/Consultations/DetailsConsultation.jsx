@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import CardsConsultations from '@/widgets/cards/cardsPayerConsultations';
 import InformationDetailsCons from '@/widgets/cards/InformationDetailsCons'; 
 import { Footer } from "@/widgets/layout/footer";
+import { FaVideo } from 'react-icons/fa';
 
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
+  const [consultationDetails, setConsultationDetails] = useState({});
+  const [showMoreDescription, setShowMoreDescription] = useState(false);
   const tierPrices = {
-    "30min": 25,
-    "60min": 50,
+    "30min": consultationDetails.prixParMinute,
+    "60min": consultationDetails.prixParMinute * 2,
   };
 
   const handleTierChange = (event) => {
@@ -16,6 +19,31 @@ function DetailsConsultation() {
   };
 
   const selectedPrice = tierPrices[selectedTier];
+  const { id } = useParams();
+  const [consultationId, setConsultationId] = useState(id);
+
+  useEffect(() => {
+    if (consultationId) {
+      fetch(`http://localhost:3000/consultations/${consultationId}`)
+        .then(response => response.json())
+        .then(data => setConsultationDetails(data))
+        .catch(error => console.error("Error fetching consultation details:", error));
+    }
+  }, [consultationId]);
+
+  const handleBookConsultationClick = (id) => {
+    setConsultationId(id);
+  };
+
+  const toggleDescription = () => {
+    setShowMoreDescription(!showMoreDescription);
+  };
+  function formatDate(dateString) {
+    const options = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options);
+  }
+  
 
   return (
     <div>
@@ -33,40 +61,100 @@ function DetailsConsultation() {
         <h1 className="text-2xl font-bold mb-4 pl-16">
           Development & IT Consultation with <span style={{ color: 'orange', fontSize: '28px' }}>Waleed Z.</span>
         </h1>
+{/* description details */}
+<div className="flex justify-between">
+  <div className="w-3/5">
+    <p className="my-4">
+      {consultationDetails.description &&
+        (consultationDetails.description.length > 100 || showMoreDescription)
+        ? showMoreDescription
+          ? consultationDetails.description
+          : `${consultationDetails.description.substring(0, 200)}...`
+        : consultationDetails.description}
+      {consultationDetails.description &&
+        consultationDetails.description.length > 100 && (
+          <span onClick={toggleDescription} className="text-orange-500 underline cursor-pointer">
+            {showMoreDescription ? "Less" : "More"}
+          </span>
+        )}
+    </p>
+                 {/*end */}
+    
 
-        <div className="flex justify-between">
-          <div className="w-3/5">
-            {/* Content */}
-            <p className="my-4">A brief discussion about your idea and project.</p>
-            {/* ... more content ... */}
-            <ul className="list-disc ml-5">
-            <li>Mobile-Friendly</li>
-              <li>I offer comprehensive consultations in the selection of the right platform or software for email campaigns, automation, and workflows, as well as the repair of errors in email templates.</li>
-              <li>My consultation includes:
-                <ul>
-                  <li>Selection of the Optimal Email Platform: During consultations, I will assist you in choosing the appropriate email platform or software, taking into account your level of expertise and specific needs. Whether you are a beginner or an advanced user, I will tailor the solution to your level of knowledge.</li>
-                  <li>Customization to Your Knowledge: My proposal will consider your knowledge of HTML/CSS, which will help avoid future issues, such as choosing an email platform that doesn't meet your expectations, is too complex, or doesn't integrate well with your website.</li>
-                  <li>Litmus Testing: If you have a coded email and want to ensure that it displays correctly on popular email clients, I will conduct tests using Litmus. I will identify any errors and provide guidance on how to correct them, with a particular focus on proper display on Outlook, iPhone, Android, and Dark Mode</li>
-                  {/* ... more list items ... */}
-                </ul>
-              </li>
-              {/* ... more content ... */}
-            </ul>
+      {/* domaineExpertise user details */}
             <br />
             <p className="font-bold text-black-700 border-b border-gray-200 text-sm pr-2">Get personalized advice on:</p>
             <div className="flex space-x-4">
-              {/* Categories */}
+             
             </div>
+
+              {/* 4 image de meeting  details */}
             <br />
             <InformationDetailsCons />
           </div>
-          
-          {/* Appel du composant CardsConsultations */}
-          <CardsConsultations selectedTier={selectedTier} handleTierChange={handleTierChange} selectedPrice={selectedPrice} />
+
+  {/* prix par minute  30/60 details */}
+          <div className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h5 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-300">Pricing</h5>
+            <div className="flex items-center justify-between my-2">
+  <label htmlFor="30min" className="flex items-center">
+    <input type="radio" id="30min" name="duration" value="30min" checked={selectedTier === "30min"} onChange={handleTierChange} className="w-4 h-4" />
+    <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium">30 minutes</span>
+  </label>
+  <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">${consultationDetails.prixParMinute}</span>
+</div>
+<div className="flex items-center justify-between my-2">
+  <label htmlFor="60min" className="flex items-center">
+    <input type="radio" id="60min" name="duration" value="60min" checked={selectedTier === "60min"} onChange={handleTierChange} className="w-4 h-4" />
+    <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium">60 minutes</span>
+  </label>
+  <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">${consultationDetails.prixParMinute * 2}</span>
+</div>
+
+
+<h5 className="mb-4 mt-8 text-xl font-semibold text-gray-600 dark:text-gray-300">Scheduling</h5>
+ <div className="mt-4">
+ <label htmlFor="meetLater" className="text-blue-500 dark:text-blue-300 mr-4 font-medium flex items-center">
+  <FaVideo className="mr-2" /> 
+  <span style={{ fontSize: '16px' }}>Meet Now</span>
+</label>
+
+              <span className="text-gray-500 dark:text-gray-400">Next available date {formatDate(consultationDetails.availabilityStart)} at {formatDate(consultationDetails.availabilityEnd)}</span>
+            </div>
+              {/*end */}
+
+            <br />
+            <div>
+              <a href="#moreTimes" className="text-orange-500 underline font-medium">See more times</a>
+            </div>
+            <div className="flex items-center text-base font-normal leading-tight text-gray-500 dark:text-gray-300 ms-3">
+              <i className="fas fa-envelope text-lg mr-2"></i>
+              <span className="line-clamp-1">You can share details with Mariusz </span>
+            </div>
+            <button type="button" className="mt-6 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
+              Continue (${selectedPrice})
+            </button>
+            <button type="button" className="mt-4 text-orange-500 border border-gray-400 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
+              Message User
+            </button>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <img
+              src="/img/meet.jpg" 
+              alt="Image description"
+              style={{
+                width: "100%", 
+                height: "250px",
+              }}
+            />
+          </div>
         </div>
       </div>
-       {/* Footer */}
-       <Footer />
+      <Footer />
     </div>
   );
 }

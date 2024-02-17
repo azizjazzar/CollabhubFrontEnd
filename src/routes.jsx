@@ -8,32 +8,26 @@ export const routes = [
     path: "/home",
     element: <Home />,
   },
-
   {
     name: "Find Talent",
     path: "/consultation",
-    element: <Profile />,//changer ici  votre page
+    element: <Profile />,
   },
-
   {
     name: "Find Work",
     path: "/consultation",
     element: <Profile />,
   },
-
   {
     name: "Collaboration",
     path: "/collaboration",
     element: <Collaboration/>,
   },
-  
-
   {
     name: "About Us",
     path: "/sign-up",
     element: <SignUp />,
   },
-
   {
     name: "Sign In",
     path: "/sign-in",
@@ -45,19 +39,13 @@ export const routes = [
     element: <SignUp />,
   },
   {
-   
     path: "/do-a-quick-consultation",
-    element: <QuickConsultationPage />, // Utilisez votre page QuickConsultationPage ici
+    element: <QuickConsultationPage />,
   },
-
   {
-  
-    path: "/details-consultation", // Le chemin que vous voulez pour la page de consultation
+    path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
     element: <DetailsConsultation />,
   },
-
-
-
 ];
 
 export default routes;
