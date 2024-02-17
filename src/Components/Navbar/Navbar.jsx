@@ -73,7 +73,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
               />
             </div>
           </Link>
-          <div className="hidden lg:block">{navList}</div>
+          <div className={`lg:block ${openNav ? 'hidden' : ''}`}>{navList}</div>
           <div className="hidden gap-2 lg:flex">
             {React.cloneElement(action, {
               className: "hidden lg:inline-block",
@@ -94,7 +94,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           </IconButton>
         </div>
       </MTNavbar>
-      <hr /> {/* Horizontal line with the specified class */}
+      <hr />
     </div>
   );
 }
