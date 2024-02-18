@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Importez Link depuis React Router
+import { Link } from "react-router-dom"; 
 import ServiceCard from "@/widgets/cards/service-card";
 import "@/widgets/assets/style.scss";
 import { ServiceTitle } from "@/index";
+import { AddServiceForm } from "@/widgets/layout/AddServiceForm"; // Importez le formulaire AddServiceForm
 
 const BuyProject = () => {
   const [services, setServices] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false); // État pour contrôler l'ouverture du formulaire
 
   useEffect(() => {
     async function fetchServices() {
@@ -20,6 +22,16 @@ const BuyProject = () => {
     fetchServices();
   }, []);
 
+  // Fonction pour ouvrir le formulaire
+  const openForm = () => {
+    setIsFormOpen(true);
+  };
+
+  // Fonction pour fermer le formulaire
+  const closeForm = () => {
+    setIsFormOpen(false);
+  };
+
   return (
     <>
       <section className="relative block h-[25vh]">
@@ -29,19 +41,26 @@ const BuyProject = () => {
       <section className="px-4 pt-20 pb-48">
         <div className="container mx-auto">
           <section className="relative bg-white py-16">
-            {/* Titre des consultations */}
             <ServiceTitle />
+            {/* Bouton "Add Your Service" au milieu de la page */}
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={openForm} // Appeler la fonction pour ouvrir le formulaire lors du clic sur le bouton
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+              >
+                Add Your Service
+              </button>
+            </div>
           </section>
-          <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-18 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {/* Affichage des cartes de service */}
             {services.map(service => (
               <div key={service._id}>
-                <Link to={`/projectDetails/${service._id}`}> {/* Utilisez Link pour envelopper chaque ServiceCard */}
+                <Link to={`/projectDetails/${service._id}`}>
                   <ServiceCard
                     title={service.title}
                     image={service.images}
-                    deliveryTime={service.
-                      deliveryTime}
+                    deliveryTime={service.deliveryTime}
                     price={service.pricing.starter}
                   />
                 </Link>
@@ -50,6 +69,8 @@ const BuyProject = () => {
           </div>
         </div>
       </section>
+      {/* Afficher le formulaire conditionnellement */}
+      {isFormOpen && <AddServiceForm open={isFormOpen} onClose={closeForm} />}
     </>
   );
 };
