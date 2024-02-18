@@ -98,10 +98,32 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
+
           <Button className="mt-6 bg-orange-400" fullWidth onClick={handleSubmit}>
         Sign In
       </Button>
           <div className="flex items-center justify-center mt-6">
+
+          <Link to="*">
+          <Button className="bg-orange-400 mt-6" fullWidth>
+            Sign In
+          </Button>
+          </Link>
+
+          <div className="flex items-center justify-between gap-2 mt-6">
+            <Checkbox
+              label={
+                <Typography
+                  variant="small"
+                  color="gray"
+                  className="flex items-center justify-start font-medium"
+                >
+                  Subscribe me to newsletter
+                </Typography>
+              }
+              containerProps={{ className: "-ml-2.5" }}
+            />
+
             <Typography variant="small" className="font-medium text-gray-900">
               <a href="#">
                 Forgot Password
@@ -140,7 +162,11 @@ export function SignIn() {
       </div>
       <div className="pt-24 pr-14 w-2/5 h-full hidden lg:block">
         <img
+
           src="/img/imga.jpg"
+
+          src="https://images.pexels.com/photos/3810792/pexels-photo-3810792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+
           className="h-full w-full object-cover rounded-3xl"
         />
       </div>
