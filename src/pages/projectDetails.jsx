@@ -67,7 +67,7 @@ const ProjectDetails = () => {
               </div>
             )}
           </div>
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:w-1/3 mt-2 ml-28">
             {tierPrices && (
               <div className="bg-white p-4 rounded-lg shadow-md">
                 <div className="mb-4">
@@ -95,7 +95,7 @@ const ProjectDetails = () => {
                 <div className="text-sm text-gray-600">
                   <div className="flex justify-between my-2">
                     <span>Delivery Time</span>
-                    <span>{deliveryTime}</span> {/* Affiche la date de livraison calculée */}
+                    <span>{deliveryTime} days</span> {/* Affiche la date de livraison calculée */}
                   </div>
                   <div className="flex justify-between my-2">
                     <span>Number of Pages</span>
@@ -116,8 +116,7 @@ const ProjectDetails = () => {
                 </div>
               
                 <div className="my-2 text-sm text-gray-500">
-                  <i className="fas fa-info-circle text-xs mr-1"></i> {deliveryTime} delivery — {calculateDeliveryDate()}
-                  Revisions may occur after this date.
+                  <i className="fas fa-info-circle text-xs mr-1"></i> {deliveryTime} days delivery — {calculateDeliveryDate()} Revisions may occur after this date.
                 </div>
 
                 <button
