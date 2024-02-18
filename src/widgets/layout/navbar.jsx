@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import logoSrc from "/public/img/logoshih.png";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
+import { useNavigate } from 'react-router-dom';
+
 import {
   Navbar as MTNavbar,
   MobileNav,
@@ -16,16 +18,24 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const [openNav, setOpenNav] = useState(false);
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState(null);
+  const navigate = useNavigate();
+
   const logout = () => {
-    // Utilisez setAuthUserData pour réinitialiser les données d'authentification
+    // Réinitialiser les données d'authentification
     setAuthUserData({
       user: null,
       accessToken: null,
       refreshToken: null,
     });
-    // Supprimer les données d'authentification de localStorage
-    localStorage.removeItem('authData');
-    // Redirigez l'utilisateur vers la page de connexion ou la page d'accueil
+    
+    // Stocker les données d'authentification dans le localStorage
+    localStorage.setItem('authData', JSON.stringify({
+      user: null,
+      accessToken: null,
+      refreshToken: null,
+    }));
+    
+    // Rediriger l'utilisateur vers la page de connexion ou la page d'accueil
     navigate('/sign-in');
   };
   const welcomeMessage = authData.user?.nom && authData.user?.prenom ? (
@@ -58,11 +68,11 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
 
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      {routes.map(({ name, path, icon, href, target }) => (
+      {routes.map(({ name, path, icon, href, target }, index) => (
         // Vérifie si l'utilisateur est connecté et si le nom de l'onglet n'est ni "Sign In" ni "Sign Up"
         (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
           <Typography
-            key={name}
+            key={index} // Utilisation de l'index comme clé
             as="li"
             variant="small"
             color="inherit"
@@ -100,6 +110,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
       {welcomeMessage}
       {authData.user && (
         <Typography
+          key="logout" // Clé unique pour le bouton de déconnexion
           as="li"
           variant="small"
           color="inherit"
@@ -111,6 +122,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
       )}
     </ul>
   );
+  
 
   return (
     <MTNavbar color="transparent" className={`p-3 ${isSignUpinPage ? 'text-black' : 'text-white'}`}>

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/pages/authContext";
 
 export function CardsConsultations({ handleSearchInput }) {
   const [consultations, setConsultations] = useState([]);
+  const { authData, setAuthUserData } = useAuth();
   const navigate = useNavigate();
+  
 
   useEffect(() => {
-    fetch("http://localhost:3000/consultations/Consultations")
+    fetch("https://colabhub.onrender.com/consultations/Consultations")
       .then(response => response.json())
       .then(data => setConsultations(data))
       .catch(error => console.error("Error fetching consultations:", error));
@@ -18,6 +21,26 @@ export function CardsConsultations({ handleSearchInput }) {
 
   const handleBookConsultationClick = (id) => {
     navigate(`/details-consultation/${id}`);
+  };
+
+  const getUserById = async (userId) => {
+    try {
+      // Effectuer une requête HTTP pour récupérer les informations de l'utilisateur
+      const response = await axios.get(`https://colabhub.onrender.com/api/auth/${userId}`);
+      
+      // Vérifier si la requête a réussi
+      if (response.data.success) {
+        // Retourner les données de l'utilisateur
+        return response.data.data;
+      } else {
+        // Gérer le cas où l'utilisateur n'a pas été trouvé
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      // Gérer les erreurs éventuelles
+      console.error('Error fetching user data:', error);
+      throw new Error('Failed to fetch user data. Please try again.');
+    }
   };
 
   return (
@@ -61,6 +84,7 @@ export function CardsConsultations({ handleSearchInput }) {
             />
             <div className="flex-grow ml-2">
                  {/* nom user */}
+              
               <h3 className="text-xl font-bold">{consultation.titre}</h3>
                 {/* domain user */}
               <div className="text-gray-600 mb-1 text-sm">{consultation.titre}</div>

@@ -7,12 +7,13 @@ import { TitleConsultations, SideBarConsultations } from "@/index";
 import { CardsConsultations } from "@/widgets/cards/cardsConsultations";
 import { FormulaireConsultation } from "@/widgets/layout/formulaireConsultation";
 import { Footer } from "@/widgets/layout/footer";
+import { useAuth } from "@/pages/authContext";
 
 
 function QuickConsultationPage() {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-
+  const { authData, setAuthUserData } = useAuth();
   const handleBookConsultationClick = () => {
     navigate('/details-consultation');
   };
@@ -42,11 +43,12 @@ function QuickConsultationPage() {
         <div className="container">
           <div className="flex justify-center items-center vh-100">
             {/* Bouton "Work With Us" pour ouvrir le modal */}
-            <div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
+            {authData.user && ( <div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
               <div className="element">
-                <p>Add New Consultation</p>
+                <p>Add a consultation</p>
               </div>
-            </div>
+            </div>)}
+           
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useAuth } from "@/pages/authContext";
 
 import {
 
@@ -25,7 +26,7 @@ export function FormulaireConsultation({ open, onClose }) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [currentImage, setCurrentImage] = useState(nft1);
-
+  const { authData, setAuthUserData } = useAuth();
   const [titreError, setTitreError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
   const [prixParMinuteError, setPrixParMinuteError] = useState('');
@@ -47,6 +48,7 @@ export function FormulaireConsultation({ open, onClose }) {
     if (validate()) {
       try {
         const formData = {
+          freelancerId:authData.user._id,
           titre,
           description,
           prixParMinute,
@@ -54,7 +56,7 @@ export function FormulaireConsultation({ open, onClose }) {
           availabilityStart: startDate,
           availabilityEnd: endDate
         };
-        await axios.post('http://localhost:3000/consultations/addConsultation', formData);
+        await axios.post('https://colabhub.onrender.com/consultations/addConsultation', formData);
         alert('Consultation created successfully');
         onClose();
       } catch (error) {

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CardsConsultations from '@/widgets/cards/cardsPayerConsultations';
 import InformationDetailsCons from '@/widgets/cards/InformationDetailsCons'; 
 import { Footer } from "@/widgets/layout/footer";
 import { FaVideo } from 'react-icons/fa';
 import { loadStripe } from '@stripe/stripe-js';
+import { useAuth } from "@/pages/authContext";
 
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
   const [consultationDetails, setConsultationDetails] = useState({});
   const [showMoreDescription, setShowMoreDescription] = useState(false);
   const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
+  const navigate = useNavigate();
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
     "60min": consultationDetails.prixParMinute * 2,
@@ -23,10 +25,11 @@ function DetailsConsultation() {
   const selectedPrice = tierPrices[selectedTier];
   const { id } = useParams();
   const [consultationId, setConsultationId] = useState(id);
+  const { authData } = useAuth();
 
   useEffect(() => {
     if (consultationId) {
-      fetch(`http://localhost:3000/consultations/${consultationId}`)
+      fetch(`https://colabhub.onrender.com/consultations/${consultationId}`)
         .then(response => response.json())
         .then(data => setConsultationDetails(data))
         .catch(error => console.error("Error fetching consultation details:", error));
@@ -40,44 +43,46 @@ function DetailsConsultation() {
   const toggleDescription = () => {
     setShowMoreDescription(!showMoreDescription);
   };
+
   function formatDate(dateString) {
     const options = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', options);
   }
-  
-{/* fonction de  payment */}
-const makePayment = async () => {
-  const stripe = await stripePromise;
 
-  const body = {
-      amount: selectedPrice,
-  };
+  const makePayment = async () => {
+    if (!authData.user) {
+      navigate('/sign-in');
+      return;
+    }
 
-  try {
-      const response = await fetch("http://localhost:3000/payment/create-checkout-session", {
-          method: "POST",
-          headers: {
-              "Content-type": "application/json",
-          },
-          body: JSON.stringify(body),
+    const stripe = await stripePromise;
+
+    const body = {
+      amount: selectedPrice ,
+    };
+
+    try {
+      const response = await fetch("https://colabhub.onrender.com/payment/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
 
       const session = await response.json();
       const result = await stripe.redirectToCheckout({
-          sessionId: session.sessionId,
+        sessionId: session.sessionId,
       });
 
       if (result.error) {
-          console.error(result.error);
+        console.error(result.error);
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error making payment:', error);
-  }
-};
-
-
-
+    }
+  };
   return (
     <div>
       <section className="relative block h-[30vh]">
@@ -164,6 +169,7 @@ const makePayment = async () => {
               <i className="fas fa-envelope text-lg mr-2"></i>
               <span className="line-clamp-1">You can share details with Mariusz </span>
             </div>
+
 
             <button 
   type="button" 
