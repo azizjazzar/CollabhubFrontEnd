@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import logoSrc from "/public/img/logoshih.png";
-
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import { useAuth } from "@/pages/authContext";
 import {
   Navbar as MTNavbar,
   MobileNav,
@@ -12,8 +12,33 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export function Navbar({ brandName, routes, action, logoSrc }) {
-  const [openNav, setOpenNav] = React.useState(false);
-
+  const { authData, setAuthUserData } = useAuth();
+  const [openNav, setOpenNav] = useState(false);
+  const location = useLocation();
+  const [selectedTab, setSelectedTab] = useState(null);
+  const logout = () => {
+    // Utilisez setAuthUserData pour réinitialiser les données d'authentification
+    setAuthUserData({
+      user: null,
+      accessToken: null,
+      refreshToken: null,
+    });
+    // Supprimer les données d'authentification de localStorage
+    localStorage.removeItem('authData');
+    // Redirigez l'utilisateur vers la page de connexion ou la page d'accueil
+    navigate('/sign-in');
+  };
+  const welcomeMessage = authData.user?.nom && authData.user?.prenom ? (
+    <Typography
+      as="li"
+      variant="small"
+      color="inherit"
+      className="capitalize text-white lg:text-white"
+    >
+      Welcome {authData.user.nom} {authData.user.prenom}
+    </Typography>
+  ) : null;
+  
   React.useEffect(() => {
     window.addEventListener(
       "resize",
@@ -21,49 +46,75 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
     );
   }, []);
 
+  const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
+
+  const handleTabClick = (name) => {
+    if (selectedTab === name) {
+      setSelectedTab(null);
+    } else {
+      setSelectedTab(name);
+    }
+  };
+
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }) => (
+        // Vérifie si l'utilisateur est connecté et si le nom de l'onglet n'est ni "Sign In" ni "Sign Up"
+        (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
+          <Typography
+            key={name}
+            as="li"
+            variant="small"
+            color="inherit"
+            className={`capitalize ${selectedTab === name ? 'border-b-2 border-orange-500' : ''} ${isSignUpinPage ? 'text-black' : 'text-white'}`}
+            onClick={() => handleTabClick(name)}
+          >
+            {href ? (
+              <a
+                href={href}
+                target={target}
+                className="flex items-center gap-1 p-1 font-bold"
+              >
+                {icon &&
+                  React.createElement(icon, {
+                    className: "w-[18px] h-[18px] opacity-75 mr-1",
+                  })}
+                {name}
+              </a>
+            ) : (
+              <Link
+                to={path}
+                target={target}
+                className="flex items-center gap-1 p-1 font-bold"
+              >
+                {icon &&
+                  React.createElement(icon, {
+                    className: "w-[18px] h-[18px] opacity-75 mr-1",
+                  })}
+                {name}
+              </Link>
+            )}
+          </Typography>
+        )
+      ))}
+      {welcomeMessage}
+      {authData.user && (
         <Typography
-          key={name}
           as="li"
           variant="small"
           color="inherit"
-          className="capitalize hover:border-b-2 hover:border-orange-500"
+          className="capitalize text-white lg:text-white cursor-pointer"
+          onClick={logout}
         >
-          {href ? (
-            <a
-              href={href}
-              target={target}
-              className="flex items-center gap-1 p-1 font-bold"
-            >
-              {icon &&
-                React.createElement(icon, {
-                  className: "w-[18px] h-[18px] opacity-75 mr-1",
-                })}
-              {name}
-            </a>
-          ) : (
-            <Link
-              to={path}
-              target={target}
-              className="flex items-center gap-1 p-1 font-bold"
-            >
-              {icon &&
-                React.createElement(icon, {
-                  className: "w-[18px] h-[18px] opacity-75 mr-1",
-                })}
-              {name}
-            </Link>
-          )}
+          Déconnexion
         </Typography>
-      ))}
+      )}
     </ul>
   );
 
   return (
-    <MTNavbar color="transparent" className="p-3">
-      <div className="container mx-auto flex items-center justify-between text-white">
+    <MTNavbar color="transparent" className={`p-3 ${isSignUpinPage ? 'text-black' : 'text-white'}`}>
+      <div className="container mx-auto flex items-center justify-between">
         <Link to="/">
           <div className="flex items-center">
             <img
@@ -93,10 +144,6 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           )}
         </IconButton>
       </div>
-      <MobileNav
-        className="rounded-xl bg-white px-4 pt-2 pb-4 text-blue-gray-900"
-        open={openNav}
-      ></MobileNav>
     </MTNavbar>
   );
 }

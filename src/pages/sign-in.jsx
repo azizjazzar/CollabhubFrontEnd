@@ -1,15 +1,50 @@
-import {
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useEffect } from 'react';
+import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useAuth } from './authContext';
 
 export function SignIn() {
+  const { user, setAuthUserData } = useAuth();
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [userlogin, setUserLogin] = useState({ email: '', password: '' });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const apiUrl = 'https://colabhub.onrender.com/api/auth/login';
+      const apiUrlUser = `https://colabhub.onrender.com/api/auth/user/${userlogin.email}`;
+      const apiPayload = {
+        email: userlogin.email,
+        password: userlogin.password,
+      };
+
+      const response = await axios.post(apiUrl, apiPayload);
+
+      if (response.data.success) {
+        const response2 = await axios.get(apiUrlUser);
+
+        setAuthUserData({
+          user: response2.data,
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+        });
+        console.log("lena"+user)
+
+        navigate('/dashboard');
+      } else {
+        alert('Email or Password incorrect!');
+        setError(response.data.message);
+      }
+    } catch (error) {
+      setError('An error occurred during login');
+    }
+  };
+  
   return (
-    <section className="m-8 flex gap-4">
+    <section className=" flex gap-4 pt-32">
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
@@ -21,6 +56,8 @@ export function SignIn() {
               Your email
             </Typography>
             <Input
+              value={userlogin.email}
+              onChange={(e) => setUserLogin({...userlogin, email:e.target.value})}
               size="lg"
               placeholder="name@mail.com"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -32,6 +69,8 @@ export function SignIn() {
               Password
             </Typography>
             <Input
+              value={userlogin.password}
+              onChange={(e) => setUserLogin({...userlogin, password:e.target.value})}
               type="password"
               size="lg"
               placeholder="********"
@@ -59,6 +98,12 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
+
+          <Button className="mt-6 bg-orange-400" fullWidth onClick={handleSubmit}>
+        Sign In
+      </Button>
+          <div className="flex items-center justify-center mt-6">
+
           <Link to="*">
           <Button className="bg-orange-400 mt-6" fullWidth>
             Sign In
@@ -78,12 +123,14 @@ export function SignIn() {
               }
               containerProps={{ className: "-ml-2.5" }}
             />
+
             <Typography variant="small" className="font-medium text-gray-900">
               <a href="#">
                 Forgot Password
               </a>
             </Typography>
           </div>
+
           <div className="space-y-4 mt-8">
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,7 +149,7 @@ export function SignIn() {
               <span>Sign in With Google</span>
             </Button>
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
+              <img src="/img/twitter-logo" height={24} width={24} alt="" />
               <span>Sign in With Twitter</span>
             </Button>
           </div>
@@ -113,9 +160,13 @@ export function SignIn() {
         </form>
 
       </div>
-      <div className="w-2/5 h-full hidden lg:block">
+      <div className="pt-24 pr-14 w-2/5 h-full hidden lg:block">
         <img
+
+          src="/img/imga.jpg"
+
           src="https://images.pexels.com/photos/3810792/pexels-photo-3810792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+
           className="h-full w-full object-cover rounded-3xl"
         />
       </div>
