@@ -5,6 +5,98 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
+import {
+  Table,
+  TableCell,
+  TableRow,
+  Avatar,
+  Badge,
+} from '@windmill/react-ui'
+
+
+
+
+const Data = [
+  {
+    img: "/img/team-1.jpg",
+    name: "Ryan Tompson",
+    position: "Web Developer",
+    socials: [
+      {
+        color: "light-blue",
+        name: "twitter",
+      },
+      {
+        color: "blue",
+        name: "linkedin",
+      },
+      {
+        color: "pink",
+        name: "dribbble",
+      },
+    ],
+  },
+  {
+    img: "/img/team-2.jpg",
+    name: "Romina Hadid",
+    position: "Marketing Specialist",
+    socials: [
+      {
+        color: "light-blue",
+        name: "twitter",
+      },
+      {
+        color: "blue",
+        name: "linkedin",
+      },
+      {
+        color: "pink",
+        name: "dribbble",
+      },
+    ],
+  },
+  {
+    img: "/img/team-3.jpg",
+    name: "Alexa Smith",
+    position: "UI/UX Designer",
+    socials: [
+      {
+        color: "light-blue",
+        name: "twitter",
+      },
+      {
+        color: "blue",
+        name: "linkedin",
+      },
+      {
+        color: "pink",
+        name: "dribbble",
+      },
+    ],
+  },
+  {
+    img: "/img/team-4.png",
+    name: "Jenna Kardi",
+    position: "Founder and CEO",
+    socials: [
+      {
+        color: "light-blue",
+        name: "twitter",
+      },
+      {
+        color: "blue",
+        name: "facebook",
+      },
+      {
+        color: "pink",
+        name: "dribbble",
+      },
+    ],
+  },
+]
+
+
+
 
 export function RechercheCollab({ open, onClose }) {
   if (!open) return null;
@@ -40,6 +132,32 @@ export function RechercheCollab({ open, onClose }) {
         <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
     </div>
 </form>
+
+<Table>
+            {Data.map((user, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <div className="flex items-center text-sm">
+                    <Avatar className="hidden mr-3 md:block" src={user.img} alt="User image" />
+                    <div>
+                      <p className="font-semibold">{user.name}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{user.position}</p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">$ {user.amount}</span>
+                </TableCell>
+                <TableCell>
+                  <Badge type={user.status}>{user.status}</Badge>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                </TableCell>
+              </TableRow>
+            ))}
+          </Table>
+
 
 
 

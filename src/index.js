@@ -7,7 +7,9 @@ export * from "@/widgets/layout/bienvenu";
 export * from "@/widgets/layout/information-section";
 export * from "@/widgets/layout/macarousel";
 export * from "@/widgets/layout/Modal";
+
 export * from "@/widgets/layout/TitleConsultations";
 export * from "@/widgets/layout/SideBarConsultations";
 export * from "@/widgets/layout/formulaireConsultation";
+
 

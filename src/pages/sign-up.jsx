@@ -12,7 +12,7 @@ export function SignUp() {
     <section className="m-8 flex">
             <div className="w-2/5 h-full hidden lg:block">
         <img
-          src="/img/pattern.png"
+          src="https://images.pexels.com/photos/3285195/pexels-photo-3285195.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
           className="h-full w-full object-cover rounded-3xl"
         />
       </div>
@@ -29,6 +29,18 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="name@mail.com"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+                        <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
+              Passowrd
+            </Typography>
+            <Input
+            type="password"
+              size="lg"
+              placeholder="************"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -53,7 +65,7 @@ export function SignUp() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          <Button className="bg-orange-400 mt-6" fullWidth>
             Register Now
           </Button>
 

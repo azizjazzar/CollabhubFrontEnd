@@ -2,6 +2,7 @@ import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
 import QuickConsultationPage from "@/Components/Consultations/QuickConsultationPage";
 import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
 
+
 export const routes = [
   {
     name: "home",
@@ -23,6 +24,7 @@ export const routes = [
     path: "/collaboration",
     element: <Collaboration/>,
   },
+
   {
     name: "About Us",
     path: "/sign-up",
