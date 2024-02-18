@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { useAuth } from './authContext';
+import { useAuth } from '../../pages/authContext';
 
 export function SignIn() {
   const { user, setAuthUserData } = useAuth();
