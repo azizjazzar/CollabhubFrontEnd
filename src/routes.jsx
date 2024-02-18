@@ -50,10 +50,7 @@ export const routes = [
     element: <BuyProject />,
   },
 
-  {
-    path: "/projectDetails",
-    element: <ProjectDetails />,
-  },
+
   {
     path: "/projectDetails/:projectId",
     element: <ProjectDetails />,

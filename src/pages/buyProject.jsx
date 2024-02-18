@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom"; // Importez Link depuis React Router
 import ServiceCard from "@/widgets/cards/service-card";
 import "@/widgets/assets/style.scss";
 import { ServiceTitle } from "@/index";
@@ -35,13 +36,15 @@ const BuyProject = () => {
             {/* Affichage des cartes de service */}
             {services.map(service => (
               <div key={service._id}>
-                <ServiceCard
-                  title={service.title}
-                  image={service.image}
-                  deliveryTime={service.deliveryTime}
-                  price={service.price}
-                  user={service.user}
-                />
+                <Link to={`/projectDetails/${service._id}`}> {/* Utilisez Link pour envelopper chaque ServiceCard */}
+                  <ServiceCard
+                    title={service.title}
+                    image={service.images}
+                    deliveryTime={service.
+                      deliveryTime}
+                    price={service.pricing.starter}
+                  />
+                </Link>
               </div>
             ))}
           </div>

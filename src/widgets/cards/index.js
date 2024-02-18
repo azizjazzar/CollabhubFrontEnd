@@ -4,3 +4,4 @@ export * from "@/widgets/cards/cardsgrids";
 export * from "@/widgets/cards/info-card";
 export * from "@/widgets/cards/InfoCard"; 
 export * from "@/widgets/cards/service-card";
+export * from "@/widgets/cards/ServiceDetailsCard";
