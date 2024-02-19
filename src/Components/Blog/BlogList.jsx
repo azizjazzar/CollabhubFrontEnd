@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { FaCommentAlt } from 'react-icons/fa';
 import 'animate.css/animate.min.css';
 import { useAuth } from "@/pages/authContext";
-
+import { Footer } from "@/widgets/layout/footer";
 
 const BlogList = () => {
     const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
@@ -104,7 +104,6 @@ const BlogList = () => {
     
         handleToggleModal();
     };
-    
 
     return (
         <div className="blog-list-container p-20 relative">
@@ -141,28 +140,28 @@ const BlogList = () => {
             </div>
 
             {currentPosts.length > 0 && currentPage === 1 ? (
-    <div className="flex">
-        <div className="lg:w-3/4">
-            <ul className="space-y-6">
-                {currentPosts.map((blog) => (
-                    <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                        <div className="flex items-center mb-4">
-                            <img
-                                src={`/img/team-1.jpg`}
-                                alt="User"
-                                className="w-10 h-10 rounded-full mr-2"
-                            />
-                            <span className="text-gray-700">
-                                {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'Guest User'}
-                            </span>
-                        </div>
-                        <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                        <p className="text-gray-600">{blog.description}</p>
-                        <p className="text-gray-500 mt-2">
-                            Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                        </p>
-                        <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                            See More
+                <div className="flex">
+                    <div className="lg:w-3/4">
+                        <ul className="space-y-6">
+                            {currentPosts.map((blog) => (
+                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+                                    <div className="flex items-center mb-4">
+                                        <img
+                                            src={`/img/team-1.jpg`}
+                                            alt="User"
+                                            className="w-10 h-10 rounded-full mr-2"
+                                        />
+                                        <span className="text-gray-700">
+                                            {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'Guest User'}
+                                        </span>
+                                    </div>
+                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+                                    <p className="text-gray-600">{blog.description}</p>
+                                    <p className="text-gray-500 mt-2">
+                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+                                    </p>
+                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                                        See More
                                     </Link>
                                 </li>
                             ))}
@@ -231,36 +230,35 @@ const BlogList = () => {
                     </div>
                 </div>
             ) : (
-               <div>
- {currentPosts.length > 0 ? (
-    <ul className="space-y-6">
-        {currentPosts.map((blog) => (
-            <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                <div className="flex items-center mb-4">
-                    <img
-                        src={`/img/team-1.jpg`}
-                        alt="User"
-                        className="w-10 h-10 rounded-full mr-2"
-                    />
-                    <span className="text-gray-700">
-                        {authData.user ? `${authData.user.nom} ${authData.user.prenom}` : 'Static User'}
-                    </span>
-                </div>
-                <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                <p className="text-gray-600">{blog.description}</p>
-                <p className="text-gray-500 mt-2">
-                    Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                </p>
-                <Link to={`/blog/${blog._id}`} className="text-orange-500 hover:underline">
-                    See More
-                </Link>
-            </li>
-        ))}
-    </ul>
-) : (
-    <p className="text-gray-600">No blog posts available at the moment.</p>
-)}
-
+                <div>
+                    {currentPosts.length > 0 ? (
+                        <ul className="space-y-6">
+                            {currentPosts.map((blog) => (
+                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+                                    <div className="flex items-center mb-4">
+                                        <img
+                                            src={`/img/team-1.jpg`}
+                                            alt="User"
+                                            className="w-10 h-10 rounded-full mr-2"
+                                        />
+                                        <span className="text-gray-700">
+                                            {authData.user ? `${authData.user.nom} ${authData.user.prenom}` : 'Static User'}
+                                        </span>
+                                    </div>
+                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+                                    <p className="text-gray-600">{blog.description}</p>
+                                    <p className="text-gray-500 mt-2">
+                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+                                    </p>
+                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                                        See More
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-gray-600">No blog posts available at the moment.</p>
+                    )}
 
                     <div className="flex justify-center mt-4 border p-4 rounded-lg">
                         <nav>
@@ -326,9 +324,8 @@ const BlogList = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div className="bg-white p-8 max-w-md w-full rounded-md flex">
+                    <div className="bg-white p-8 max-w-2xl w-full rounded-md flex">
                         <div className="w-full">
-                            {/* Placeholder image */}
                             <img
                                 src="/img/blog-f.jpg" // Replace with the path to your image
                                 alt="Blog Image"
@@ -398,6 +395,9 @@ const BlogList = () => {
                     </div>
                 </div>
             )}
+
+            {/* Footer */}
+            <Footer />
         </div>
     );
 };

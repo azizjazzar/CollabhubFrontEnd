@@ -89,10 +89,11 @@ const BlogDetails = () => {
         <img
           src={`/img/team-1.jpg`}
           alt="User"
-          className="w-10 h-10 rounded-full mr-2"
+          className="w-10 h-10 rounded-full mr-2 mt-6"
         />
-        <span className="text-gray-700">Static User</span>
+        <span className="text-gray-900  mt-5">Idriss El Bessi</span>
       </div>
+
       <h1 className="text-3xl font-bold mb-6">{blog.title}</h1>
       <p className="text-gray-600 mb-6">{blog.description}</p>
       <p className="text-gray-900 mb-9">{blog.content}</p>
