@@ -25,11 +25,7 @@ export const routes = [
     element: <Collaboration/>,
   },
 
-  {
-    name: "About Us",
-    path: "/sign-up",
-    element: <SignUp />,
-  },
+
   {
     name: "Sign In",
     path: "/sign-in",
