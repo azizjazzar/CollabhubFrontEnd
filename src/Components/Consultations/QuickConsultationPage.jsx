@@ -8,7 +8,7 @@ import { CardsConsultations } from "@/widgets/cards/cardsConsultations";
 import { FormulaireConsultation } from "@/widgets/layout/formulaireConsultation";
 import { Footer } from "@/widgets/layout/footer";
 import { useAuth } from "@/pages/authContext";
-
+import axios from 'axios';
 
 function QuickConsultationPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -18,15 +18,16 @@ function QuickConsultationPage() {
     navigate('/details-consultation');
   };
 
-  const handleSearchInput = (e) => {
-    console.log("Recherche : ", e.target.value);
-  };
+  const handleSearchInput = async (e) => {
+    const { value } = e.target;
+
+};
+
 
   // Fonction pour ouvrir le modal
   const handleWorkWithUsClick = () => {
     setOpenModal(true);
   };
-  
 
   return (
     <div>
@@ -44,12 +45,12 @@ function QuickConsultationPage() {
         <div className="container">
           <div className="flex justify-center items-center vh-100">
             {/* Bouton "Work With Us" pour ouvrir le modal */}
-            {authData.user && ( <div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
+            {authData.user && (<div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
               <div className="element">
                 <p>Add a consultation</p>
               </div>
             </div>)}
-           
+
           </div>
         </div>
       </div>
@@ -59,9 +60,6 @@ function QuickConsultationPage() {
           {/* Barre latérale des consultations */}
           <SideBarConsultations />
           {/* Card de freelancer */}
-
-
-          
           <CardsConsultations handleSearchInput={handleSearchInput} handleBookConsultationClick={handleBookConsultationClick} />
         </div>
       </div>
@@ -70,8 +68,8 @@ function QuickConsultationPage() {
       <div className={openModal ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
         <FormulaireConsultation open={openModal} onClose={() => setOpenModal(false)} />
       </div>
-       {/* Footer */}
-       <Footer />
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

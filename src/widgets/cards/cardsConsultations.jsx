@@ -2,20 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import axios from "axios";
+import Autosuggest from 'react-autosuggest'; // Import de react-autosuggest
 
-export function CardsConsultations({ handleSearchInput }) {
+function CardsConsultations({ handleSearchInput }) {
   const [consultations, setConsultations] = useState([]);
-  // Change to use a mapping of consultation IDs to user data
+  const [filteredConsultations, setFilteredConsultations] = useState([]);
   const [users, setUsers] = useState({});
   const { authData } = useAuth();
   const navigate = useNavigate();
+  const [value, setValue] = useState(''); // État pour la valeur de l'autocomplétion
+  
 
   useEffect(() => {
     fetch("https://colabhub.onrender.com/consultations/Consultations")
       .then(response => response.json())
       .then(data => {
         setConsultations(data);
-        // Fetch user data for each consultation
+        setFilteredConsultations(data);
         data.forEach(consultation => {
           if (consultation.freelancerId) {
             getUserById(consultation.freelancerId)
@@ -30,7 +33,7 @@ export function CardsConsultations({ handleSearchInput }) {
         });
       })
       .catch(error => console.error("Error fetching consultations:", error));
-  }, []); // Removed authData.user from dependencies as it seems unrelated to fetching consultations
+  }, []);
 
   const getUserById = async (userId) => {
     try {
@@ -46,27 +49,63 @@ export function CardsConsultations({ handleSearchInput }) {
     }
   };
 
-  // Add missing handlers
-  const handleConsultationClick = (id) => {
-    // Your implementation here
-  };
-
   const handleBookConsultationClick = (id) => {
     navigate(`/details-consultation/${id}`);
   };
 
+  const getSuggestions = (value) => {
+    if (!value) return []; // Vérifier si value est défini
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    const filtered = consultations.filter(consultation =>
+      consultation.domaineExpertise.toLowerCase().includes(inputValue)
+    );
+    return inputLength === 0 || filtered.length === 0 ? [] : filtered;
+  };
+  
+  
+  
+
+  const renderSuggestion = (suggestion) => (
+    <div style={{ backgroundColor: "#F8F9F9", textAlign: "left", color: "#A6ACAF", fontSize: "14px", transform: "skewX(-10deg)", paddingLeft: "15px" }}>
+      {suggestion}
+    </div>
+  );
+  
+  
+  const handleSuggestionSelected = (event, { suggestion }) => {
+    const filtered = consultations.filter(consultation =>
+      consultation.domaineExpertise.toLowerCase().includes(suggestion.toLowerCase())
+    );
+    setFilteredConsultations(filtered);
+  };
+
+  const handleInputChange = (event, { newValue }) => {
+    setValue(newValue);
+    if (newValue === "") {
+      setFilteredConsultations(consultations);
+    } else {
+      handleSuggestionSelected(event, { suggestion: newValue });
+    }
+  };
 
   return (
     <main className="w-3/4 p-4 space-y-3">
-      <div></div>
-
       <div className="mb-4 relative">
-        <input
-          type="search"
-          placeholder="Search"
-          className="w-full pl-4 pr-10 py-2 rounded-full text-black border border-gray-800 focus:outline-none"
-          style={{ border: "1px solid #D0D3D4" }}
-          onChange={handleSearchInput}
+        <Autosuggest
+          suggestions={getSuggestions(value).map(consultation => consultation.domaineExpertise)}
+          onSuggestionsFetchRequested={() => {}}
+          onSuggestionsClearRequested={() => {}}
+          getSuggestionValue={suggestion => suggestion}
+          renderSuggestion={renderSuggestion}
+          inputProps={{
+            placeholder: 'Search',
+            className: "w-full pl-4 pr-10 py-2 rounded-full text-black border border-gray-800 focus:outline-none",
+            style: { border: "1px solid #D0D3D4" },
+            value: value,
+            onChange: handleInputChange
+          }}
+          onSuggestionSelected={handleSuggestionSelected}
         />
 
         <button
@@ -77,14 +116,14 @@ export function CardsConsultations({ handleSearchInput }) {
         </button>
       </div>
 
-      {consultations.map(consultation => (
+      {filteredConsultations.map(consultation => (
         <div
           key={consultation._id}
           className="bg-white rounded-lg shadow-md p-4 space-y-2 transition duration-300 ease-in-out hover:shadow-lg"
           tabIndex={0}
           onKeyPress={(event) => {
             if (event.key === 'Enter') {
-              handleConsultationClick(consultation._id);
+              handleBookConsultationClick(consultation._id);
             }
           }}
         >
@@ -95,28 +134,20 @@ export function CardsConsultations({ handleSearchInput }) {
               className="rounded-full"
               style={{ width: "60px", height: "60px" }}
             />
-<div className="flex-grow ml-2 pt-3">
-  {/* nom user */}
-  {users[consultation.freelancerId] && (
-    <>
-      {/* Utilisation de style inline pour le nom et le prénom */}
-      <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: '0.9rem', fontStyle: 'normal' ,color: '#808080' }}>
-        {users[consultation.freelancerId].nom + " " + users[consultation.freelancerId].prenom}
-      </span>
-      {/* Ajout d'un point */}
-      {"."}
-      {/* Utilisation de style inline pour l'adresse avec une police fine et couleur grise */}
-      <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'normal', fontSize: '0.8rem', fontStyle: 'italic', color: '#808080' }}>
-        {users[consultation.freelancerId].adresse}
-      </span>
-      {/* Ajout d'un point après l'adresse */}
-    
-    </>
-  )}
-<h6 className="text-xl font-bold text-sm">{consultation.domaineExpertise}</h6>
-  {/* domain user */}
-
-</div>
+            <div className="flex-grow ml-2 pt-3">
+              {users[consultation.freelancerId] && (
+                <>
+                  <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: '0.9rem', fontStyle: 'normal', color: '#808080' }}>
+                    {users[consultation.freelancerId].nom + " " + users[consultation.freelancerId].prenom}
+                  </span>
+                  {"."}
+                  <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'normal', fontSize: '0.8rem', fontStyle: 'italic', color: '#808080' }}>
+                    {users[consultation.freelancerId].adresse}
+                  </span>
+                </>
+              )}
+              <h6 className="text-xl font-bold text-sm">{consultation.domaineExpertise}</h6>
+            </div>
 
             <button
               className="bg-orange-500 text-white active:bg-orange-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md focus:outline-none"
@@ -135,13 +166,13 @@ export function CardsConsultations({ handleSearchInput }) {
             </div>
           </div>
           <div className="mt-4 flex items-center">
-  <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
-      <div className="flex space-x-4">
+            <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
+            <div className="flex space-x-4">
               {consultation.titre && (
                 <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">{consultation.titre}</div>
               )}
             </div>
-      </div>
+          </div>
 
           <div className="text-gray-600 mb-1 text-sm">{consultation.description}</div>
         </div>
@@ -150,4 +181,4 @@ export function CardsConsultations({ handleSearchInput }) {
   );
 }
 
-export default CardsConsultations;
+export { CardsConsultations };
