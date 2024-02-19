@@ -4,9 +4,11 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { FaCommentAlt } from 'react-icons/fa';
 import 'animate.css/animate.min.css';
-import TitleBlog from '@/widgets/layout/titleBlog';
+import { useAuth } from "@/pages/authContext";
+
 
 const BlogList = () => {
+    const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
     const [blogs, setBlogs] = useState([]);
     const [sortByDate, setSortByDate] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,26 +26,13 @@ const BlogList = () => {
             const response = await axios.get('https://colabhub.onrender.com/blogs/Blogs');
             setBlogs(response.data);
         } catch (error) {
-            console.error('Erreur lors de la récupération des articles de blog :', error);
-        }
-    };
-    const [User,setUser]=useState("");
-
-    const fetchUserdetail = async (id) => {
-        try {
-            const response = await axios.get('https://colabhub.onrender.com/api/auth/userid/'+id);
-            setUser(response.data);
-        } catch (error) {
-            console.error('Erreur lors de la récupération des articles de users :', error);
+            console.error('Error fetching blog articles:', error);
         }
     };
 
     useEffect(() => {
         fetchBlogs();
-        const userId = User ? User.id : null;
-
-        fetchUserdetail(userId);
-    }, [User]);
+    }, []);
 
     const toggleSortOrder = () => {
         setSortByDate((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
@@ -70,19 +59,23 @@ const BlogList = () => {
     const currentPosts = filteredBlogs.slice(indexOfFirstPost, indexOfLastPost);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     const nextPage = () => setCurrentPage((prevPage) => prevPage + 1);
+
     const prevPage = () => setCurrentPage((prevPage) => prevPage - 1);
 
-    const youtubeVideoLink = 'https://www.youtube.com/embed/SqcY0GlETPk?si=HF_vflDAmaCzFh5S';
-
     const handleToggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-        if (!isModalOpen) {
-            setFormData({
-                title: '',
-                description: '',
-                content: '',
-            });
+        if (authData.user) {
+            setIsModalOpen(!isModalOpen);
+            if (!isModalOpen) {
+                setFormData({
+                    title: '',
+                    description: '',
+                    content: '',
+                });
+            }
+        } else {
+            console.log("User not authenticated. Redirect or show a message.");
         }
     };
 
@@ -96,32 +89,37 @@ const BlogList = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
-            const response = await axios.post('https://colabhub.onrender.com/blogs/addBlog', formData);
+            const response = await axios.post('https://colabhub.onrender.com/blogs/addBlog', {
+                ...formData,
+                userId: authData.user._id, // Use the ID of the authenticated user
+            });
+    
             console.log('Blog added successfully:', response.data);
             fetchBlogs();
         } catch (error) {
             console.error('Error adding blog:', error);
         }
-
+    
         handleToggleModal();
     };
+    
 
     return (
         <div className="blog-list-container p-20 relative">
-            {/* Ajoutez une marge inférieure plus grande au composant TitleBlog */}
-            <div className="mt-16">
-                <TitleBlog />
+            <div className="text-4xl font-bold my-10 text-center animate__animated animate__fadeIn animate__delay-1s">
+                Welcome to our blog
             </div>
 
             <img
-                src="/img/blogback.jpg"  // Remplacez par le chemin de votre image
+                src="/img/blogback.jpg" // Replace with the path to your image
                 alt="Blog Background"
-                className="w-full h-[450px] mb-8"// Ajustez la classe selon vos besoins pour le dimensionnement et la marge
+                className="w-full h-[450px] mb-8" // Adjust the class based on your sizing and margin needs
             />
-<div className="flex justify-between items-center mb-8">
-    <div className="text-3xl font-bold">Latest Blog Posts</div>
+
+            <div className="flex justify-between items-center mb-8">
+                <div className="text-3xl font-bold">Latest Blog Posts</div>
                 <div>
                     <button
                         onClick={toggleSortOrder}
@@ -223,7 +221,7 @@ const BlogList = () => {
                             title="YouTube Video"
                             width="100%"
                             height="315"
-                            src={youtubeVideoLink}
+                            src="https://www.youtube.com/embed/SqcY0GlETPk?si=HF_vflDAmaCzFh5S"
                             frameBorder="0"
                             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -231,37 +229,36 @@ const BlogList = () => {
                     </div>
                 </div>
             ) : (
-                <div>
-                    {currentPosts.length > 0 ? (
-                        <ul className="space-y-6">
-                            {currentPosts.map((blog) => (
-                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                                    <div className="flex items-center mb-4">
-                                        <img
-                                            src={`/img/team-1.jpg`}
-                                            alt="User"
-                                            className="w-10 h-10 rounded-full mr-2"
-                                        />
-                                        <span className="text-gray-700">
-                                        {User ? fetchUserdetail (blog._id).nom  : (
-                                                <p>Loading user...</p>
-                                            )}
-                                        </span>
-                                    </div>
-                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                                    <p className="text-gray-600">{blog.description}</p>
-                                    <p className="text-gray-500 mt-2">
-                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                                    </p>
-                                    <Link to={`/blog/${blog._id}`} className="text-orange-500 hover:underline">
-                                        See More
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-gray-600">No blog posts available at the moment.</p>
-                    )}
+               <div>
+ {currentPosts.length > 0 ? (
+    <ul className="space-y-6">
+        {currentPosts.map((blog) => (
+            <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+                <div className="flex items-center mb-4">
+                    <img
+                        src={`/img/team-1.jpg`}
+                        alt="User"
+                        className="w-10 h-10 rounded-full mr-2"
+                    />
+                    <span className="text-gray-700">
+                        {authData.user ? `${authData.user.nom} ${authData.user.prenom}` : 'Static User'}
+                    </span>
+                </div>
+                <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+                <p className="text-gray-600">{blog.description}</p>
+                <p className="text-gray-500 mt-2">
+                    Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+                </p>
+                <Link to={`/blog/${blog._id}`} className="text-orange-500 hover:underline">
+                    See More
+                </Link>
+            </li>
+        ))}
+    </ul>
+) : (
+    <p className="text-gray-600">No blog posts available at the moment.</p>
+)}
+
 
                     <div className="flex justify-center mt-4 border p-4 rounded-lg">
                         <nav>
@@ -328,15 +325,15 @@ const BlogList = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
                     <div className="bg-white p-8 max-w-md w-full rounded-md flex">
-                    <div className="w-full"> {/* Changez cette ligne */}
+                        <div className="w-full">
                             {/* Placeholder image */}
                             <img
-                                src="/img/blog-f.jpg"  // Remplacez par le chemin de votre image
+                                src="/img/blog-f.jpg" // Replace with the path to your image
                                 alt="Blog Image"
                                 className="w-full h-full object-cover rounded-md"
                             />
                         </div>
-                        <div className="w-full ml-4"> {/* Changez cette ligne */}
+                        <div className="w-full ml-4">
                             <h2 className="text-2xl font-semibold mb-4">Add a Blog</h2>
                             <form onSubmit={handleFormSubmit}>
                                 <div className="mb-4">
