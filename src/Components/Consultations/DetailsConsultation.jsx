@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import InformationDetailsCons from '@/widgets/cards/InformationDetailsCons';
+import { InformationDetailsCons } from '@/widgets/cards/InformationDetailsCons';
 import { Footer } from "@/widgets/layout/footer";
 import { FaVideo } from 'react-icons/fa';
 import { loadStripe } from '@stripe/stripe-js';
