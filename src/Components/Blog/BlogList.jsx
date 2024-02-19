@@ -141,26 +141,28 @@ const BlogList = () => {
             </div>
 
             {currentPosts.length > 0 && currentPage === 1 ? (
-                <div className="flex">
-                    <div className="lg:w-3/4">
-                        <ul className="space-y-6">
-                            {currentPosts.map((blog) => (
-                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                                    <div className="flex items-center mb-4">
-                                        <img
-                                            src={`/img/team-1.jpg`}
-                                            alt="User"
-                                            className="w-10 h-10 rounded-full mr-2"
-                                        />
-                                        <span className="text-gray-700"> Idriss El Bessi</span>
-                                    </div>
-                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                                    <p className="text-gray-600">{blog.description}</p>
-                                    <p className="text-gray-500 mt-2">
-                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                                    </p>
-                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                                        See More
+    <div className="flex">
+        <div className="lg:w-3/4">
+            <ul className="space-y-6">
+                {currentPosts.map((blog) => (
+                    <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+                        <div className="flex items-center mb-4">
+                            <img
+                                src={`/img/team-1.jpg`}
+                                alt="User"
+                                className="w-10 h-10 rounded-full mr-2"
+                            />
+                            <span className="text-gray-700">
+                                {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'Guest User'}
+                            </span>
+                        </div>
+                        <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+                        <p className="text-gray-600">{blog.description}</p>
+                        <p className="text-gray-500 mt-2">
+                            Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+                        </p>
+                        <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                            See More
                                     </Link>
                                 </li>
                             ))}
