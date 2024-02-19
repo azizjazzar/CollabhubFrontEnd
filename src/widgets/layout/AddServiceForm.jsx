@@ -1,16 +1,37 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Card, Input, Textarea, Button, Typography } from "@material-tailwind/react";
+import { Card, Input, Textarea, Button, Typography, Select } from "@material-tailwind/react";
 
 export function AddServiceForm({ open, onClose }) {
-  const staticFreelancerId = '65c78e6a099ed33f01e14b56'; // ID statique pour tous les enregistrements
+  const staticFreelancerId = '65c78e6a099ed33f01e14b56';
 
   const [deliveryTime, setDeliveryTime] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [pricing, setPricing] = useState({ starter: '', standard: '', advanced: '' });
+  const [selectedDomain, setSelectedDomain] = useState('');
   const [images, setImages] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const expertiseDomains = [
+    'Web Development', 
+    'Mobile App Development', 
+    'Logo Design', 
+    'Graphic Design', 
+    'Video & Audio', 
+    'Writing & Translation', 
+    'Digital Marketing', 
+    'Virtual Assistant', 
+    'Photography & Image Editing', 
+    'Video Production & Editing', 
+    'Audio Production & Editing', 
+    'Music Production & Editing', 
+    'Data Science', 
+    'Blockchain, NFT & Cryptocurrency', 
+    'Animation for Streamers', 
+    'Other'
+  ];
 
   const handleChangeDeliveryTime = (e) => {
     const value = e.target.value;
@@ -33,52 +54,69 @@ export function AddServiceForm({ open, onClose }) {
   };
 
   const handleChangeImages = (e) => {
-    // Récupérer les fichiers depuis l'événement onChange
     const selectedImages = e.target.files;
-  
-    // Convertir les fichiers en un tableau
     const imagesArray = Array.from(selectedImages);
-  
-    // Mettre à jour le state avec le tableau d'images
     setImages(imagesArray);
   };
-  
+
+  const handleChangeDomain = (value) => {
+    setSelectedDomain(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Vérification des champs non vides
-    if (!deliveryTime || !title || !description || !pricing.starter || !pricing.standard || !pricing.advanced || images.length === 0) {
-      setErrorMessage('Veuillez remplir tous les champs.');
-      return;
+    const errors = {};
+
+    if (!deliveryTime) {
+      errors.deliveryTime = 'Please enter delivery time.';
     }
 
-    // Vérification que deliveryTime est un nombre et est inférieur ou égal à 99
-    if (isNaN(deliveryTime) || deliveryTime > 99) {
-      setErrorMessage('Le délai de livraison doit être un nombre inférieur ou égal à 99.');
-      return;
+    if (!title) {
+      errors.title = 'Please enter title.';
     }
 
-    // Vérification que les prix sont des nombres
-    if (isNaN(pricing.starter) || isNaN(pricing.standard) || isNaN(pricing.advanced)) {
-      setErrorMessage('Les prix doivent être des nombres.');
-      return;
+    if (!description) {
+      errors.description = 'Please enter description.';
     }
 
-    // Vérification que les prix sont dans l'ordre ascendant
-    if (parseInt(pricing.starter) >= parseInt(pricing.standard) || parseInt(pricing.standard) >= parseInt(pricing.advanced)) {
-      setErrorMessage('Les prix doivent être dans l\'ordre croissant (Starter < Standard < Advanced).');
+    if (!pricing.starter) {
+      errors.starterPrice = 'Please enter starter price.';
+    }
+
+    if (!pricing.standard) {
+      errors.standardPrice = 'Please enter standard price.';
+    }
+
+    if (!pricing.advanced) {
+      errors.advancedPrice = 'Please enter advanced price.';
+    }
+
+    if (!selectedDomain) {
+      errors.domain = 'Please select expertise domain.';
+    }
+
+    if (images.length === 0) {
+      errors.images = 'Please select image.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
       return;
     }
 
     try {
+      setLoading(true);
+
       const formData = new FormData();
-      formData.append('freelancerId', staticFreelancerId); // Utiliser l'ID statique
+      formData.append('freelancerId', staticFreelancerId);
       formData.append('deliveryTime', deliveryTime);
       formData.append('title', title);
       formData.append('description', description);
       formData.append('pricing[starter]', pricing.starter);
       formData.append('pricing[standard]', pricing.standard);
       formData.append('pricing[advanced]', pricing.advanced);
+      formData.append('domaineExpertise', selectedDomain);
       for (let i = 0; i < images.length; i++) {
         formData.append('images', images[i]);
       }
@@ -92,6 +130,8 @@ export function AddServiceForm({ open, onClose }) {
     } catch (error) {
       console.error('Error adding service:', error);
       alert('Failed to add service. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,111 +144,134 @@ export function AddServiceForm({ open, onClose }) {
           e.stopPropagation();
         }}
         className='max-w-2xl w-full bg-white rounded-lg shadow-md flex overflow-y-auto'
-        style={{ maxHeight: '80vh', maxWidth: '120vh' }}
+        style={{ maxHeight: '80vh', maxWidth: '60vw' }}
       >
         <div className='flex flex-col p-4 w-full'>
           <Card color="transparent" shadow={false}>
             <Typography variant="h4" color="orange">
-              Add Your Service
+              Add your service
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
               Fill in the details to add your service
             </Typography>
-            <form className="mt-8 mb-2 w-full max-w-screen-lg sm:w-96" onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label htmlFor="deliveryTime" className="block text-sm font-medium text-gray-700">Delivery Time (in days, max 99)</label>
-                <Input
-                  size="lg"
-                  type="number"
-                  placeholder="Enter Delivery Time"
-                  value={deliveryTime}
-                  onChange={handleChangeDeliveryTime}
-                  id="deliveryTime"
-                  className="mt-1"
-                />
+            <form className="mt-8 mb-2" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+                  <Input
+                    size="md"
+                    placeholder="Enter title"
+                    value={title}
+                    onChange={handleChangeTitle}
+                    id="title"
+                    error={errors.title}
+                  />
+                  {errors.title && <Typography color="red">{errors.title}</Typography>}
+                </div>
+                <div>
+                  <label htmlFor="deliveryTime" className="block text-sm font-medium text-gray-700">Delivery Time (in days, max 99)</label>
+                  <Input
+                    size="md"
+                    type="number"
+                    placeholder="Enter delivery time"
+                    value={deliveryTime}
+                    onChange={handleChangeDeliveryTime}
+                    id="deliveryTime"
+                    error={errors.deliveryTime}
+                  />
+                  {errors.deliveryTime && <Typography color="red">{errors.deliveryTime}</Typography>}
+                </div>
+                <div className="col-span-2">
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                  <Textarea
+                    size="md"
+                    placeholder="Enter description"
+                    value={description}
+                    onChange={handleChangeDescription}
+                    id="description"
+                    error={errors.description}
+                  />
+                  {errors.description && <Typography color="red">{errors.description}</Typography>}
+                </div>
+                <div>
+                  <label htmlFor="starterPrice" className="block text-sm font-medium text-gray-700">Starter Price</label>
+                  <Input
+                    size="md"
+                    type="number"
+                    placeholder="Enter starter price"
+                    value={pricing.starter}
+                    onChange={handleChangePricing}
+                    id="starterPrice"
+                    name="starter"
+                    error={errors.starterPrice}
+                  />
+                  {errors.starterPrice && <Typography color="red">{errors.starterPrice}</Typography>}
+                </div>
+                <div>
+                  <label htmlFor="standardPrice" className="block text-sm font-medium text-gray-700">Standard Price</label>
+                  <Input
+                    size="md"
+                    type="number"
+                    placeholder="Enter standard price"
+                    value={pricing.standard}
+                    onChange={handleChangePricing}
+                    id="standardPrice"
+                    name="standard"
+                    error={errors.standardPrice}
+                  />
+                  {errors.standardPrice && <Typography color="red">{errors.standardPrice}</Typography>}
+                </div>
+                <div>
+                  <label htmlFor="advancedPrice" className="block text-sm font-medium text-gray-700">Advanced Price</label>
+                  <Input
+                    size="md"
+                    type="number"
+                    placeholder="Enter advanced price"
+                    value={pricing.advanced}
+                    onChange={handleChangePricing}
+                    id="advancedPrice"
+                    name="advanced"
+                    error={errors.advancedPrice}
+                  />
+                  {errors.advancedPrice && <Typography color="red">{errors.advancedPrice}</Typography>}
+                </div>
+                <div className="col-span-2">
+                  <label htmlFor="domain" className="block text-sm font-medium text-gray-700">Expertise Domain</label>
+                  <Select
+                    size="md"
+                    placeholder="Select domain"
+                    value={selectedDomain}
+                    onChange={handleChangeDomain}
+                    id="domain"
+                  >
+                    {expertiseDomains.map((domain, index) => (
+                      <Select.Option key={index} value={domain}>{domain}</Select.Option>
+                    ))}
+                  </Select>
+                  {errors.domain && <Typography color="red">{errors.domain}</Typography>}
+                </div>
+                <div className="col-span-2">
+                  <label htmlFor="images" className="block text-sm font-medium text-gray-700">Select Image</label>
+                  <Input
+                    size="md"
+                    type="file"
+                    accept="image/*"
+                    placeholder="Select image"
+                    onChange={handleChangeImages}
+                    id="images"
+                    error={errors.images}
+                  />
+                  {errors.images && <Typography color="red">{errors.images}</Typography>}
+                </div>
               </div>
-              <div className="mb-4">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-                <Input
-                  size="lg"
-                  placeholder="Enter Title"
-                  value={title}
-                  onChange={handleChangeTitle}
-                  id="title"
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                <Textarea
-                  size="lg"
-                  placeholder="Enter Description"
-                  value={description}
-                  onChange={handleChangeDescription}
-                  id="description"
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="starterPrice" className="block text-sm font-medium text-gray-700">Starter Price</label>
-                <Input
-                  size="lg"
-                  type="number"
-                  placeholder="Enter Starter Price"
-                  value={pricing.starter}
-                  onChange={handleChangePricing}
-                  id="starterPrice"
-                  name="starter"
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="standardPrice" className="block text-sm font-medium text-gray-700">Standard Price</label>
-                <Input
-                  size="lg"
-                  type="number"
-                  placeholder="Enter Standard Price"
-                  value={pricing.standard}
-                  onChange={handleChangePricing}
-                  id="standardPrice"
-                  name="standard"
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="advancedPrice" className="block text-sm font-medium text-gray-700">Advanced Price</label>
-                <Input
-                  size="lg"
-                  type="number"
-                  placeholder="Enter Advanced Price"
-                  value={pricing.advanced}
-                  onChange={handleChangePricing}
-                  id="advancedPrice"
-                  name="advanced"
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="images" className="block text-sm font-medium text-gray-700">Select Image</label>
-                <Input
-                  size="lg"
-                  type="file"
-                  accept="image/*"
-                  placeholder="Select Image"
-                  onChange={handleChangeImages}
-                  id="images"
-                  className="mt-1"
-                />
-              </div>
-              {errorMessage && <Typography color="red">{errorMessage}</Typography>}
-              <Button className="mt-6" fullWidth color="orange" type="submit">
-                Add Service
+              <Button className="mt-6" fullWidth color="orange" type="submit" disabled={loading}>
+                {loading ? 'Adding...' : 'Add Service'}
               </Button>
             </form>
           </Card>
         </div>
-        <div className="w-100 h-100">
-          <img src="/img/back3.jpg" alt="Your image" className="w-full h-full" />
+        <div className="w-50 h-50 mt-40">
+          <img src="/img/details.jpg" alt="Your image" className="w-50 h-50" />
         </div>
       </div>
     </div>

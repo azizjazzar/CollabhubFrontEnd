@@ -11,16 +11,18 @@ const BuyProject = () => {
   const [isFormOpen, setIsFormOpen] = useState(false); // État pour contrôler l'ouverture du formulaire
 
   useEffect(() => {
-    async function fetchServices() {
-      try {
-        const response = await axios.get("http://localhost:3000/services/services");
-        setServices(response.data);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    }
-    fetchServices();
+    fetchServices(); // Charger tous les services initialement
   }, []);
+
+  // Fonction pour charger tous les services
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/services/services");
+      setServices(response.data);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
 
   // Fonction pour ouvrir le formulaire
   const openForm = () => {
@@ -30,6 +32,34 @@ const BuyProject = () => {
   // Fonction pour fermer le formulaire
   const closeForm = () => {
     setIsFormOpen(false);
+  };
+
+  // Liste des domaines d'expertise
+  const expertiseDomains = [
+    'All',
+    'Web Development', 
+    'Mobile App Development', 
+    'Logo Design', 
+    'Graphic Design', 
+    'Video & Audio', 
+    'Writing & Translation', 
+    'Digital Marketing', 
+    'Virtual Assistant', 
+    'Other'
+  ];
+
+  // Fonction pour filtrer les services par domaine d'expertise
+  const filterServicesByDomain = async (domain) => {
+    if (domain === "All") {
+      fetchServices(); // Charger tous les services si "All" est sélectionné
+    } else {
+      try {
+        const response = await axios.get(`http://localhost:3000/services/byDomain/${domain}`);
+        setServices(response.data);
+      } catch (error) {
+        console.error("Error fetching services by domain:", error);
+      }
+    }
   };
 
   return (
@@ -51,6 +81,18 @@ const BuyProject = () => {
                 Add Your Service
               </button>
             </div>
+            {/* Affichage des domaines d'expertise */}
+            <div className="flex justify-center mt-10 space-x-4">
+              {expertiseDomains.map((domain, index) => (
+                <button
+                  key={index}
+                  onClick={() => filterServicesByDomain(domain)}
+                  className="text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+                >
+                  {domain}
+                </button>
+              ))}
+            </div>
           </section>
           <div className="mt-18 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {/* Affichage des cartes de service */}
@@ -59,7 +101,7 @@ const BuyProject = () => {
                 <Link to={`/projectDetails/${service._id}`}>
                   <ServiceCard
                     title={service.title}
-                    image={service.images}
+                    image={service.images[0]} // Utilisez la première image du tableau d'images
                     deliveryTime={service.deliveryTime}
                     price={service.pricing.starter}
                   />
