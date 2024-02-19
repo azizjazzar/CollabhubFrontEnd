@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import countryList from 'react-select-country-list';
-import { GoogleLogin } from 'react-google-login'
 import axios from 'axios';
 
 export function SignUp() {
@@ -258,13 +257,7 @@ export function SignUp() {
 
             <div className="space-y-4 mt-8 w-[420px] flex items-center justify-center">
               <div className='w-[420px]  ' style={{ textAlign: 'center' }}>
-                <GoogleLogin
-                  clientId={clientId}
-                  buttonText="Login with Google"
-                  onSuccess={onSuccess}
-                  onFailure={onFailure}
-                  cookiePolicy={'single_host_origin'}
-                />
+             
               </div>
             </div>
 
