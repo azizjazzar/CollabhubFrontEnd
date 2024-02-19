@@ -6,4 +6,7 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
+  scss: {
+    additionalData: `@import "./src/widgets/assets/animation.scss";`,
+  },
 });

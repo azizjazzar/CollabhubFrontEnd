@@ -1,7 +1,6 @@
-import { Home, Profile, SignIn, SignUp , Collaboration} from "@/pages";
-import Forum from "./widgets/blog/forum";
-
-
+import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
+import QuickConsultationPage from "@/Components/Consultations/QuickConsultationPage";
+import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
 
 
 export const routes = [
@@ -10,30 +9,25 @@ export const routes = [
     path: "/home",
     element: <Home />,
   },
-
   {
     name: "Find Talent",
     path: "/consultation",
     element: <Profile />,
   },
-
   {
     name: "Find Work",
     path: "/consultation",
     element: <Profile />,
   },
-
   {
     name: "Collaboration",
     path: "/collaboration",
     element: <Collaboration/>,
   },
-  
-
   {
-    name: "Blog",
-    path: "/forum",
-    element: <Forum />,
+    name :"Consultation",
+    path: "/do-a-quick-consultation",
+    element: <QuickConsultationPage />,
   },
 
   {
@@ -47,8 +41,10 @@ export const routes = [
     element: <SignUp />,
   },
 
-
-
+  {
+    path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
+    element: <DetailsConsultation />,
+  },
 ];
 
 export default routes;
