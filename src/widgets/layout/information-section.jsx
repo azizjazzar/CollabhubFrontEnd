@@ -1,6 +1,4 @@
-"use client";
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-
 import { Typography } from "@material-tailwind/react";
 import {
   AcademicCapIcon,
