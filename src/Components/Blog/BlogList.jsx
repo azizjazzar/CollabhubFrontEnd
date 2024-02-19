@@ -7,6 +7,7 @@ import 'animate.css/animate.min.css';
 import { useAuth } from "@/pages/authContext";
 import { Footer } from "@/widgets/layout/footer";
 
+
 const BlogList = () => {
     const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
     const [blogs, setBlogs] = useState([]);
