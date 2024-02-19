@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CardsConsultations from '../../widgets/cards/cardsPayerConsultations.jsx';
-import InformationDetailsCons from '../../widgets/cards/InformationDetailsCons.jsx';
-import { Footer } from "../../widgets/layout/footer";
+import CardsConsultations from '@/widgets/cards/cardsPayerConsultations.jsx';
+import InformationDetailsCons from '@/widgets/cards/InformationDetailsCons.jsx';
+import { Footer } from "@/widgets/layout/footer";
 import { FaVideo } from 'react-icons/fa';
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from "@/pages/authContext";
