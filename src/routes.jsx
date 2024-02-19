@@ -41,6 +41,7 @@ export const routes = [
     element: <SignUp />,
   },
   {
+    name :"Consultation",
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />,
   },
