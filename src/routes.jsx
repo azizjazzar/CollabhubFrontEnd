@@ -1,7 +1,8 @@
 import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
 import QuickConsultationPage from "@/Components/Consultations/QuickConsultationPage";
 import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
-
+import BlogList from "./Components/Blog/BlogList";
+import BlogDetails from "./Components/Blog/BlogDetails";
 
 export const routes = [
   {
@@ -29,7 +30,11 @@ export const routes = [
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />,
   },
-
+  {
+    name: "Blog",
+    path: "/blog",
+    element: <BlogList />,
+  },
   {
     name: "Sign In",
     path: "/sign-in",
@@ -44,6 +49,10 @@ export const routes = [
   {
     path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
     element: <DetailsConsultation />,
+  },
+  {
+    path: "/blog/:id",  // Ajoutez la route pour les détails du blog
+    element: <BlogDetails />,
   },
 ];
 
