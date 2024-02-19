@@ -100,12 +100,14 @@ export function FormulaireConsultation({ open, onClose }) {
     if (!domaineExpertise) {
       setDomaineExpertiseError('Please enter an expertise field');
       isValid = false;
-    } else if (!/^[a-zA-Z\s]*$/.test(domaineExpertise)) {
+    } else if (!/^[a-zA-Z&,| \s]*$/.test(domaineExpertise)) {
       setDomaineExpertiseError('Expertise field must contain only letters');
       isValid = false;
     } else {
       setDomaineExpertiseError('');
     }
+    
+    
     
 
     if (startDate >= endDate) {

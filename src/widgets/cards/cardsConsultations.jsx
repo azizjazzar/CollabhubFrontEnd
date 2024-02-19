@@ -95,18 +95,29 @@ export function CardsConsultations({ handleSearchInput }) {
               className="rounded-full"
               style={{ width: "60px", height: "60px" }}
             />
-            <div className="flex-grow ml-2 pt-3">
-                 {/* nom user */}
-                 {users[consultation.freelancerId] && (
-          <>
-            {/* This line should correctly reference the users object */}
-            {users[consultation.freelancerId].nom + " " + users[consultation.freelancerId].prenom }
-          </>
-        )}
-              <h3 className="text-xl font-bold">{consultation.titre}</h3>
-                {/* domain user */}
-              <div className="text-gray-600 mb-1 text-sm">{consultation.titre}</div>
-            </div>
+<div className="flex-grow ml-2 pt-3">
+  {/* nom user */}
+  {users[consultation.freelancerId] && (
+    <>
+      {/* Utilisation de style inline pour le nom et le prénom */}
+      <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: '0.9rem', fontStyle: 'normal' ,color: '#808080' }}>
+        {users[consultation.freelancerId].nom + " " + users[consultation.freelancerId].prenom}
+      </span>
+      {/* Ajout d'un point */}
+      {"."}
+      {/* Utilisation de style inline pour l'adresse avec une police fine et couleur grise */}
+      <span style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'normal', fontSize: '0.8rem', fontStyle: 'italic', color: '#808080' }}>
+        {users[consultation.freelancerId].adresse}
+      </span>
+      {/* Ajout d'un point après l'adresse */}
+    
+    </>
+  )}
+<h6 className="text-xl font-bold text-sm">{consultation.domaineExpertise}</h6>
+  {/* domain user */}
+
+</div>
+
             <button
               className="bg-orange-500 text-white active:bg-orange-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md focus:outline-none"
               type="button"
@@ -124,13 +135,14 @@ export function CardsConsultations({ handleSearchInput }) {
             </div>
           </div>
           <div className="mt-4 flex items-center">
-            <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
-            <div className="flex space-x-4">
-              {consultation.topics && consultation.topics.map((topic, index) => (
-                <div key={index} className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">{topic}</div>
-              ))}
+  <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
+      <div className="flex space-x-4">
+              {consultation.titre && (
+                <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">{consultation.titre}</div>
+              )}
             </div>
-          </div>
+      </div>
+
           <div className="text-gray-600 mb-1 text-sm">{consultation.description}</div>
         </div>
       ))}

@@ -26,6 +26,7 @@ function QuickConsultationPage() {
   const handleWorkWithUsClick = () => {
     setOpenModal(true);
   };
+  
 
   return (
     <div>

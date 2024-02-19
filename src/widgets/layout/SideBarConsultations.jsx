@@ -16,23 +16,6 @@ export function SideBarConsultations() {
   }}
 />
 
-        <div className="bg-white p-4 rounded shadow">
-        <p className="font-bold text-lg mb-2 text-blue-500">Talent badge</p>
-
-            <label className="block">
-              <input type="checkbox" className="form-checkbox text-blue-500" />
-              <span className="text-black-600 mb-5 text-sm ml-2">Top Rated Plus</span>
-            </label>
-            <label className="block mt-2">
-              <input type="checkbox" className="form-checkbox text-blue-500" />
-              <span className="text-black-600 mb-5 text-sm ml-2">Top Rated</span>
-            </label>
-            <label className="block mt-2">
-              <input type="checkbox" className="form-checkbox text-blue-500" />
-              <span className="text-black-600 mb-5 text-sm ml-2">Rising Talent</span>
-            </label>
-          </div>
-
 {/* side bar price 30min */}
 <div className="bg-white p-4 rounded shadow">
   <p className="font-bold text-lg mb-2 text-blue-500">Price per 30 min</p>
