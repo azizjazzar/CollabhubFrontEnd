@@ -24,7 +24,11 @@ export const routes = [
     path: "/collaboration",
     element: <Collaboration/>,
   },
-
+  {
+    name :"Consultation",
+    path: "/do-a-quick-consultation",
+    element: <QuickConsultationPage />,
+  },
 
   {
     name: "Sign In",
@@ -36,11 +40,7 @@ export const routes = [
     path: "/sign-up",
     element: <SignUp />,
   },
-  {
-    name :"Consultation",
-    path: "/do-a-quick-consultation",
-    element: <QuickConsultationPage />,
-  },
+
   {
     path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
     element: <DetailsConsultation />,
