@@ -17,7 +17,7 @@ import App from "./App";
 import { ThemeProvider } from "@material-tailwind/react";
 import "../public/css/tailwind.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Collaboration, Home, Profile, SignIn, SignUp } from "./pages";
+import { Collaboration, FreelancerCollab, Home, Profile, SignIn, SignUp } from "./pages";
 import BuyProject from "./Components/GServices/buyProject";
 import QuickConsultationPage from "./Components/Consultations/QuickConsultationPage";
 import BlogList from "./Components/Blog/BlogList";
@@ -55,6 +55,11 @@ const router = createBrowserRouter([
         name: "Collaboration",
         path: "/collaboration",
         element: <Collaboration/>,
+      },
+      {
+        name: "Freelancercollab",
+        path: "/freelancercollab",
+        element: <FreelancerCollab/>,
       },
     
       {
