@@ -1,6 +1,8 @@
 import { Home, Profile, SignIn, SignUp , Collaboration } from "@/pages";
 import QuickConsultationPage from "@/Components/Consultations/QuickConsultationPage";
 import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
+import BuyProject from "@/Components/GServices/buyProject";
+import ServiceDetails from "@/Components/GServices/serviceDetails";
 
 
 export const routes = [
@@ -28,6 +30,16 @@ export const routes = [
     name :"Consultation",
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />,
+  },
+  {
+    path: "/buyProject",
+    element: <BuyProject />,
+  },
+
+
+  {
+    path: "/serviceDetails/:serviceId",
+    element: <ServiceDetails />,
   },
 
   {
