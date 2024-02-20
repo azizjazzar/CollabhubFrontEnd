@@ -49,12 +49,9 @@ const ServiceDetails = () => {
   };
 
   return (
-    <div>
-      <section className="relative block h-[25vh]">
-        <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105 animate-fade-in" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-      </section>
-      <div className="container mx-auto my-8 p-6 border rounded shadow-lg flex flex-wrap gap-8">
+    <div className="p-10 mt-10">
+    
+      <div className="container mx-auto my-8 p-6 border rounded shadow-lg flex flex-wrap gap-8 ">
         <div className="w-full md:flex md:w-full">
           <div className="w-full md:w-1/2 mb-4 md:mb-0">
             {serviceDetails && (

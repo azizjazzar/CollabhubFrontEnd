@@ -116,11 +116,8 @@ function DetailsConsultation() {
   };
 
   return (
-    <div>
-      <section className="relative block h-[30vh]">
-        <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105 animate-fade-in" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-      </section>
+    <div className='mt-10 p-10 '>
+   
       <div className="container mx-auto my-8 p-6 border rounded shadow-lg relative">
         <img
           src="/img/user1.jpg"

@@ -1,8 +1,6 @@
 import { Avatar, Typography, Button } from "@material-tailwind/react";
-
 import { useAuth } from "@/pages/authContext";
 import { useNavigate } from 'react-router-dom';  // Ajoutez cette ligne
-
 
 import {
   MapPinIcon,
@@ -12,21 +10,12 @@ import {
 import { Footer } from "@/index";
 
 export function Profile() {
-
-  return (
-    <>
-      <section className="relative block h-[50vh]">
-        <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-      </section>
-      <section className="relative bg-white py-16">
-
   const { authData, setAuthUserData } = useAuth();
   const navigate = useNavigate();  // Ajoutez cette ligne
 
   // Vérifie si l'utilisateur est connecté, sinon redirige vers "/home"
   if (!authData.user) {
-    navigate("/home");
+    navigate("/");
     return null;  // Retournez null ou autre chose selon votre logique
   }
 
@@ -39,7 +28,6 @@ export function Profile() {
         <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
       </section>
       <section className="relative bg-white py-16 ml-">
-
         <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-white">
           <div className="container mx-auto">
             <div className="flex flex-col lg:flex-row justify-between">
@@ -54,9 +42,6 @@ export function Profile() {
                 </div>
                 <div className="flex flex-col mt-2">
                   <Typography variant="h4" color="blue-gray">
-                    Jenna Stones
-                  </Typography>
-                  <Typography variant="paragraph" color="gray" className="!mt-0 font-normal">jena@mail.com</Typography>
                     {authData.user.nom}  {authData.user.prenom}
                   </Typography>
                   <Typography variant="paragraph" color="gray" className="!mt-0 font-normal">  {authData.user.email}</Typography>
@@ -64,8 +49,6 @@ export function Profile() {
               </div>
 
               <div className="mt-10 mb-10 flex lg:flex-col justify-between items-center lg:justify-end lg:mb-0 lg:px-4 flex-wrap lg:-mt-5">
-                <Button className="bg-gray-900 w-fit lg:ml-auto">Conntect</Button>
-
                 <div className="flex justify-start py-4 pt-8 lg:pt-4">
                   <div className="mr-4 p-3 text-center">
                     <Typography
@@ -116,11 +99,6 @@ export function Profile() {
 
               </div>
             </div>
-            <div className="-mt-4 container space-y-2">
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                <Typography className="font-medium text-blue-gray-500">
-                  Los Angeles, California
             <div className="mt-11 container space-y-2">
               <div className="flex items-center gap-2">
                 <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
@@ -131,7 +109,6 @@ export function Profile() {
               <div className="flex items-center gap-2">
                 <BriefcaseIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
                 <Typography className="font-medium text-blue-gray-500">
-                  Solution Manager - Creative Tim Officer
                 {authData.user.type}
                 </Typography>
               </div>
@@ -151,8 +128,7 @@ export function Profile() {
                   warm, intimate feel with a solid groove structure. An
                   artist of considerable range.
                 </Typography>
-                <Button variant="text">Show more</Button>
-
+               
               </div>
             </div>
           </div>

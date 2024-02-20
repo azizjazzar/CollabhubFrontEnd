@@ -7,6 +7,7 @@ import BuyProject from "@/Components/GServices/buyProject";
 import ServiceDetails from "@/Components/GServices/serviceDetails";
 
 
+
 export const routes = [
   {
     name: "home",
@@ -18,10 +19,13 @@ export const routes = [
     name: "Find Talent",
     path: "/consultation",
     element: <Profile />,
-    name: "Services",
-    path: "/buyProject",
-    element: <BuyProject />,
+  
+  
   },
+  {  name: "Services",
+  path: "/buyProject",
+  element: <BuyProject />,},
+
   {
     name: "Blog",
     path: "/profile",
@@ -41,7 +45,7 @@ export const routes = [
   {
     name: "Blog",
     path: "/blog",
-    element: <BlogList />,
+    element: <BlogList />}, 
 
   {
     name :"Consultation",

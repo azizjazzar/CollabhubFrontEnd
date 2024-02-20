@@ -4,9 +4,7 @@ import logoSrc from "/public/img/logoshih.png";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import { useNavigate } from 'react-router-dom';
-
 import { motion, AnimatePresence } from 'framer-motion';
-
 
 import {
   Navbar as MTNavbar,
@@ -23,11 +21,9 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState(null);
   const navigate = useNavigate();
-
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
-
 
   const logout = () => {
     // Réinitialiser les données d'authentification
@@ -43,29 +39,6 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
       accessToken: null,
       refreshToken: null,
     }));
-
-    
-    // Rediriger l'utilisateur vers la page de connexion ou la page d'accueil
-    navigate('/sign-in');
-  };
-  const welcomeMessage = authData.user?.nom && authData.user?.prenom ? (
-    <Typography
-      as="li"
-      variant="small"
-      color="inherit"
-      className="capitalize text-white lg:text-white"
-    >
-      Welcome {authData.user.nom} {authData.user.prenom}
-    </Typography>
-  ) : null;
-  
-  React.useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
-  }, []);
-
   };
 
   const toggleProfileDropdown = () => {
@@ -80,30 +53,9 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
     }
   };
 
-
-  const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
-
-  const handleTabClick = (name) => {
-    if (selectedTab === name) {
-      setSelectedTab(null);
-    } else {
-      setSelectedTab(name);
-    }
-  };
-
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }, index) => (
-
-        // Vérifie si l'utilisateur est connecté et si le nom de l'onglet n'est ni "Sign In" ni "Sign Up"
-        (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
-          <Typography
-            key={index} // Utilisation de l'index comme clé
-            as="li"
-            variant="small"
-            color="inherit"
-            className={`capitalize ${selectedTab === name ? 'border-b-2 border-orange-500' : ''} ${isSignUpinPage ? 'text-black' : 'text-white'}`}
-
         (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
           <Typography
             key={index}
@@ -111,7 +63,6 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
             variant="small"
             color="inherit"
             className={`capitalize ${selectedTab === name ? 'border-b-2 border-orange-500' : ''} ${isSignUpinPage ? 'text-black' : 'text-white'} ${name === "Profile" || name === "Settings" || name === "Logout" ? 'hover:text-orange-400' : ''}`}
-
             onClick={() => handleTabClick(name)}
           >
             {href ? (
@@ -142,21 +93,6 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           </Typography>
         )
       ))}
-
-      {welcomeMessage}
-      {authData.user && (
-        <Typography
-          key="logout" // Clé unique pour le bouton de déconnexion
-          as="li"
-          variant="small"
-          color="inherit"
-          className="capitalize text-white lg:text-white cursor-pointer"
-          onClick={logout}
-        >
-          Déconnexion
-        </Typography>
-      )}
-
 
         {authData.user && (
           <div className="profile relative" onClick={toggleProfileDropdown}>
@@ -192,10 +128,8 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           </div>
         )}
 
-
     </ul>
   );
-  
 
   return (
     <MTNavbar color="transparent" className={`p-3 ${isSignUpinPage ? 'text-black' : 'text-white'}`}>

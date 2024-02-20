@@ -31,12 +31,9 @@ function QuickConsultationPage() {
 
   return (
     <div>
-      <section className="relative block h-[25vh]">
-        <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105 animate-fade-in" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-      </section>
+    
 
-      <section className="relative bg-white py-16">
+      <section className="relative bg-white py-16 p-20 mt-12">
         {/* Titre des consultations */}
         <TitleConsultations />
       </section>
@@ -46,9 +43,8 @@ function QuickConsultationPage() {
           <div className="flex justify-center items-center vh-100">
             {/* Bouton "Work With Us" pour ouvrir le modal */}
             {authData.user && (<div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
-              <div className="element">
-                <p>Add a consultation</p>
               <div className="bg-orange-500 hover:bg-orange-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+><button>
                 Add a consultation
                 </button>
               </div>
@@ -60,7 +56,7 @@ function QuickConsultationPage() {
 
       <div className="pt-10"> {/* Adjust the padding top here */}
         <div className="flex mx-auto max-w-7xl">
-          {/* Barre latérale des consultations */}
+          {/* Barre latÃ©rale des consultations */}
           <SideBarConsultations />
           {/* Card de freelancer */}
           <CardsConsultations handleSearchInput={handleSearchInput} handleBookConsultationClick={handleBookConsultationClick} />

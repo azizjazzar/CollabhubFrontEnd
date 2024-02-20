@@ -66,11 +66,8 @@ const BuyProject = () => {
 
   return (
     <>
-      <section className="relative block h-[25vh]">
-        <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105 animate-fade-in" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-      </section>
-      <section className="px-4 pt-20 pb-48">
+      
+      <section className="px-4 pt-20 pb-48 mt-10 p-20">
         <div className="container mx-auto">
           <section className="relative bg-white py-16">
             <ServiceTitle />

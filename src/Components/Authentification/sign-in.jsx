@@ -34,7 +34,7 @@ export function SignIn() {
         });
        
         console.log("lena"+user)
-        navigate('/dashboard');
+        navigate('/');
       } else {
         alert('Email or Password incorrect!');
         setError(response.data.message);
