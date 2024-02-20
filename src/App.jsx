@@ -10,6 +10,8 @@ import BlogDetails from "./Components/Blog/BlogDetails";
 
 
 
+
+
 function App() {
   const { pathname } = useLocation();
 
@@ -30,6 +32,7 @@ function App() {
         <Route path="/projectcollab" element={<ProjectCollab/>} />
         <Route path="/BlogList" element={<BlogList/>} />
         <Route path="/BlogDetails" element={<BlogDetails/>} />
+
 
       </Routes>
     </AuthProvider>

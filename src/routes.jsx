@@ -3,6 +3,9 @@ import QuickConsultationPage from "@/Components/Consultations/QuickConsultationP
 import DetailsConsultation from "@/Components/Consultations/DetailsConsultation";
 import BlogList from "./Components/Blog/BlogList";
 import BlogDetails from "./Components/Blog/BlogDetails";
+import BuyProject from "@/Components/GServices/buyProject";
+import ServiceDetails from "@/Components/GServices/serviceDetails";
+
 
 export const routes = [
   {
@@ -11,13 +14,17 @@ export const routes = [
     element: <Home />,
   },
   {
+
     name: "Find Talent",
     path: "/consultation",
     element: <Profile />,
+    name: "Services",
+    path: "/buyProject",
+    element: <BuyProject />,
   },
   {
-    name: "Find Work",
-    path: "/consultation",
+    name: "Blog",
+    path: "/profile",
     element: <Profile />,
   },
   {
@@ -25,6 +32,7 @@ export const routes = [
     path: "/collaboration",
     element: <Collaboration/>,
   },
+
   {
     name :"Consultation",
     path: "/do-a-quick-consultation",
@@ -34,6 +42,17 @@ export const routes = [
     name: "Blog",
     path: "/blog",
     element: <BlogList />,
+
+  {
+    name :"Consultation",
+    path: "/do-a-quick-consultation",
+    element: <QuickConsultationPage />,
+  },
+
+  {
+    path: "/serviceDetails/:serviceId",
+    element: <ServiceDetails />,
+
   },
   {
     name: "Sign In",
@@ -50,10 +69,12 @@ export const routes = [
     path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
     element: <DetailsConsultation />,
   },
+
   {
     path: "/blog/:id",  // Ajoutez la route pour les détails du blog
     element: <BlogDetails />,
   },
+
 ];
 
 export default routes;
