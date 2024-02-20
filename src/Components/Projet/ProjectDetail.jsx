@@ -58,11 +58,8 @@ const ProjectDetail = () => {
                 <div className="md:w-1/2 bg-white px-8 py-10 shadow-md">
                     <div className='w-full flex items-center justify-between'>
                         <div className='w-3/4 flex gap-2'>
-                            <img
-                                src={project.image} // Replace with actual image source
-                                className='w-20 h-20 md:w-24 md:h-20 rounded'
-                            />
-
+                           
+                                {/* lena img */}
                             <div className='flex flex-col'>
                                 <p className='text-xl font-semibold text-gray-600'>
                                     {project.title}
