@@ -20,6 +20,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Home, SignIn, SignUp } from "./pages";
 import ProjectPage from "./Components/Projet/ProjectPage";
 import ProjectDetail from "./Components/Projet/ProjectDetail";
+import ChatApplication from "./Components/Chat/Chatbox";
+
 
 const router = createBrowserRouter([
   {
@@ -49,7 +51,11 @@ const router = createBrowserRouter([
         element: <ProjectDetail/>
       },
 
-      
+       {
+        path:"/chat",
+        element: <ChatApplication/>
+      },
+
    
      
 

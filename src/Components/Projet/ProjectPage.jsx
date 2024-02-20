@@ -1,8 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProjectCards from './ProjectCards';
 import Pagination from './Pagination';
+import AddProject from './AddProject'; // Ensure this component is correctly imported
+import { Footer } from '@/index'; // Ensure the Footer is correctly imported
+
 const ProjectPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12; // Adjusted pageSize for demonstration
@@ -12,6 +14,7 @@ const ProjectPage = () => {
   const [uniqueTechnologies, setUniqueTechnologies] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortCriteria, setSortCriteria] = useState('');
+  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -65,7 +68,6 @@ const ProjectPage = () => {
 
   const sortProjects = (projects, criteria) => {
     switch (criteria) {
-
       case 'budget':
         return [...projects].sort((b, a) => a.budget - b.budget);
       case 'postedDate':
@@ -78,66 +80,65 @@ const ProjectPage = () => {
     }
   };
 
+  const toggleAddProjectModal = () => setShowAddProjectModal(!showAddProjectModal);
+
   // Calculate current projects for the page
   const startIndex = (currentPage - 1) * pageSize;
   const currentProjects = filteredProjects.slice(startIndex, startIndex + pageSize);
 
- 
   return (
-    <div className="grid grid-cols-4 gap-8 p-20">
-      <div className="col-span-1 p-6 bg-white rounded-lg shadow-sm">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Technologies</h2>
-          <ul className="space-y-2">
-            {uniqueTechnologies.map((technology, index) => (
-              <li
-                key={index}
-                className={`cursor-pointer text-gray-700 hover:text-blue-500 ${selectedCategory === technology ? 'text-blue-600 font-semibold bg-blue-100' : 'font-normal'} rounded-md p-2 hover:bg-blue-50`}
-                onClick={() => handleCategoryChange(technology)}
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        <div className="grid grid-cols-4 gap-8 p-20">
+          <div className="col-span-1 p-6 bg-white rounded-lg shadow-sm">
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Technologies</h2>
+              <ul className="space-y-2">
+                {uniqueTechnologies.map((technology, index) => (
+                  <li
+                    key={index}
+                    className={`cursor-pointer text-gray-700 hover:text-blue-500 ${selectedCategory === technology ? 'text-blue-600 font-semibold bg-blue-100' : 'font-normal'} rounded-md p-2 hover:bg-blue-50`}
+                    onClick={() => handleCategoryChange(technology)}
+                  >
+                    {technology}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="col-span-3 p-10 bg-white rounded-lg shadow-md relative">
+            <button
+              className="absolute right-0 top-0 mr-4 mt-11 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
+              onClick={toggleAddProjectModal}
+            >
+              Add Project
+            </button>
+            <div className="sort-dropdown mb-4">
+              <label htmlFor="sortCriteria">Sort By: </label>
+              <select
+                id="sortCriteria"
+                value={sortCriteria}
+                onChange={(e) => setSortCriteria(e.target.value)}
+                className="border p-2 rounded"
               >
-                {technology}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="col-span-3 p-10 bg-white rounded-lg shadow-md">
-      <div className="sort-dropdown mb-4">
-  <label htmlFor="sortCriteria">Sort By: </label>
-  <select
-    id="sortCriteria"
-    value={sortCriteria}
-    onChange={(e) => setSortCriteria(e.target.value)}
-    className="border p-2 rounded"
-  >
-    <option value="">All</option>
-    <option value="budget">Budget</option>
-    <option value="postedDate">Posted Date</option>
-    <option value="expertiseLevel">Expertise Level</option>
-  </select>
-</div>
-      {/* Search Bar */}
-      <div className="relative mb-4">
-  <input
-    type="text"
-    placeholder="Search projects..."
-    className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500"
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-  />
-  <svg
-    className="absolute right-3 top-3 h-5 w-5 text-gray-400"
-    fill="none"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path d="M21 21l-6-6M3 8a9 9 0 1118 0 9 9 0 01-18 0z"></path>
-  </svg>
-</div>
-        <ProjectCards projects={filteredProjects.slice((currentPage-1)*pageSize, currentPage*pageSize)} currentPage={currentPage} pageSize={pageSize} />
+                <option value="">All</option>
+                <option value="budget">Budget</option>
+                <option value="postedDate">Posted Date</option>
+                <option value="expertiseLevel">Expertise Level</option>
+              </select>
+            </div>
+            {/* Search Bar */}
+            <div className="relative mb-4">
+              <input
+                type="text"
+                placeholder="Search projects..."
+                className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {/* Search icon SVG here */}
+            </div>
+              <ProjectCards projects={filteredProjects.slice((currentPage-1)*pageSize, currentPage*pageSize)} currentPage={currentPage} pageSize={pageSize} />
         {filteredProjects.length > 0 && (
           <Pagination
             onPageChange={handlePageChange}
@@ -146,9 +147,14 @@ const ProjectPage = () => {
             pageSize={pageSize}
           />
         )}
+            {showAddProjectModal && (
+              <AddProject toggleModal={toggleAddProjectModal} />
+            )}
+          </div>
+        </div>
       </div>
+      <Footer />
     </div>
-    
   );
 };
 

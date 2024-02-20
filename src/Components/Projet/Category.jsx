@@ -16,6 +16,7 @@ const Category = ({ onSelectCategory, selectedCategory, uniqueTechnologies }) =>
           key={technology}
         >
           {technology}
+          
         </button>
       ))}
     </div>

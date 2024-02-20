@@ -22,20 +22,19 @@ const calculateTimeDifference = (postedDate) => {
 const ProjectCard = ({ project }) => {
   const postedInfo = calculateTimeDifference(project.posted);
 
-  
   return (
     <Link to={`/projects/${project._id}`} className='block bg-white rounded-lg shadow-md p-6 transition duration-300 transform hover:shadow-lg hover:scale-105'>
-      <div className='mb-4 flex justify-between items-center'>
+      <div className='mb-4'>
         <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getColorForExpertise(project.expertiseLevel)}`}>
           {project.expertiseLevel}
         </span>
-        <span className='text-gray-500 text-xs'>{postedInfo}</span>
+        <span className='text-gray-500 text-xs ml-2'>{postedInfo}</span>
       </div>
       <h3 className='text-xl font-semibold text-green-600 hover:underline mb-2'>{project.title}</h3>
-      <p className='text-gray-700 mb-4 line-clamp-3'>{project.description}</p> {/* Tailwind CSS line clamp for multiline ellipsis */}
+      <p className='text-gray-700 mb-4 line-clamp-3'>{project.description}</p>
       <div className='flex justify-between items-center text-gray-600'>
         <span>Location: {project.location.city}, {project.location.state}</span>
-        <span className=' font-semibold text-green-700 ml-20'>Budget: ${project.budget}</span>
+        <span className=' font-semibold text-green-700'>Budget: ${project.budget}</span>
       </div>
       <div className='mt-4 flex flex-wrap gap-2'>
         {project.technologies.map((tech, index) => (
@@ -45,6 +44,7 @@ const ProjectCard = ({ project }) => {
     </Link>
   );
 };
+
 function getColorForExpertise(expertiseLevel) {
   switch (expertiseLevel) {
     case 'Junior': return 'bg-yellow-200 text-yellow-800';
@@ -54,7 +54,6 @@ function getColorForExpertise(expertiseLevel) {
     default: return 'bg-gray-200 text-gray-800';
   }
 }
-
 
 const ProjectCards = ({ projects }) => {
   return <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>{projects.map((project) => <ProjectCard key={project.id} project={project} />)}</div>;
