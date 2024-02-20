@@ -46,8 +46,9 @@ function QuickConsultationPage() {
           <div className="flex justify-center items-center vh-100">
             {/* Bouton "Work With Us" pour ouvrir le modal */}
             {authData.user && (<div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
+              <div className="element">
+                <p>Add a consultation</p>
               <div className="bg-orange-500 hover:bg-orange-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-><button>
                 Add a consultation
                 </button>
               </div>

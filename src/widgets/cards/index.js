@@ -6,3 +6,4 @@ export * from "@/widgets/cards/cardsConsultations";
 export * from "@/widgets/cards/InfoCard"; 
 export * from "@/widgets/cards/service-card";
 
+
