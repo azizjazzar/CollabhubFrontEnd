@@ -1,12 +1,28 @@
 import Calendar from '@/widgets/layout/calendar';
-import React, { useState } from 'react';
-import { Footer } from '..';
-
+import React, { useState, useEffect } from 'react';
+import { Footer } from '../..';
+import { useParams } from 'react-router-dom';
 
 
 export function FreelancerCollab() {
+  const { id_project } = useParams();
+
+  const [Tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/tasks`)
+      .then(response => response.json())
+      .then(data => setTasks(data))
+      .catch(error => console.error("Error fetching consultation details:", error));
+  }, [id_project]);
 
 
+  const getFormattedTime = (dateString) => {
+    const dateObject = new Date(dateString);
+    const hours = dateObject.getHours();
+    const minutes = dateObject.getMinutes();
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
 
   return (
     
@@ -38,22 +54,20 @@ export function FreelancerCollab() {
               
 
                <div class="md:py-8 py-5 md:px-16 px-5 dark:bg-gray-700 bg-gray-50 rounded-b">
-                          <div class="px-4">
-                              <div class="border-b pb-4 border-gray-400 border-dashed">
-                                  <p class="text-xs font-light leading-3 text-gray-500 dark:text-gray-300">9:00 AM</p>
-                                  <a tabindex="0" class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2">Zoom call with design team</a>
-                                  <p class="text-sm pt-2 leading-4 leading-none text-gray-600 dark:text-gray-300">Discussion on UX sprint and Wireframe review</p>
-                              </div>
-                              <div class="border-b pb-4 border-gray-400 border-dashed pt-5">
-                                  <p class="text-xs font-light leading-3 text-gray-500 dark:text-gray-300">10:00 AM</p>
-                                  <a tabindex="0" class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2">Orientation session with new hires</a>
-                              </div>
-                              <div class="border-b pb-4 border-gray-400 border-dashed pt-5">
-                                  <p class="text-xs font-light leading-3 text-gray-500 dark:text-gray-300">9:00 AM</p>
-                                  <a tabindex="0" class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2">Zoom call with design team</a>
-                                  <p class="text-sm pt-2 leading-4 leading-none text-gray-600 dark:text-gray-300">Discussion on UX sprint and Wireframe review</p>
-                              </div>
-                          </div>
+                          
+                           {Tasks.map((item,index) => (
+                            <div class="px-4 my-2">
+                                <div key={index} class="border-b pb-4 border-gray-400 border-dashed">
+                                <p class="text-xs font-light leading-3 text-gray-500 dark:text-gray-300">{getFormattedTime(item.dateStart)}</p>
+                                <a tabindex="0" class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2">{item.name}</a>
+                                <p class="text-sm pt-2 leading-4 leading-none text-gray-600 dark:text-gray-300">{item.description}</p>
+                                </div>
+                                </div>
+
+                           ))}
+                             
+
+                         
                         </div>
    
                 </section>
