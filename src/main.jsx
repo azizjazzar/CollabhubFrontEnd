@@ -24,6 +24,10 @@ import BlogList from "./Components/Blog/BlogList";
 import ServiceDetails from "./Components/GServices/serviceDetails";
 import DetailsConsultation from "./Components/Consultations/DetailsConsultation";
 import BlogDetails from "./Components/Blog/BlogDetails";
+import ProjectPage from "./Components/Projet/ProjectPage";
+import ProjectDetail from "./Components/Projet/ProjectDetail";
+import UploadJob from "./Components/Projet/UploadJob";
+import ChatApplication from "./Components/Chat/Chatbox";
 
 
 
@@ -92,6 +96,24 @@ const router = createBrowserRouter([
       {
         path: "/blog/:id",  // Ajoutez la route pour les détails du blog
         element: <BlogDetails />,
+      },
+
+       {
+        path:"jobs",
+        element: <ProjectPage/>
+      },
+      {
+        path:"/projects/:projectId",
+        element: <ProjectDetail/>
+      },
+
+      {
+        path:"/addproject",
+        element: <UploadJob/>
+      },
+      {
+        path:"/chat",
+        element: <ChatApplication/>
       },
     ],
   },
