@@ -4,6 +4,7 @@ import logoSrc from "/public/img/logoshih.png";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import {
   Navbar as MTNavbar,
@@ -12,6 +13,7 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from "flowbite-react";
 
 export function Navbar({ brandName, routes, action, logoSrc }) {
   const { authData, setAuthUserData } = useAuth();
@@ -21,6 +23,8 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const navigate = useNavigate();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
+  const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
+
   const logout = () => {
     // Réinitialiser les données d'authentification
     setAuthUserData({
@@ -28,29 +32,18 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
       accessToken: null,
       refreshToken: null,
     });
-    
+
     // Stocker les données d'authentification dans le localStorage
     localStorage.setItem('authData', JSON.stringify({
       user: null,
       accessToken: null,
       refreshToken: null,
     }));
-    
   };
-
 
   const toggleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
   };
-  
-  React.useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
-  }, []);
-
-  const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
 
   const handleTabClick = (name) => {
     if (selectedTab === name) {
@@ -63,14 +56,13 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }, index) => (
-        // Vérifie si l'utilisateur est connecté et si le nom de l'onglet n'est ni "Sign In" ni "Sign Up"
         (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
           <Typography
-            key={index} // Utilisation de l'index comme clé
+            key={index}
             as="li"
             variant="small"
             color="inherit"
-            className={`capitalize ${selectedTab === name ? 'border-b-2 border-orange-500' : ''} ${isSignUpinPage ? 'text-black' : 'text-white'}`}
+            className={`capitalize ${selectedTab === name ? 'border-b-2 border-orange-500' : ''} ${isSignUpinPage ? 'text-black' : 'text-white'} ${name === "Profile" || name === "Settings" || name === "Logout" ? 'hover:text-orange-400' : ''}`}
             onClick={() => handleTabClick(name)}
           >
             {href ? (
@@ -101,35 +93,44 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           </Typography>
         )
       ))}
-{authData.user && (
-  <div className="profile relative" onClick={toggleProfileDropdown}>
-    <img src="/img/back1.jpg" alt="User Image" className="user-image w-8 h-8 rounded-full" />
-    {showProfileDropdown && (
-      <div className="profile-dropdown absolute bg-white border border-gray-200 rounded-lg shadow-md p-2 top-full mt-2 left-1/2 transform -translate-x-1/2">
-        <ul className="text-black w-56">
-          <li className="flex items-center pb-4">
-            <img src="/img/back1.jpg" alt="Logo" className="h-10 w-10 mr-9 rounded-full" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
-            <span>{authData.user.nom} {authData.user.prenom}</span>
-          </li>
-          <li className="flex items-center">
-            <img src="/img/back1.jpg" alt="Logo" className="h-6 w-6 mr-4" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
-            <span>Profile Settings</span>
-          </li>
-          <li className="flex items-center " onClick={logout}>
-            <img src="/img/back1.jpg" alt="Logo" className="h-6 w-6 mr-4" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
-            <span>Logout</span>
-          </li>
-        </ul>
-      </div>
-    )}
-  </div>
-)}
 
-
+        {authData.user && (
+          <div className="profile relative" onClick={toggleProfileDropdown}>
+            <img src="/img/team-5.png" alt="User Image" className="user-image w-8 h-8 rounded-full" />
+            <AnimatePresence>
+              {showProfileDropdown && (
+                <motion.div
+                  className="profile-dropdown absolute bg-blue-gray-50 border border-gray-200 rounded-lg shadow-md p-2 pb top-11 -left-28"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ul className="text-black w-56">
+                    <li className="flex items-center ml-9 relative pt-2 pb-2">
+                      <img src="/img/team-5.png" alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
+                      <span>{authData.user.nom} {authData.user.prenom}</span>
+                    </li>
+                    <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>
+                    <li className="flex items-center justify-center pt-3" onClick={() => navigate("/profile")}>
+                      <Button className="hover:text-orange-400 text-black">Profile</Button>
+                    </li>
+                    <li className="flex items-center justify-center" onClick={logout}>
+                      <Button className="hover:text-orange-400 text-black">Settings</Button>
+                    </li>
+                    <li className="flex items-center justify-center" onClick={logout}>
+                      <Button className="hover:text-orange-400 text-black">Logout</Button>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
 
     </ul>
   );
-  
+
   return (
     <MTNavbar color="transparent" className={`p-3 ${isSignUpinPage ? 'text-black' : 'text-white'}`}>
       <div className="container mx-auto flex items-center justify-between">

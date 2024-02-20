@@ -12,13 +12,13 @@ export const routes = [
     element: <Home />,
   },
   {
-    name: "Find Talent",
-    path: "/consultation",
-    element: <Profile />,
+    name: "Services",
+    path: "/buyProject",
+    element: <BuyProject />,
   },
   {
-    name: "Find Work",
-    path: "/consultation",
+    name: "Blog",
+    path: "/profile",
     element: <Profile />,
   },
   {
@@ -31,11 +31,6 @@ export const routes = [
     path: "/do-a-quick-consultation",
     element: <QuickConsultationPage />,
   },
-  {
-    path: "/buyProject",
-    element: <BuyProject />,
-  },
-
 
   {
     path: "/serviceDetails/:serviceId",
