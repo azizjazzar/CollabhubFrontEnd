@@ -19,6 +19,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState(null);
   const navigate = useNavigate();
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const logout = () => {
     // Réinitialiser les données d'authentification
@@ -35,19 +36,12 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
       refreshToken: null,
     }));
     
-    // Rediriger l'utilisateur vers la page de connexion ou la page d'accueil
-    navigate('/sign-in');
   };
-  const welcomeMessage = authData.user?.nom && authData.user?.prenom ? (
-    <Typography
-      as="li"
-      variant="small"
-      color="inherit"
-      className="capitalize text-white lg:text-white"
-    >
-      Welcome {authData.user.nom} {authData.user.prenom}
-    </Typography>
-  ) : null;
+
+
+  const toggleProfileDropdown = () => {
+    setShowProfileDropdown(!showProfileDropdown);
+  };
   
   React.useEffect(() => {
     window.addEventListener(
@@ -107,23 +101,35 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
           </Typography>
         )
       ))}
-      {welcomeMessage}
-      {authData.user && (
-        <Typography
-          key="logout" // Clé unique pour le bouton de déconnexion
-          as="li"
-          variant="small"
-          color="inherit"
-          className="capitalize text-white lg:text-white cursor-pointer"
-          onClick={logout}
-        >
-          Déconnexion
-        </Typography>
-      )}
+{authData.user && (
+  <div className="profile relative" onClick={toggleProfileDropdown}>
+    <img src="/img/back1.jpg" alt="User Image" className="user-image w-8 h-8 rounded-full" />
+    {showProfileDropdown && (
+      <div className="profile-dropdown absolute bg-white border border-gray-200 rounded-lg shadow-md p-2 top-full mt-2 left-1/2 transform -translate-x-1/2">
+        <ul className="text-black w-56">
+          <li className="flex items-center pb-4">
+            <img src="/img/back1.jpg" alt="Logo" className="h-10 w-10 mr-9 rounded-full" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
+            <span>{authData.user.nom} {authData.user.prenom}</span>
+          </li>
+          <li className="flex items-center">
+            <img src="/img/back1.jpg" alt="Logo" className="h-6 w-6 mr-4" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
+            <span>Profile Settings</span>
+          </li>
+          <li className="flex items-center " onClick={logout}>
+            <img src="/img/back1.jpg" alt="Logo" className="h-6 w-6 mr-4" /> {/* Ajoutez votre chemin vers le logo et augmentez la marge droite */}
+            <span>Logout</span>
+          </li>
+        </ul>
+      </div>
+    )}
+  </div>
+)}
+
+
+
     </ul>
   );
   
-
   return (
     <MTNavbar color="transparent" className={`p-3 ${isSignUpinPage ? 'text-black' : 'text-white'}`}>
       <div className="container mx-auto flex items-center justify-between">
