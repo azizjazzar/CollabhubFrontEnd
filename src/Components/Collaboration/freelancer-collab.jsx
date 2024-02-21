@@ -4,17 +4,19 @@ import { Footer } from '../..';
 import { useParams } from 'react-router-dom';
 
 
-export function FreelancerCollab() {
-  const { id_project } = useParams();
 
+export function FreelancerCollab(props) {
+
+
+  const { projectId} = useParams();
   const [Tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/tasks`)
+    fetch(`http://localhost:3000/tasks/project/${projectId}`)
       .then(response => response.json())
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching consultation details:", error));
-  }, [id_project]);
+  }, [projectId]);
 
 
   const getFormattedTime = (dateString) => {
@@ -73,7 +75,7 @@ export function FreelancerCollab() {
                 </section>
 
                 <section className="relative bg-white py-16">
-                 <Calendar/>
+                 <Calendar data={Tasks} />
 
    
                 </section>
