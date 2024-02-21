@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Navbar as MTNavbar, Typography, IconButton } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
- // Replace with the correct path to your auth hook
 import logoSrc from "/public/img/logoshih.png";
 import { useAuth } from "@/pages/authContext";
+import { AnimatePresence, motion } from "framer-motion"; 
+import { Button } from "flowbite-react";
 
 function Navbar({ brandName, routes, action }) {
   const { authData, setAuthUserData } = useAuth();
@@ -14,8 +15,6 @@ function Navbar({ brandName, routes, action }) {
   const [selectedTab, setSelectedTab] = useState(null);
   const navigate = useNavigate();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-
-  const isSignUpinPage = location.pathname === "/sign-up" || location.pathname === "/sign-in";
 
   const logout = () => {
     setAuthUserData({
@@ -29,47 +28,24 @@ function Navbar({ brandName, routes, action }) {
       accessToken: null,
       refreshToken: null,
     }));
-
-    navigate('/sign-in');
   };
-
-  const welcomeMessage = authData.user?.nom && authData.user?.prenom ? (
-    <Typography
-      as="li"
-      variant="small"
-      color="inherit"
-      className="capitalize text-white lg:text-white"
-    >
-      Welcome {authData.user.nom} {authData.user.prenom}
-    </Typography>
-  ) : null;
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 960) {
-        setOpenNav(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const toggleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
   };
 
   const handleTabClick = (name) => {
-    setSelectedTab((prevTab) => (prevTab === name ? null : name));
+    if (selectedTab === name) {
+      setSelectedTab(null);
+    } else {
+      setSelectedTab(name);
+    }
   };
 
   const navList = (
     <ul className="mb-4 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }) => (
-        (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
+        (authData.user && (name === "sign in" || name === "sign up")) ? null : (
           <Typography
             key={name}
             as="li"
@@ -105,6 +81,42 @@ function Navbar({ brandName, routes, action }) {
           </Typography>
         )
       ))}
+      {/* Utilisation du composant ProfileMenu */}
+      {authData.user && (
+          <div className="profile relative ml-24" onClick={toggleProfileDropdown}>
+            <img src="/img/team-5.png" alt="User Image" className="user-image w-9 h-9 rounded-full" />
+            <AnimatePresence>
+              {showProfileDropdown && (
+                <motion.div
+                  className="profile-dropdown absolute bg-blue-gray-50 border border-gray-200 rounded-lg shadow-md p-2 pb top-11 -left-28"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ul className="text-black w-56">
+                    <li className="flex items-center ml-9 relative pt-2 pb-2">
+                      <img src="/img/team-5.png" alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
+                      <span>{authData.user.nom} {authData.user.prenom}</span>
+                    </li>
+                    <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>
+                    <li className="flex items-center justify-center pt-3" onClick={() => navigate("/profile")}>
+                      <Button  className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">Profile</Button>
+                    </li>
+                    <li className="flex items-center justify-center" >
+                      <Button  className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">Settings</Button>
+                    </li>
+                    <li className="flex items-center justify-center" onClick={logout}>
+                    <Button className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">Logout</Button>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+        {//Fin
+        }
     </ul>
   );
 

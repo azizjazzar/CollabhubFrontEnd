@@ -1,18 +1,24 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo , useEffect} from 'react';
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
-import { useNavigate } from 'react-router-dom';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import countryList from 'react-select-country-list';
 import axios from 'axios';
+import { useAuth } from '../../pages/authContext';
 
 export function SignUp() {
+  
+  const { authData, setAuthUserData } = useAuth();
   const clientId ="932936140177-958d507k9pfvmkd53o46and5uv941q8l.apps.googleusercontent.com"
   const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '', Email: '', ConfirmPassword: '', Country: '', Checkbox: true, Type: "Utilisateur" });
   const [selectedCountry, setSelectedCountry] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate(); 
-
+  useEffect(() => {
+    if (authData && authData.accessToken) { 
+      navigate("/");
+    }
+  }, [authData, navigate]);
   const onSuccess = (res)=>{
     console.log("Login Succes curent user:",res.profileobj)
 

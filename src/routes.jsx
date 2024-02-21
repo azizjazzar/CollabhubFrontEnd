@@ -14,14 +14,7 @@ export const routes = [
     path: "/home",
     element: <Home />,
   },
-  {
-
-    name: "Find Talent",
-    path: "/consultation",
-    element: <Profile />,
   
-  
-  },
   {  name: "Services",
   path: "/buyProject",
   element: <BuyProject />,},
@@ -45,7 +38,8 @@ export const routes = [
   {
     name: "Blog",
     path: "/blog",
-    element: <BlogList />}, 
+    element: <BlogList />
+  }, 
 
   {
     name :"Consultation",
@@ -59,23 +53,23 @@ export const routes = [
 
   },
   {
-    name: "Sign In",
+    name: "sign in",
     path: "/sign-in",
     element: <SignIn />,
   },
   {
-    name: "Sign Up",
+    name: "sign up",
     path: "/sign-up",
     element: <SignUp />,
   },
 
   {
-    path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
+    path: "/details-consultation/:id",
     element: <DetailsConsultation />,
   },
 
   {
-    path: "/blog/:id",  // Ajoutez la route pour les détails du blog
+    path: "/blog/:id",
     element: <BlogDetails />,
   },
 

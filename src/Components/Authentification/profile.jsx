@@ -1,145 +1,119 @@
-import { Avatar, Typography, Button } from "@material-tailwind/react";
+import { useState, useEffect } from 'react';
+import { Avatar, Typography } from "@material-tailwind/react";
 import { useAuth } from "@/pages/authContext";
-import { useNavigate } from 'react-router-dom';  // Ajoutez cette ligne
-
-import {
-  MapPinIcon,
-  BriefcaseIcon,
-  BuildingLibraryIcon,
-} from "@heroicons/react/24/solid";
-import { Footer } from "@/index";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { MapPinIcon, BriefcaseIcon, BuildingLibraryIcon } from "@heroicons/react/24/solid";
 
 export function Profile() {
-  const { authData, setAuthUserData } = useAuth();
-  const navigate = useNavigate();  // Ajoutez cette ligne
+  const { authData } = useAuth();
+  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  // Vérifie si l'utilisateur est connecté, sinon redirige vers "/home"
-  if (!authData.user) {
-    navigate("/");
-    return null;  // Retournez null ou autre chose selon votre logique
-  }
+  useEffect(() => {
+    if (!authData.user) {
+      navigate("/");
+    } else {
+      fetchUserPicture();
+    }
+  }, [authData.user, navigate]);
 
+  const fetchUserPicture = async () => {
+    if (authData.user && authData.user.email) {
+      try {
+        const response = await axios.get(`https://colabhub.onrender.com/api/auth/image/${authData.user.email}`, {
+          responseType: 'blob',
+        });
+
+        const imageUrl = URL.createObjectURL(response.data);
+        setSelectedImage(imageUrl);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+        setSelectedImage('/img/default-avatar.png'); // Utilisez une image par défaut en cas d'erreur
+      }
+    }
+  };
+
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('images', file);
+
+    try {
+      await axios.put(`https://colabhub.onrender.com/api/auth/updatePicture/${authData.user.email}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      fetchUserPicture(); // Rafraîchir l'image après le téléchargement
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
 
   return (
     <>
-    {  !authData.user && (navigate("/home"))}
       <section className="relative block h-[41vh]">
         <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
+        <div className="absolute top-0 h-full w-full bg-black/60" />
       </section>
-      <section className="relative bg-white py-16 ml-">
-        <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-white">
-          <div className="container mx-auto">
-            <div className="flex flex-col lg:flex-row justify-between">
-              <div className="relative flex gap-6 items-start">
-                <div className="-mt-20 w-40">
-                  <Avatar
-                    src="/img/team-5.png"
-                    alt="Profile picture"
-                    variant="circular"
-                    className="h-full w-full"
-                  />
-                </div>
-                <div className="flex flex-col mt-2">
-                  <Typography variant="h4" color="blue-gray">
-                    {authData.user.nom}  {authData.user.prenom}
-                  </Typography>
-                  <Typography variant="paragraph" color="gray" className="!mt-0 font-normal">  {authData.user.email}</Typography>
-                </div>
-              </div>
-
-              <div className="mt-10 mb-10 flex lg:flex-col justify-between items-center lg:justify-end lg:mb-0 lg:px-4 flex-wrap lg:-mt-5">
-                <div className="flex justify-start py-4 pt-8 lg:pt-4">
-                  <div className="mr-4 p-3 text-center">
-                    <Typography
-                      variant="lead"
-                      color="blue-gray"
-                      className="font-bold uppercase"
-                    >
-                      22
-                    </Typography>
-                    <Typography
-                      variant="small"
-                      className="font-normal text-blue-gray-500"
-                    >
-                      Friends
-                    </Typography>
-                  </div>
-                  <div className="mr-4 p-3 text-center">
-                    <Typography
-                      variant="lead"
-                      color="blue-gray"
-                      className="font-bold uppercase"
-                    >
-                      10
-                    </Typography>
-                    <Typography
-                      variant="small"
-                      className="font-normal text-blue-gray-500"
-                    >
-                      Photos
-                    </Typography>
-                  </div>
-                  <div className="p-3 text-center lg:mr-4">
-                    <Typography
-                      variant="lead"
-                      color="blue-gray"
-                      className="font-bold uppercase"
-                    >
-                      89
-                    </Typography>
-                    <Typography
-                      variant="small"
-                      className="font-normal text-blue-gray-500"
-                    >
-                      Comments
-                    </Typography>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            <div className="mt-11 container space-y-2">
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                <Typography className="font-medium text-blue-gray-500">
-                 {authData.user.adresse}
-                </Typography>
-              </div>
-              <div className="flex items-center gap-2">
-                <BriefcaseIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                <Typography className="font-medium text-blue-gray-500">
-                {authData.user.type}
-                </Typography>
-              </div>
-              <div className="flex items-center gap-2">
-                <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                <Typography className="font-medium text-blue-gray-500">
-                  University of Computer Science
-                </Typography>
-              </div>
-            </div>
-            <div className="mb-10 py-6">
-              <div className="flex w-full flex-col items-start lg:w-1/2">
-                <Typography className="mb-6 font-normal text-blue-gray-500">
-                  An artist of considerable range, Jenna the name taken by
-                  Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                  performs and records all of his own music, giving it a
-                  warm, intimate feel with a solid groove structure. An
-                  artist of considerable range.
-                </Typography>
-               
-              </div>
+      <section className="relative bg-white py-16">
+        <div className="container mx-auto">
+          <div className="flex flex-col lg:flex-row justify-between">
+            <div className="w-40 -mt-20">
+              <input 
+                type="file" 
+                id="avatar" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={handleImageChange} 
+              />
+              <label htmlFor="avatar">
+                <Avatar
+                  src={selectedImage || "/img/default-avatar.png"}
+                  alt="Profile picture"
+                  variant="circular"
+                  className="h-full w-full"
+                />
+              </label>
             </div>
           </div>
-
-
+          <div className="mt-11 container space-y-2">
+            <div className=" items-center gap-2">
+              <Typography variant="h4" color="blue-gray">
+                {authData.user.nom} {authData.user.prenom}
+              </Typography>
+              <Typography variant="paragraph" color="gray" className="!mt-0 font-normal">
+                {authData.user.email}
+              </Typography>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
+              <Typography className="font-medium text-blue-gray-500">
+                {authData.user.adresse}
+              </Typography>
+            </div>
+            <div className="flex items-center gap-2">
+              <BriefcaseIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
+              <Typography className="font-medium text-blue-gray-500">
+                {authData.user.type}
+              </Typography>
+            </div>
+            <div className="flex items-center gap-2">
+              <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
+              <Typography className="font-medium text-blue-gray-500">
+                University of Computer Science
+              </Typography>
+            </div>
+          </div>
         </div>
       </section>
-      <div className="bg-white">
-        <Footer />
-      </div>
-
     </>
   );
 }

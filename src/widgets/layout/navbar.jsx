@@ -56,7 +56,7 @@ export function Navbar({ brandName, routes, action, logoSrc }) {
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }, index) => (
-        (authData.user && (name === "Sign In" || name === "Sign Up")) ? null : (
+        (authData.user && (name === "sign in" || name === "sign up")) ? null : (
           <Typography
             key={index}
             as="li"

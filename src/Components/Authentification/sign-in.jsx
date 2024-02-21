@@ -5,11 +5,11 @@ import axios from 'axios';
 import { useAuth } from '../../pages/authContext';
 
 export function SignIn() {
-  const { user, setAuthUserData } = useAuth();
+  const { authData, setAuthUserData } = useAuth();
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [userlogin, setUserLogin] = useState({ email: '', password: '' });
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,13 +27,11 @@ export function SignIn() {
         const response2 = await axios.get(apiUrlUser);
 
         setAuthUserData({
-          
           user: response2.data,
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
         });
        
-        console.log("lena"+user)
         navigate('/');
       } else {
         alert('Email or Password incorrect!');
@@ -43,8 +41,14 @@ export function SignIn() {
       setError('An error occurred during login');
     }
   };
-  
+
+  useEffect(() => {
+    if (authData && authData.accessToken) { 
+      navigate("/");
+    }
+  }, [authData, navigate]);
   return (
+
     <section className=" flex gap-4 pt-32">
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
