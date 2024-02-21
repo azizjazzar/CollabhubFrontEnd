@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Card, Input, Textarea, Button, Typography, Select } from "@material-tailwind/react";
+import { useAuth } from "@/pages/authContext";
 
 export function AddServiceForm({ open, onClose }) {
-  const staticFreelancerId = '65c78e6a099ed33f01e14b56';
+  const { authData } = useAuth();
+  const staticFreelancerId = authData?.user?._id; 
 
   const [deliveryTime, setDeliveryTime] = useState('');
   const [title, setTitle] = useState('');

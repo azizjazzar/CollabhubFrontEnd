@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useAuth } from "@/pages/authContext";
+import axios from "axios"; 
 
-function ServiceCard({ title, image, deliveryTime, price, user }) {
-  // Utilisateur statique à afficher sur chaque carte de service
+function ServiceCard({ title, image, deliveryTime, price, user, freelancerid }) {
   const staticUser = {
     name: "Joe",
     image: "/img/team-1.jpg",
     position: "Freelancer",
   };
 
+  const { authData } = useAuth();
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+
+
 
   const toggleTooltip = () => {
     setIsTooltipVisible(!isTooltipVisible);
@@ -21,7 +27,6 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
         {image && (
           <img
             src={image}
-            alt={title}
             className="rounded-t-lg w-full h-full object-cover"
           />
         )}
@@ -56,7 +61,14 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
               className="rounded-full w-12 h-12"
             />
           )}
-          {!user && staticUser.image && (
+          {!user && userData && userData.image && (
+            <img
+              src={userData.image}
+              alt={`Profile of ${userData.name}`}
+              className="rounded-full w-12 h-12"
+            />
+          )}
+          {!user && !userData && staticUser.image && (
             <img
               src={staticUser.image}
               alt={`Profile of ${staticUser.name}`}
@@ -69,12 +81,15 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
                 <h3 className="text-xl font-bold">{user.name}</h3>
                 <div className="text-gray-600 text-sm">{user.position}</div>
               </>
+            ) : userData ? (
+              <>
+                <h3 className="text-xl font-bold">{userData.name}</h3>
+                <div className="text-gray-600 text-sm">{userData.position}</div>
+              </>
             ) : (
               <>
-                <h3 className="text-xl font-bold">{staticUser.name}</h3>
-                <div className="text-gray-600 text-sm">
-                  {staticUser.position}
-                </div>
+                <h3 className="text-xl font-bold">{authData.user?.nom}</h3>
+                <div className="text-gray-600 text-sm">{staticUser.position}</div>
               </>
             )}
           </div>
@@ -94,6 +109,7 @@ ServiceCard.propTypes = {
     image: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
   }),
+  freelancerid: PropTypes.string.isRequired,
 };
 
 export default ServiceCard;

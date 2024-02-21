@@ -104,6 +104,7 @@ const BuyProject = () => {
                     image={service.images[0]}
                     deliveryTime={service.deliveryTime}
                     price={service.pricing.starter}
+                    freelancerid={service.freelancerId}
                   />
                 </Link>
               </div>

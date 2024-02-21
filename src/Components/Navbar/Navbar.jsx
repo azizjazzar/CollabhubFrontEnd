@@ -117,7 +117,7 @@ function Navbar({ brandName, routes, action }) {
                 >
                   <ul className="text-black w-56">
                     <li className="flex items-center ml-9 relative pt-2 pb-2">
-                      <img src="/img/team-5.png" alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
+                      <img src={userImage} alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
                       <span>{authData.user.nom} {authData.user.prenom}</span>
                     </li>
                     <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>
