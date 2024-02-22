@@ -6,6 +6,7 @@ import { FaVideo } from 'react-icons/fa';
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from "@/pages/authContext";
 import axios from 'axios'; // Importer axios pour les requêtes HTTP
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
@@ -13,6 +14,7 @@ function DetailsConsultation() {
   const [showMoreDescription, setShowMoreDescription] = useState(false);
   const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
   const navigate = useNavigate();
+  const authenticationService = new AuthenticationService();
 
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
@@ -39,9 +41,8 @@ function DetailsConsultation() {
   }, [consultationId]);
 
   useEffect(() => {
-    // Récupérer les détails de l'utilisateur
     if (consultationDetails.freelancerId) {
-      getUserById(consultationDetails.freelancerId)
+      authenticationService.getUserById(consultationDetails.freelancerId)
         .then(userData => {
           setUsers(prevUsers => ({
             ...prevUsers,
@@ -52,20 +53,7 @@ function DetailsConsultation() {
     }
   }, [consultationDetails.freelancerId]);
 
-  // Fonction pour récupérer les détails de l'utilisateur par son ID
-  const getUserById = async (userId) => {
-    try {
-      const response = await axios.get(`https://colabhub.onrender.com/api/auth/userid/${userId}`);
-      if (response.data.success) {
-        return response.data.info;
-      } else {
-        throw new Error(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      throw new Error('Failed to fetch user data. Please try again.');
-    }
-  };
+
 
   const handleBookConsultationClick = (id) => {
     setConsultationId(id);
@@ -119,13 +107,14 @@ function DetailsConsultation() {
     <div className='mt-10 p-10 '>
    
       <div className="container mx-auto my-8 p-6 border rounded shadow-lg relative">
-        <img
-          src="/img/user1.jpg"
-          alt=""
-          className="rounded-full absolute top-4 left-4"
-          style={{ width: "60px", height: "60px" }}
-        />
+      <img
+  src={`https://colabhub.onrender.com/images/${users[consultationDetails.freelancerId]?.picture}`}
+  alt=""
+  className="rounded-full absolute top-4 left-4"
+  style={{ width: "60px", height: "60px" }}
+/>
 
+{console.log("aaaa",users[consultationDetails.freelancerId]?.picture || '')}
 {users[consultationDetails.freelancerId] && (
   <h1 className="text-l font-bold mb-4 pl-16">
     <span style={{ color: 'black' }}>{users[consultationDetails.freelancerId].nom + " " + users[consultationDetails.freelancerId].prenom}</span>

@@ -6,11 +6,13 @@ import "@/widgets/assets/style.scss";
 import { ServiceTitle } from "@/index";
 import { AddServiceForm } from "@/widgets/layout/AddServiceForm";
 import { useAuth } from "@/pages/authContext";
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 const BuyProject = () => {
   const [services, setServices] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { authData } = useAuth();
+  const authenticationService = new AuthenticationService();
 
   useEffect(() => {
     fetchServices();
@@ -99,13 +101,7 @@ const BuyProject = () => {
             {services.map(service => (
               <div key={service._id}>
                 <Link to={`/serviceDetails/${service._id}`}>
-                  <ServiceCard
-                    title={service.title}
-                    image={service.images[0]}
-                    deliveryTime={service.deliveryTime}
-                    price={service.pricing.starter}
-                    freelancerid={service.freelancerId}
-                  />
+                  <ServiceCardWrapper service={service} authenticationService={authenticationService} />
                 </Link>
               </div>
             ))}
@@ -118,3 +114,30 @@ const BuyProject = () => {
 };
 
 export default BuyProject;
+
+const ServiceCardWrapper = ({ service, authenticationService }) => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await authenticationService.getUserById(service.freelancerId);
+        setUserData(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [authenticationService, service.freelancerId]);
+
+  return (
+    <ServiceCard
+      title={service.title}
+      image={service.images[0]}
+      deliveryTime={String(service.deliveryTime)} 
+      price={String(service.pricing.starter)} 
+      user={userData}
+    />
+  );
+};

@@ -1,21 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { useAuth } from "@/pages/authContext";
-import axios from "axios"; 
 
-function ServiceCard({ title, image, deliveryTime, price, user, freelancerid }) {
-  const staticUser = {
-    name: "Joe",
-    image: "/img/team-1.jpg",
-    position: "Freelancer",
-  };
-
-  const { authData } = useAuth();
+function ServiceCard({ title, image, deliveryTime, price, user }) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-  const [userData, setUserData] = useState(null);
-
-
-
 
   const toggleTooltip = () => {
     setIsTooltipVisible(!isTooltipVisible);
@@ -28,12 +15,17 @@ function ServiceCard({ title, image, deliveryTime, price, user, freelancerid }) 
           <img
             src={image}
             className="rounded-t-lg w-full h-full object-cover"
+            alt="Service Image"
           />
         )}
       </div>
       <div className="p-5">
         <div className="relative">
-          <a href="#" className="line-clamp-2" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
+          <div
+            className="line-clamp-2"
+            onMouseEnter={toggleTooltip}
+            onMouseLeave={toggleTooltip}
+          >
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {title}
             </h5>
@@ -42,7 +34,7 @@ function ServiceCard({ title, image, deliveryTime, price, user, freelancerid }) 
                 {title}
               </div>
             )}
-          </a>
+          </div>
         </div>
         <div className="flex items-center mb-3">
           <p className="mr-4 font-normal text-gray-700 dark:text-gray-400">
@@ -54,44 +46,16 @@ function ServiceCard({ title, image, deliveryTime, price, user, freelancerid }) 
         </div>
         <hr className="horizontal-line my-3" />
         <div className="flex items-center">
-          {user && user.image && (
+          {user && user.picture && (
             <img
-              src={user.image}
-              alt={`Profile of ${user.name}`}
-              className="rounded-full w-12 h-12"
-            />
-          )}
-          {!user && userData && userData.image && (
-            <img
-              src={userData.image}
-              alt={`Profile of ${userData.name}`}
-              className="rounded-full w-12 h-12"
-            />
-          )}
-          {!user && !userData && staticUser.image && (
-            <img
-              src={staticUser.image}
-              alt={`Profile of ${staticUser.name}`}
+              src={`https://colabhub.onrender.com/images/${user.picture}`}
+              alt={`Profile of ${user.nom}`}
               className="rounded-full w-12 h-12"
             />
           )}
           <div className="ml-3">
-            {user ? (
-              <>
-                <h3 className="text-xl font-bold">{user.name}</h3>
-                <div className="text-gray-600 text-sm">{user.position}</div>
-              </>
-            ) : userData ? (
-              <>
-                <h3 className="text-xl font-bold">{userData.name}</h3>
-                <div className="text-gray-600 text-sm">{userData.position}</div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-xl font-bold">{authData.user?.nom}</h3>
-                <div className="text-gray-600 text-sm">{staticUser.position}</div>
-              </>
-            )}
+            <h3 className="text-xl font-bold">{user ? user.nom : 'Loading'}</h3>
+            <div className="text-gray-600 text-sm">{user ? user.type : 'Loading'}</div>
           </div>
         </div>
       </div>
@@ -105,11 +69,11 @@ ServiceCard.propTypes = {
   deliveryTime: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    position: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
+    picture: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired,
   }),
-  freelancerid: PropTypes.string.isRequired,
 };
 
 export default ServiceCard;

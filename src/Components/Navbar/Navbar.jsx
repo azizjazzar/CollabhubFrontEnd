@@ -33,23 +33,7 @@ function Navbar({ brandName, routes, action }) {
     }));
   };
   useEffect(() => {
-    const fetchUserPicture = async () => {
-      if (authData.user && authData.user.email) {
-        try {
-          const response = await axios.get(`https://colabhub.onrender.com/api/auth/image/${authData.user.email}`, {
-            responseType: 'blob',
-          });
-  
-          const imageUrl = URL.createObjectURL(response.data);
-          setUserImage(imageUrl);
-        } catch (error) {
-          console.error('Error fetching image:', error);
-          setUserImage('/img/default-avatar.png'); // Utiliser une image par défaut en cas d'erreur
-        }
-      }
-    };
-  
-    fetchUserPicture();
+          setUserImage("https://colabhub.onrender.com/images/team-3.jpg");
   }, [authData.user, authData.user?.email]);
   const toggleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
@@ -105,7 +89,7 @@ function Navbar({ brandName, routes, action }) {
       {/* Utilisation du composant ProfileMenu */}
       {authData.user && (
           <div className="profile relative ml-24" onClick={toggleProfileDropdown}>
-              <img src={userImage} alt="User Image" className="user-image w-9 h-9 rounded-full" />
+              <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="User Image" className="user-image w-9 h-9 rounded-full" />
             <AnimatePresence>
               {showProfileDropdown && (
                 <motion.div
@@ -117,7 +101,7 @@ function Navbar({ brandName, routes, action }) {
                 >
                   <ul className="text-black w-56">
                     <li className="flex items-center ml-9 relative pt-2 pb-2">
-                      <img src={userImage} alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
+                      <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
                       <span>{authData.user.nom} {authData.user.prenom}</span>
                     </li>
                     <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>

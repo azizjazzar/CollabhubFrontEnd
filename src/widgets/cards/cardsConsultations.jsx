@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import axios from "axios";
 import Autosuggest from 'react-autosuggest'; // Import de react-autosuggest
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 function CardsConsultations({ handleSearchInput }) {
   const [consultations, setConsultations] = useState([]);
@@ -10,6 +11,7 @@ function CardsConsultations({ handleSearchInput }) {
   const [users, setUsers] = useState({});
   const { authData } = useAuth();
   const navigate = useNavigate();
+  const authenticationService = new AuthenticationService();
   const [value, setValue] = useState(''); // État pour la valeur de l'autocomplétion
   
 
@@ -21,7 +23,7 @@ function CardsConsultations({ handleSearchInput }) {
         setFilteredConsultations(data);
         data.forEach(consultation => {
           if (consultation.freelancerId) {
-            getUserById(consultation.freelancerId)
+            authenticationService.getUserById(consultation.freelancerId)
               .then(userData => {
                 setUsers(prevUsers => ({
                   ...prevUsers,
@@ -35,26 +37,14 @@ function CardsConsultations({ handleSearchInput }) {
       .catch(error => console.error("Error fetching consultations:", error));
   }, []);
 
-  const getUserById = async (userId) => {
-    try {
-      const response = await axios.get(`https://colabhub.onrender.com/api/auth/userid/${userId}`);
-      if (response.data.success) {
-        return response.data.info;
-      } else {
-        throw new Error(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      throw new Error('Failed to fetch user data. Please try again.');
-    }
-  };
+ 
 
   const handleBookConsultationClick = (id) => {
     navigate(`/details-consultation/${id}`);
   };
 
   const getSuggestions = (value) => {
-    if (!value) return []; // Vérifier si value est défini
+    if (!value) return []; 
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     const filtered = consultations.filter(consultation =>
@@ -128,12 +118,18 @@ function CardsConsultations({ handleSearchInput }) {
           }}
         >
           <div className="flex items-center">
-            <img
-              src="/img/user1.jpg"
-              alt={`Profile of ${consultation.titre}`}
-              className="rounded-full"
-              style={{ width: "60px", height: "60px" }}
-            />
+          {users[consultation.freelancerId] && (
+              <div>
+                <img
+                  src={`https://colabhub.onrender.com/images/${users[consultation.freelancerId].picture}`}
+                  alt={`Profile of ${consultation.titre}`}
+                  className="rounded-full"
+                  style={{ width: "60px", height: "60px" }}
+                />
+                
+              </div>
+            )}
+
             <div className="flex-grow ml-2 pt-3">
               {users[consultation.freelancerId] && (
                 <>

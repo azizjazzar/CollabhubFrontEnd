@@ -3,43 +3,18 @@ import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useAuth } from '../../pages/authContext';
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 export function SignIn() {
   const { authData, setAuthUserData } = useAuth();
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [userlogin, setUserLogin] = useState({ email: '', password: '' });
- 
+  const authenticationService = new AuthenticationService();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const apiUrl = 'https://colabhub.onrender.com/api/auth/login';
-      const apiUrlUser = `https://colabhub.onrender.com/api/auth/user/${userlogin.email}`;
-      const apiPayload = {
-        email: userlogin.email,
-        password: userlogin.password,
-      };
-
-      const response = await axios.post(apiUrl, apiPayload);
-
-      if (response.data.success) {
-        const response2 = await axios.get(apiUrlUser);
-
-        setAuthUserData({
-          user: response2.data,
-          accessToken: response.data.accessToken,
-          refreshToken: response.data.refreshToken,
-        });
-       
-        navigate('/');
-      } else {
-        alert('Email or Password incorrect!');
-        setError(response.data.message);
-      }
-    } catch (error) {
-      setError('An error occurred during login');
-    }
+    await authenticationService.login(userlogin, setAuthUserData, setError, navigate);
   };
 
   useEffect(() => {

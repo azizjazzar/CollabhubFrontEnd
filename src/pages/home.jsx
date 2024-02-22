@@ -37,10 +37,8 @@ export function Home() {
     if (buttonNumber === 1) {
       // Traitement pour le bouton 1
     } else if (buttonNumber === 2) {
-      // Navigation vers la page "Buy Project"
-     // Utilisation de la fonction navigate
-    } else if (buttonNumber === 3) {
       navigate("/buyProject");
+
     }
        else if (buttonNumber === 3) {
       navigate('/do-a-quick-consultation');

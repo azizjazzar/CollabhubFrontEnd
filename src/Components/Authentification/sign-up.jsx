@@ -5,6 +5,7 @@ import Select from "react-select";
 import countryList from 'react-select-country-list';
 import axios from 'axios';
 import { useAuth } from '../../pages/authContext';
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 export function SignUp() {
   
@@ -13,6 +14,7 @@ export function SignUp() {
   const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '', Email: '', ConfirmPassword: '', Country: '', Checkbox: true, Type: "Utilisateur" });
   const [selectedCountry, setSelectedCountry] = useState('');
   const [errors, setErrors] = useState({});
+  const authenticationService = new AuthenticationService();
   const navigate = useNavigate(); 
   useEffect(() => {
     if (authData && authData.accessToken) { 
@@ -83,47 +85,16 @@ export function SignUp() {
       return;
     }
 
-    const userExists = await getUserbyEmail();
+    const userExists = await authenticationService.getUserbyEmail(user.Email);
 
     if (!userExists) {
-      try {
-        const apiUrl = 'https://colabhub.onrender.com/api/auth/register';
-        const apiPayload = {
-          nom: user.FirstName,
-          prenom: user.LastName,
-          email: user.Email,
-          adresse: selectedCountry.label,
-          mot_passe: user.ConfirmPassword,
-          type: user.Type,
-        };
-        const response = await axios.post(apiUrl, apiPayload);
-        alert('Inscription réussie !');
-        console.log('API Response:', response.data);
-        navigate("/sign-in")
-
-      } catch (error) {
-        console.error('Error during API request:', error);
-      }
+      authenticationService.register(user, selectedCountry, navigate);
     } else {
       setErrors({ ...errors, EmailError: 'Email already exists.' });
     }
   }
     
-  const getUserbyEmail = async () => {
-    try {
-      const apiUrl = `https://colabhub.onrender.com/api/auth/user/${user.Email}`;
-      const response = await axios.get(apiUrl);
 
-      if (response.data.success === false) {
-        console.log("Aucun utilisateur trouvé");
-        return false;
-      } else {
-        return true;
-      }
-    } catch (error) {
-      console.error('Erreur lors de la requête API:', error);
-    }
-  };
 
   return (
     <div className='pt-24'>
