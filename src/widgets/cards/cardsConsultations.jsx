@@ -13,6 +13,10 @@ function CardsConsultations({ handleSearchInput }) {
   const navigate = useNavigate();
   const authenticationService = new AuthenticationService();
   const [value, setValue] = useState(''); // État pour la valeur de l'autocomplétion
+  const CheckProfile = (e, consultation) => {
+    e.preventDefault();
+    navigate(`/profile/${consultation.freelancerId}`);
+  }
   
 
   useEffect(() => {
@@ -120,12 +124,14 @@ function CardsConsultations({ handleSearchInput }) {
           <div className="flex items-center">
           {users[consultation.freelancerId] && (
               <div>
-                <img
+               <img
                   src={`https://colabhub.onrender.com/images/${users[consultation.freelancerId].picture}`}
+                  onClick={(e) => CheckProfile(e, consultation)}
                   alt={`Profile of ${consultation.titre}`}
                   className="rounded-full"
                   style={{ width: "60px", height: "60px" }}
                 />
+
                 
               </div>
             )}

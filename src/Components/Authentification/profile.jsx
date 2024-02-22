@@ -1,37 +1,43 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Typography } from "@material-tailwind/react";
-import { useAuth } from "@/pages/authContext";
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MapPinIcon, BriefcaseIcon, BuildingLibraryIcon } from "@heroicons/react/24/solid";
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
+import { useAuth } from '../../pages/authContext';
 
 export function Profile() {
-  const { authData, refreshAuthData } = useAuth();
   const navigate = useNavigate();
   const authenticationService = new AuthenticationService();
+  const [userData, setUserData] = useState(null);
+  const { id } = useParams();
+  const { authData, setAuthUserData } = useAuth();
+
 
   useEffect(() => {
-    // Si authData ou authData.user n'est pas défini, redirigez vers la page d'accueil
-    if (!authData || !authData.user) {
-      navigate("/");
-    }
-  }, [authData, navigate]);
+    const getUser = async () => {
+      try {
+        const user = await authenticationService.getUserById(id);
+        setUserData(user);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        navigate("/error");
+      }
+    };
+    getUser();
+  }, [authenticationService, id, navigate]);
 
-  // Gestion du changement de l'image de profil
   const handleImageUpload = async (file) => {
     const formData = new FormData();
     formData.append('images', file);
     try {
-      await authenticationService.updateUserPicture(authData.user.email, formData);
-      const updatedUser = await authenticationService.getUserById(authData.user._id);
-      refreshAuthData({ ...authData, user: updatedUser });
+      await authenticationService.updateUserPicture(userData.email, formData);
+      const updatedUser = await authenticationService.getUserById(authDa);
+      setUserData(updatedUser);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
   };
 
-  // Gestion du changement de l'image sélectionnée
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,16 +55,21 @@ export function Profile() {
         <div className="container mx-auto">
           <div className="flex flex-col lg:flex-row justify-between">
             <div className="w-40 -mt-20">
-              <input 
-                type="file" 
-                id="avatar" 
-                accept="image/*" 
-                style={{ display: 'none' }} 
-                onChange={handleImageChange} 
-              />
+            {
+              authData.user._id === id && (
+                <input 
+                  type="file" 
+                  id="avatar" 
+                  accept="image/*" 
+                  style={{ display: 'none' }} 
+                  onChange={handleImageChange} 
+                />
+              )
+            }
+
               <label htmlFor="avatar">
                 <Avatar
-                  src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+                  src={`https://colabhub.onrender.com/images/${userData?.picture}`}
                   alt="Profile picture"
                   variant="circular"
                   className="h-full w-full"
@@ -66,26 +77,26 @@ export function Profile() {
               </label>
             </div>
           </div>
-          {authData.user && (
+          {userData && (
             <div className="mt-11 container space-y-2">
               <div className=" items-center gap-2">
                 <Typography variant="h4" color="blue-gray">
-                  {authData.user.nom} {authData.user.prenom}
+                  {userData.nom} {userData.prenom}
                 </Typography>
                 <Typography variant="paragraph" color="gray" className="!mt-0 font-normal">
-                  {authData.user.email}
+                  {userData.email}
                 </Typography>
               </div>
               <div className="flex items-center gap-2">
                 <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
                 <Typography className="font-medium text-blue-gray-500">
-                  {authData.user.adresse}
+                  {userData.adresse}
                 </Typography>
               </div>
               <div className="flex items-center gap-2">
                 <BriefcaseIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
                 <Typography className="font-medium text-blue-gray-500">
-                  {authData.user.type}
+                  {userData.type}
                 </Typography>
               </div>
               <div className="flex items-center gap-2">

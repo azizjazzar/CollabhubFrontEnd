@@ -19,11 +19,7 @@ export const routes = [
   path: "/buyProject",
   element: <BuyProject />,},
 
-  {
-    name: "Blog",
-    path: "/profile",
-    element: <Profile />,
-  },
+
   {
     name: "Collaboration",
     path: "/collaboration",

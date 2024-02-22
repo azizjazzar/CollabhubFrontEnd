@@ -105,7 +105,7 @@ function Navbar({ brandName, routes, action }) {
                       <span>{authData.user.nom} {authData.user.prenom}</span>
                     </li>
                     <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>
-                    <li className="flex items-center justify-center pt-3" onClick={() => navigate("/profile")}>
+                    <li className="flex items-center justify-center pt-3" onClick={() => navigate(`/profile/${authData.user._id}`)}>
                       <Button  className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">Profile</Button>
                     </li>
                     <li className="flex items-center justify-center" >
