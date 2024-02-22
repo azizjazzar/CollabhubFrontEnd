@@ -9,7 +9,7 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
   };
 
   return (
-    <div className="max-w-sm w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-6 hover:shadow-lg hover:border-orange-500">
+    <div className="max-w-sm w-full h-[430px] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-6 hover:shadow-lg hover:border-orange-500">
       <div className="rounded-t-lg bg-gray-200" style={{ height: '180px' }}>
         {image && (
           <img
