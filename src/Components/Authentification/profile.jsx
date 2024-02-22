@@ -31,8 +31,10 @@ export function Profile() {
     formData.append('images', file);
     try {
       await authenticationService.updateUserPicture(userData.email, formData);
-      const updatedUser = await authenticationService.getUserById(authDa);
+      const updatedUser = await authenticationService.getUserById(authData.user._id);
       setUserData(updatedUser);
+      setAuthUserData({ ...authData, user: updatedUser }); // Mise à jour de authData avec les nouvelles données utilisateur
+      
     } catch (error) {
       console.error('Error uploading image:', error);
     }

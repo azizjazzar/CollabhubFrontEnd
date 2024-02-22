@@ -7,7 +7,7 @@ import 'animate.css/animate.min.css';
 import { useAuth } from "@/pages/authContext";
 import { Footer } from "@/widgets/layout/footer";
 import TitleBlog from '@/widgets/layout/titleBlog';
-
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 const BlogList = () => {
     const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
@@ -16,12 +16,29 @@ const BlogList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const authenticationService = new AuthenticationService();
+    const [userDataMap, setUserDataMap] = useState({}); 
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         content: '',
     });
     const postsPerPage = 3;
+
+    const getUserData = (freelancerId) => {
+        return new Promise((resolve, reject) => {
+            authenticationService.getUserById(freelancerId)
+                .then(user => {
+                    resolve(user);
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    reject(error);
+                });
+        });
+    };
+    
 
     const fetchBlogs = async () => {
         try {
@@ -39,7 +56,24 @@ const BlogList = () => {
     const toggleSortOrder = () => {
         setSortByDate((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     };
-
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userDataPromises = blogs.map(async (blog) => {
+                const userData = await authenticationService.getUserById(blog.userId);
+                return userData;
+            });
+            const userDataArray = await Promise.all(userDataPromises);
+            const userDataMap = userDataArray.reduce((acc, user, index) => {
+                acc[blogs[index].userId] = user;
+                return acc;
+            }, {});
+            setUserDataMap(userDataMap);
+        };
+    
+        fetchUserData();
+    }, [blogs]);
+    
+    
     const sortBlogsByDate = () => {
         return blogs.sort((a, b) => {
             const dateA = new Date(a.date);
@@ -49,9 +83,7 @@ const BlogList = () => {
         });
     };
 
-    const sortedBlogs = sortBlogsByDate();
-
-    const filteredBlogs = sortedBlogs.filter((blog) =>
+    const filteredBlogs = blogs.filter((blog) =>
         blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         blog.content.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -109,7 +141,7 @@ const BlogList = () => {
 
     return (
         <div className="blog-list-container p-20 mt-10 relative">
-     <TitleBlog />
+            <TitleBlog />
 
             <img
                 src="/img/blogback.jpg" // Replace with the path to your image
@@ -143,28 +175,32 @@ const BlogList = () => {
                 <div className="flex">
                     <div className="lg:w-3/4">
                         <ul className="space-y-6">
-                            {currentPosts.map((blog) => (
-                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                                    <div className="flex items-center mb-4">
-                                        <img
-                                            src={`/img/team-1.jpg`}
-                                            alt="User"
-                                            className="w-10 h-10 rounded-full mr-2"
-                                        />
-                                        <span className="text-gray-700">
-                                            {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'idriss el bessi'}
-                                        </span>
-                                    </div>
-                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                                    <p className="text-gray-600">{blog.description}</p>
-                                    <p className="text-gray-500 mt-2">
-                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                                    </p>
-                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                                        See More
-                                    </Link>
-                                </li>
-                            ))}
+                        {currentPosts.map((blog) => {
+    const user = userDataMap[blog.userId]; 
+    return (
+        <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+            <div className="flex items-center mb-4">
+                <img
+src={user && user.picture ? `https://colabhub.onrender.com/images/${user.picture}` : '/img/team-1.jpg'}
+alt="User"
+                    className="w-10 h-10 rounded-full mr-2"
+                />
+                <span className="text-gray-700">
+                    {user ? `${user.nom} ${user.prenom}` : 'Loading data'}
+                </span>
+            </div>
+            <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+            <p className="text-gray-600">{blog.description}</p>
+            <p className="text-gray-500 mt-2">
+                Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+            </p>
+            <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                See More
+            </Link>
+        </li>
+    );
+})}
+
                         </ul>
 
                         <div className="flex justify-center mt-4 border p-4 rounded-lg">
@@ -233,28 +269,31 @@ const BlogList = () => {
                 <div>
                     {currentPosts.length > 0 ? (
                         <ul className="space-y-6">
-                            {currentPosts.map((blog) => (
-                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-                                    <div className="flex items-center mb-4">
-                                        <img
-                                            src={`/img/team-1.jpg`}
-                                            alt="User"
-                                            className="w-10 h-10 rounded-full mr-2"
-                                        />
-                                        <span className="text-gray-700">
-                                            {authData.user ? `${authData.user.nom} ${authData.user.prenom}` : 'Static User'}
-                                        </span>
-                                    </div>
-                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-                                    <p className="text-gray-600">{blog.description}</p>
-                                    <p className="text-gray-500 mt-2">
-                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-                                    </p>
-                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                                        See More
-                                    </Link>
-                                </li>
-                            ))}
+                           {currentPosts.map((blog) => {
+    const user = userDataMap[blog.userId]; 
+    return (
+        <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+            <div className="flex items-center mb-4">
+                <img
+src={user && user.picture ? `https://colabhub.onrender.com/images/${user.picture}` : '/img/team-1.jpg'}
+alt="User"
+                    className="w-10 h-10 rounded-full mr-2"
+                />
+                <span className="text-gray-700">
+                    {user ? `${user.nom} ${user.prenom}` : 'Loading data'}
+                </span>
+            </div>
+            <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+            <p className="text-gray-600">{blog.description}</p>
+            <p className="text-gray-500 mt-2">
+                Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+            </p>
+            <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                See More
+            </Link>
+        </li>
+    );
+})}
                         </ul>
                     ) : (
                         <p className="text-gray-600">No blog posts available at the moment.</p>
