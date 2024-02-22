@@ -6,6 +6,7 @@ import { FaCommentAlt } from 'react-icons/fa';
 import 'animate.css/animate.min.css';
 import { useAuth } from "@/pages/authContext";
 import { Footer } from "@/widgets/layout/footer";
+import TitleBlog from '@/widgets/layout/titleBlog';
 
 
 const BlogList = () => {
@@ -107,10 +108,8 @@ const BlogList = () => {
     };
 
     return (
-        <div className="blog-list-container p-20 relative">
-            <div className="text-4xl font-bold my-10 text-center animate__animated animate__fadeIn animate__delay-1s">
-                Welcome to our blog
-            </div>
+        <div className="blog-list-container p-20 mt-10 relative">
+     <TitleBlog />
 
             <img
                 src="/img/blogback.jpg" // Replace with the path to your image
@@ -153,7 +152,7 @@ const BlogList = () => {
                                             className="w-10 h-10 rounded-full mr-2"
                                         />
                                         <span className="text-gray-700">
-                                            {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'Guest User'}
+                                            {blog.user ? `${blog.user.nom} ${blog.user.prenom}` : 'idriss el bessi'}
                                         </span>
                                     </div>
                                     <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>

@@ -26,6 +26,11 @@ export function InformationSection() {
       .catch(error => console.error("Error fetching consultation details:", error));
   }, []);
 
+
+
+
+
+
   const projectsData = Project.map((item) => ({
     icon: BriefcaseIcon,
     title: item.title,
@@ -44,7 +49,7 @@ export function InformationSection() {
  
 
           {projectsData.map((props, idx) => (
-            <Link to={`/freelancercollab`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+            <Link to={`/freelancercollab/${props.id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
               
               <InfoCard key={idx} {...props} />
               </Link>

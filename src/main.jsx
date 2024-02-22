@@ -62,7 +62,7 @@ const router = createBrowserRouter([
       },
       {
         name: "Freelancercollab",
-        path: "/freelancercollab",
+        path: "/freelancercollab/:projectId",
         element: <FreelancerCollab/>,
       },
     

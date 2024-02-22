@@ -113,7 +113,7 @@ const BlogDetails = () => {
                     alt="User"
                     className="w-8 h-8 rounded-full mr-2"
                   />
-                  <span className="text-gray-700">User</span>
+                  <span className="text-gray-700">Idriss el bessi</span>
                 </div>
                 <p className="text-gray-700">{comment.text}</p>
                 <p className="text-gray-500 mt-2">

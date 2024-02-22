@@ -1,30 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
-export function  Calendar(){
+export function  Calendar(props){
   const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+  const dataArray = props.data;
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const [noOfDays, setNoOfDays] = useState([]);
   const [blankdays, setBlankdays] = useState([]);
-  const [events, setEvents] = useState([
-    {
-      event_date: new Date(2020, 3, 1),
-      event_title: "April Fool's Day",
-      event_theme: 'blue'
-    },
-    {
-      event_date: new Date(2020, 3, 10),
-      event_title: "Birthday",
-      event_theme: 'red'
-    },
-    {
-      event_date: new Date(2020, 3, 16),
-      event_title: "Upcoming Event",
-      event_theme: 'green'
-    }
-  ]);
+  console.log(dataArray);
+  const [events, setEvents] = useState(dataArray.map((item) => ({
+    event_date: item.dateStart.split('T')[0],
+    event_title: item.name,
+    event_theme: 'blue'
+  })));
+
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [eventTheme, setEventTheme] = useState('blue');
