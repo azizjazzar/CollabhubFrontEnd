@@ -56,6 +56,7 @@ export function Profile() {
           <div className="flex flex-col lg:flex-row justify-between">
             <div className="w-40 -mt-20">
             {
+              //updates
              authData.user && authData.user._id === id && (
                 <input 
                   type="file" 
