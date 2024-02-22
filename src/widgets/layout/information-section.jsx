@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Typography } from "@material-tailwind/react";
 import React, { useState, useEffect } from 'react';
+import { useAuth } from "@/pages/authContext";
 import {
   AcademicCapIcon,
   BriefcaseIcon,
@@ -18,14 +19,14 @@ import { InfoCard  } from "@/widgets/cards/info-card";
 export function InformationSection() {
 
   const [Project, setProject] = useState([]);
+  const { authData } = useAuth();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/jobs/get`)
+    fetch(`https://colabhub.onrender.com/jobs/freelancers/${authData.user._id}`)
       .then(response => response.json())
       .then(data => setProject(data))
       .catch(error => console.error("Error fetching consultation details:", error));
   }, []);
-
 
 
 

@@ -12,7 +12,7 @@ export function FreelancerCollab(props) {
   const [Tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/tasks/project/${projectId}`)
+    fetch(`https://colabhub.onrender.com/tasks/project/${projectId}`)
       .then(response => response.json())
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching consultation details:", error));
