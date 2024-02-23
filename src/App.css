@@ -1,0 +1,41 @@
+.active {
+    @apply text-blue-500 underline;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .pagination li {
+    margin: 0 3px; /* Reduced margin for a more compact look */
+  }
+  
+  .pagination button {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    
+    color: #000;
+  }
+  
+  .pagination button:hover {
+    background: #eee;
+  }
+  
+  .pagination li.activerPagination button {
+    background: rgb(9, 224, 49);
+    color: #fff;
+  }
+  
+  /* Add a bit of space between pagination and the content */
+  .my-8 {
+    margin-top: 8px;
+  }
+  
