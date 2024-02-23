@@ -17,6 +17,7 @@ import ProjectPage from "./Components/Projet/ProjectPage";
 import ProjectDetail from "./Components/Projet/ProjectDetail";
 import UploadJob from "./Components/Projet/UploadJob";
 import ChatApplication from "./Components/Chat/Chatbox";
+import WelcomePage from "./Components/Authentification/WelcomePage";
 
 
 
@@ -113,6 +114,10 @@ const router = createBrowserRouter([
       {
         path:"/chat",
         element: <ChatApplication/>
+      },
+      {
+        path:"/welcome",
+        element: <WelcomePage/>
       },
     ],
   },

@@ -12,6 +12,8 @@
     "@heroicons/react": "2.0.18",
     "@material-tailwind/react": "2.1.4",
     "@mui/material": "^5.15.7",
+    "@react-three/drei": "^9.99.0",
+    "@react-three/fiber": "^8.15.16",
     "@stripe/stripe-js": "^3.0.3",
     "@windmill/react-ui": "^0.6.0",
     "animate.css": "^4.1.1",
@@ -26,6 +28,7 @@
     "mongoose": "^8.1.2",
     "prop-types": "15.8.1",
     "react": "18.2.0",
+    "react-3d-model": "^0.0.1",
     "react-autosuggest": "^10.1.0",
     "react-datepicker": "^6.1.0",
     "react-dom": "18.2.0",
@@ -35,6 +38,7 @@
     "react-select-country-list": "^2.2.3",
     "react-typed": "^2.0.12",
     "stripe": "^14.17.0",
+    "three": "^0.161.0",
     "tw-elements-react": "^1.0.0-alpha2"
   },
   "devDependencies": {
