@@ -33,9 +33,10 @@ const SpeechToText = ({ onTranscriptChange,language }) => {
   return (
     <div>
       <SpeechToTextIcon onStartRecording={startRecording} />
-   
+      <p>Transcript: {transcript}</p>
     </div>
   );
 };
 
 export default SpeechToText;
+
