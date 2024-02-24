@@ -1,12 +1,12 @@
 import React, { useState } from "react";
+import '@/widgets/assets/style.css';
+import { FaMicrophone } from "react-icons/fa"; 
 
 const SpeechToTextIcon = ({ onStartRecording }) => {
   return (
-    <div className="speech-to-text-icon" onClick={onStartRecording}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-6h2v-4h-2v4z"/>
-      </svg>
-    </div>
+ <div className="custom-button-microphone" id="startRecordingButton" onClick={onStartRecording}>
+<FaMicrophone /> {/* Utilisation de l'icône de microphone */}
+</div>
   );
 };
 
@@ -33,7 +33,7 @@ const SpeechToText = ({ onTranscriptChange,language }) => {
   return (
     <div>
       <SpeechToTextIcon onStartRecording={startRecording} />
-      <p>Transcript: {transcript}</p>
+   
     </div>
   );
 };

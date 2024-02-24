@@ -8,6 +8,7 @@ import { CardsConsultations } from "@/widgets/cards/cardsConsultations";
 import { FormulaireConsultation } from "@/widgets/layout/formulaireConsultation";
 import { Footer } from "@/widgets/layout/footer";
 import { useAuth } from "@/pages/authContext";
+import Alan from "../Authentification/Alan";
 import axios from 'axios';
 
 function QuickConsultationPage() {
@@ -67,6 +68,10 @@ function QuickConsultationPage() {
       <div className={openModal ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
         <FormulaireConsultation open={openModal} onClose={() => setOpenModal(false)} />
       </div>
+      
+      {/* Bouton Alan */}
+   
+
       {/* Footer */}
       <Footer />
     </div>

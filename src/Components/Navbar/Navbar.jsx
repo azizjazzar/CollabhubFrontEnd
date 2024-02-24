@@ -89,7 +89,9 @@ function Navbar({ brandName, routes, action }) {
           
         )
       ))}
-                    <Alan className="flex items-center"></Alan>
+                     <div className="fixed bottom-10 left-10">
+        <Alan />
+      </div>
 
       {/* Utilisation du composant ProfileMenu */}
       

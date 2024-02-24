@@ -9,7 +9,7 @@ const TextToSpeech = ({ text, language, voiceIndex }) => {
     const synth = window.speechSynthesis;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = language;
-    u.rate = 1.3;
+    u.rate = 1.0;
 
     setUtterance(u);
 
