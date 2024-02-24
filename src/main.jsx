@@ -18,6 +18,7 @@ import ProjectDetail from "./Components/Projet/ProjectDetail";
 import UploadJob from "./Components/Projet/UploadJob";
 import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
+import Alan from "./Components/Authentification/Alan";
 
 
 
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
       {
         path:"/welcome",
         element: <WelcomePage/>
+      },
+      {
+        path:"/alan",
+        element: <Alan/>
       },
     ],
   },
