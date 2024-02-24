@@ -8,6 +8,7 @@ import ServiceDetails from "@/Components/GServices/serviceDetails";
 
 
 
+
 export const routes = [
   {
     name: "home",

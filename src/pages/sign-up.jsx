@@ -1,34 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { useAuth } from '../../pages/authContext';
-import AuthenticationService from "@/Services/Authentification/AuthentificationService";
+import {
+  Input,
+  Checkbox,
+  Button,
+  Typography,
+} from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 
-export function SignIn() {
-  const { authData, setAuthUserData } = useAuth();
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const [userlogin, setUserLogin] = useState({ email: '', password: '' });
-  const authenticationService = new AuthenticationService();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await authenticationService.login(userlogin, setAuthUserData, setError, navigate);
-  };
-
-  useEffect(() => {
-    if (authData && authData.accessToken) { 
-      navigate("/");
-    }
-  }, [authData, navigate]);
+export function SignUp() {
   return (
-
-    <section className=" flex gap-4 pt-32">
-      <div className="w-full lg:w-3/5 mt-24">
+    <section className="m-8 flex">
+            <div className="w-2/5 h-full hidden lg:block">
+        <img
+          src="https://images.pexels.com/photos/3285195/pexels-photo-3285195.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          className="h-full w-full object-cover rounded-3xl"
+        />
+      </div>
+      <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
         <div className="text-center">
-          <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
-          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
+          <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
+          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
         </div>
         <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
           <div className="mb-1 flex flex-col gap-6">
@@ -36,8 +27,6 @@ export function SignIn() {
               Your email
             </Typography>
             <Input
-              value={userlogin.email}
-              onChange={(e) => setUserLogin({...userlogin, email:e.target.value})}
               size="lg"
               placeholder="name@mail.com"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -45,15 +34,13 @@ export function SignIn() {
                 className: "before:content-none after:content-none",
               }}
             />
-            <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              Password
+                        <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
+              Passowrd
             </Typography>
             <Input
-              value={userlogin.password}
-              onChange={(e) => setUserLogin({...userlogin, password:e.target.value})}
-              type="password"
+            type="password"
               size="lg"
-              placeholder="********"
+              placeholder="************"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -78,38 +65,9 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-<<<<<<< HEAD:src/Components/Authentification/sign-in.jsx
-          <Button className="mt-6 bg-orange-400" fullWidth onClick={handleSubmit}>
-        Sign In
-      </Button>
-          <div className="flex items-center justify-center mt-6">
-=======
-          <Link to="*">
           <Button className="bg-orange-400 mt-6" fullWidth>
-            Sign In
+            Register Now
           </Button>
-          </Link>
-
-          <div className="flex items-center justify-between gap-2 mt-6">
-            <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center justify-start font-medium"
-                >
-                  Subscribe me to newsletter
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            />
->>>>>>> 17f4f3a04738b468df80b464a900c6a7aefd3446:src/pages/sign-in.jsx
-            <Typography variant="small" className="font-medium text-gray-900">
-              <a href="#">
-                Forgot Password
-              </a>
-            </Typography>
-          </div>
 
           <div className="space-y-4 mt-8">
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
@@ -129,30 +87,19 @@ export function SignIn() {
               <span>Sign in With Google</span>
             </Button>
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <img src="/img/twitter-logo" height={24} width={24} alt="" />
+              <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
               <span>Sign in With Twitter</span>
             </Button>
           </div>
           <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
-            Not registered?
-            <Link to="/sign-up" className="text-gray-900 ml-1">Create account</Link>
+            Already have an account?
+            <Link to="/sign-in" className="text-gray-900 ml-1">Sign in</Link>
           </Typography>
         </form>
 
       </div>
-      <div className="pt-24 pr-14 w-2/5 h-full hidden lg:block">
-        <img
-<<<<<<< HEAD:src/Components/Authentification/sign-in.jsx
-          src="/img/imga.jpg"
-=======
-          src="https://images.pexels.com/photos/3810792/pexels-photo-3810792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
->>>>>>> 17f4f3a04738b468df80b464a900c6a7aefd3446:src/pages/sign-in.jsx
-          className="h-full w-full object-cover rounded-3xl"
-        />
-      </div>
-
     </section>
   );
 }
 
-export default SignIn;
+export default SignUp;

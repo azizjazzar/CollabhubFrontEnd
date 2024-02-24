@@ -15,7 +15,9 @@ import { PageTitle, Footer } from "@/index";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
 import { ReactTyped } from "react-typed";
+
 import { useNavigate } from 'react-router-dom';
+
 
 export function Home() {
   const [backgroundImage, setBackgroundImage] = useState('/img/back1.jpg');
@@ -68,9 +70,12 @@ export function Home() {
               <Typography variant="lead" color="white" className="opacity-80 pt-20">
                 Forget the hurdles in collaboration with our experts on CollabHub, achieving excellence is simpler than ever.
               </Typography>
+            
+          
             </div>
           </div>
           <div className="my-24 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" style={{ userSelect: 'none' }}>
+
             {/* Bouton 1 */}
             <div className="group border p-4 rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(1)}>
               <p className="text-white text-4xl font-bold mb-2">Post a job and hire a Pro</p>
@@ -87,8 +92,10 @@ export function Home() {
             <div className="group border p-4 rounded-lg cursor-pointer -mb-6 hover:bg-orange-400 hover:text-white" onClick={() => handleButtonClick(3)}>
               <p className="text-white text-4xl font-bold mb-2">Get advice from an industry expert</p>
               <p className="text-orange-400 text-xl group-hover:text-white pt-3">Consultations</p>
+
             </div>
-          </div>
+
+
         </div>
       </div>
 
@@ -121,6 +128,7 @@ export function Home() {
               </Card>
             ))}
           </div>
+
         </div>
       </section>
 
