@@ -1,7 +1,8 @@
-import Calendar from '@/widgets/layout/calendar';
+
 import React, { useState, useEffect } from 'react';
 import { Footer } from '../..';
 import { useParams } from 'react-router-dom';
+import ProjectOwnerCollab from './projectownercollab';
 
 
 
@@ -75,9 +76,9 @@ export function FreelancerCollab(props) {
                 </section>
 
                 <section className="relative bg-white py-16">
-                 <Calendar data={Tasks} />
-
-   
+      
+             
+        <ProjectOwnerCollab/>
                 </section>
 
                 
