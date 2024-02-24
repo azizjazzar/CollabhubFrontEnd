@@ -70,6 +70,7 @@ export function CardsConsultations({ handleSearchInput }) {
               type="button"
               onClick={() => handleBookConsultationClick(consultation._id)}
             >
+              
               Book a Consultation
             </button>
           </div>

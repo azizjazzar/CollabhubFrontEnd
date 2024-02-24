@@ -44,7 +44,7 @@ function QuickConsultationPage() {
             {/* Bouton "Work With Us" pour ouvrir le modal */}
             <div className="custom-button relative mb--1" onClick={handleWorkWithUsClick}>
               <div className="element">
-                <p>Add New Consultation</p>
+                <p>Post a Consultation</p>
               </div>
             </div>
           </div>

@@ -4,11 +4,13 @@ import CardsConsultations from '@/widgets/cards/cardsPayerConsultations';
 import InformationDetailsCons from '@/widgets/cards/InformationDetailsCons'; 
 import { Footer } from "@/widgets/layout/footer";
 import { FaVideo } from 'react-icons/fa';
+import { loadStripe } from '@stripe/stripe-js';
 
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
   const [consultationDetails, setConsultationDetails] = useState({});
   const [showMoreDescription, setShowMoreDescription] = useState(false);
+  const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
     "60min": consultationDetails.prixParMinute * 2,
@@ -44,6 +46,37 @@ function DetailsConsultation() {
     return date.toLocaleDateString('en-US', options);
   }
   
+{/* fonction de  payment */}
+const makePayment = async () => {
+  const stripe = await stripePromise;
+
+  const body = {
+      amount: selectedPrice,
+  };
+
+  try {
+      const response = await fetch("http://localhost:3000/payment/create-checkout-session", {
+          method: "POST",
+          headers: {
+              "Content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+      });
+
+      const session = await response.json();
+      const result = await stripe.redirectToCheckout({
+          sessionId: session.sessionId,
+      });
+
+      if (result.error) {
+          console.error(result.error);
+      }
+  } catch (error) {
+      console.error('Error making payment:', error);
+  }
+};
+
+
 
   return (
     <div>
@@ -131,9 +164,18 @@ function DetailsConsultation() {
               <i className="fas fa-envelope text-lg mr-2"></i>
               <span className="line-clamp-1">You can share details with Mariusz </span>
             </div>
-            <button type="button" className="mt-6 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
-              Continue (${selectedPrice})
-            </button>
+
+            <button 
+  type="button" 
+  className="mt-6 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
+  onClick={makePayment} // Placer l'événement onClick ici
+>
+  Continue (${selectedPrice})
+</button>
+
+
+
+
             <button type="button" className="mt-4 text-orange-500 border border-gray-400 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
               Message User
             </button>
