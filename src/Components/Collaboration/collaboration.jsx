@@ -1,6 +1,5 @@
 
 import { Footer, Bienvenu, InformationSection, Macarousel,Modal } from "@/index";
-import { RechercheCollab } from "@/widgets/layout/recherche-collab";
 import React, { useState } from 'react';
 
 

@@ -9,14 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+
+    "@headlessui/react": "^1.7.18",
+
     "@heroicons/react": "2.0.18",
     "@material-tailwind/react": "2.1.4",
+    "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.15.7",
+    "@react-three/drei": "^9.99.0",
+    "@react-three/fiber": "^8.15.16",
     "@stripe/stripe-js": "^3.0.3",
     "@windmill/react-ui": "^0.6.0",
     "animate.css": "^4.1.1",
     "axios": "^1.6.7",
     "calendar": "^0.1.1",
+    "classnames": "^2.5.1",
     "express": "^4.18.2",
     "flowbite-react": "^0.7.2",
     "framer-motion": "^11.0.5",
@@ -26,6 +33,7 @@
     "mongoose": "^8.1.2",
     "prop-types": "15.8.1",
     "react": "18.2.0",
+    "react-3d-model": "^0.0.1",
     "react-autosuggest": "^10.1.0",
     "react-datepicker": "^6.1.0",
     "react-dom": "18.2.0",
@@ -33,9 +41,13 @@
     "react-router-dom": "6.17.0",
     "react-select": "^5.8.0",
     "react-select-country-list": "^2.2.3",
+    "react-speech-recognition": "^3.10.0",
     "react-typed": "^2.0.12",
+    "regenerator-runtime": "^0.14.1",
     "stripe": "^14.17.0",
-    "tw-elements-react": "^1.0.0-alpha2"
+    "three": "^0.161.0",
+    "tw-elements-react": "^1.0.0-alpha2",
+    "words-to-numbers": "^1.5.1"
   },
   "devDependencies": {
     "@types/react": "18.2.31",

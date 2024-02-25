@@ -10,5 +10,6 @@ export * from "@/ServiceTitle";
 export * from "@/widgets/layout/TitleConsultations";
 export * from "@/widgets/layout/SideBarConsultations";
 export * from "@/widgets/layout/formulaireConsultation";
+export * from "@/widgets/layout/formulaireTask";
 
 
