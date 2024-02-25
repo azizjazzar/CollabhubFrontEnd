@@ -22,10 +22,14 @@ export function InformationSection() {
   const { authData } = useAuth();
 
   useEffect(() => {
-    fetch(`https://colabhub.onrender.com/jobs/freelancers/${authData.user._id}`)
+    if(authData.user){
+      fetch(`https://colabhub.onrender.com/jobs/freelancers/${authData.user._id}`)
       .then(response => response.json())
       .then(data => setProject(data))
       .catch(error => console.error("Error fetching consultation details:", error));
+
+    }
+   
   }, []);
 
 
