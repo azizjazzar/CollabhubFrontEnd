@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import axios from "axios";
-import Autosuggest from 'react-autosuggest'; // Import de react-autosuggest
+import Autosuggest from 'react-autosuggest';
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 function CardsConsultations({ handleSearchInput }) {
@@ -23,6 +23,7 @@ function CardsConsultations({ handleSearchInput }) {
     fetch("https://colabhub.onrender.com/consultations/Consultations")
       .then(response => response.json())
       .then(data => {
+        localStorage.setItem("consultations", JSON.stringify(data));
         setConsultations(data);
         setFilteredConsultations(data);
         data.forEach(consultation => {

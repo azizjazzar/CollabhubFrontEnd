@@ -7,6 +7,7 @@ import logoSrc from "/public/img/logoshih.png";
 import { useAuth } from "@/pages/authContext";
 import { AnimatePresence, motion } from "framer-motion"; 
 import { Button } from "flowbite-react";
+import Alan from "../Authentification/Alan";
 import axios from 'axios';
 
 
@@ -83,10 +84,17 @@ function Navbar({ brandName, routes, action }) {
                 {name}
               </Link>
             )}
+            
           </Typography>
+          
         )
       ))}
+                     <div className="fixed bottom-10 left-10">
+        <Alan />
+      </div>
+
       {/* Utilisation du composant ProfileMenu */}
+      
       {authData.user && (
           <div className="profile relative ml-24" onClick={toggleProfileDropdown}>
               <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="User Image" className="user-image w-9 h-9 rounded-full" />
@@ -118,6 +126,7 @@ function Navbar({ brandName, routes, action }) {
                 </motion.div>
               )}
             </AnimatePresence>
+            
           </div>
         )}
         {//Fin

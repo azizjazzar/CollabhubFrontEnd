@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
     e.preventDefault();
     navigate(`/profile/${user._id}`);
   }
-  
+
 
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-6 hover:shadow-lg hover:border-orange-500 h-[480px]">

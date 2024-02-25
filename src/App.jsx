@@ -19,8 +19,10 @@ function App() {
   return (
     <>
     <AuthProvider>
+
     <Navbar routes={routes} />
       <Outlet />
+    
     </AuthProvider>
      
     </>

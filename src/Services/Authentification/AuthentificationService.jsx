@@ -14,6 +14,18 @@ class AuthenticationService {
           console.error('Error uploading image:', error);
         }
       }
+      async update(email, updateData) {
+        try {
+          const updatedUser = await axios.put(`https://colabhub.onrender.com/api/auth/update/${email}`, updateData);
+          if (!updatedUser.data.success) {
+            throw new Error(updatedUser.data.message || 'User not found by email');
+          }
+          return updatedUser.data.success;
+        } catch (error) {
+          console.error('Error updating user:', error);
+          throw error;
+        }
+      }
 
    async login(userLogin, setAuthUserData, setError, navigate) {
     try {
@@ -34,8 +46,11 @@ class AuthenticationService {
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
         });
+        if (response2.data.type === "Utilisateur")
+        navigate('/welcome');
+      else 
+      navigate('/');
 
-        navigate('/');
       } else {
         alert('Email or Password incorrect!');
         setError(response.data.message);

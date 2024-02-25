@@ -21,7 +21,10 @@ const BuyProject = () => {
   const fetchServices = async () => {
     try {
       const response = await axios.get("https://colabhub.onrender.com/services/services");
+
       setServices(response.data);
+      localStorage.setItem("services", JSON.stringify(response.data));
+
     } catch (error) {
       console.error("Error fetching services:", error);
     }
