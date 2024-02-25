@@ -123,22 +123,22 @@ export default function Alan() {
 
   useEffect(() => {
     console.log(logoutSure)
-    if (speech && transcript === "STOP") {
+    if (speech && transcript.includes("STOP") ) {
       setSpeech(null);
       setScroll(0);
     } else if (!speech) {
-      if (newsPromptSpoken && (transcript === "YES." || transcript === "YES" || transcript === "YES, PLEASE.")) {
+      if (newsPromptSpoken && (transcript.includes("YES"))) {
         setTitles(true);
         setNewsPromptSpoken(false);
         setScroll(300);
-      } else if (newsPromptSpoken && (transcript === "NO." || transcript === "NO" ||  transcript === "NO, PLEASE.")) {
+      } else if (newsPromptSpoken && (transcript.includes("NO"))) {
         setSpeech({
           text: "As you like, do you need something else?",
           language: "en-US",
           voiceIndex: actor
         });
         setNewsPromptSpoken(false);
-      } else if (logoutSure && (transcript === "YES." || transcript === "YES" || transcript === "YES,PLEASE")) {
+      } else if (logoutSure && (transcript.includes("YES"))) {
    
           setSpeech({
             text: "You've been disconnected, see you later",
@@ -150,7 +150,7 @@ export default function Alan() {
         
        
 
-      } else if (logoutSure && (transcript === "NO." || transcript === "NO" ||  transcript === "NO, PLEASE.")) {
+      } else if (logoutSure && (transcript.includes("NO"))) {
         setSpeech({
           text: "Deconnexion failed",
           language: "en-US",

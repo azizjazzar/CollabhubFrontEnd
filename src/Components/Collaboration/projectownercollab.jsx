@@ -66,9 +66,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function ProjectOwnerCollab(props) {
+export function ProjectOwnerCollab() {
   
-  const tasks = props.tasks;
+
   let today = startOfToday()
   let [selectedDay, setSelectedDay] = useState(today)
   let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -93,9 +93,7 @@ export function ProjectOwnerCollab(props) {
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
   )
 
-  let selectedDayTodos = tasks.filter((task) =>
-  isSameDay(parseISO(task.dateStart), selectedDay)
-)
+ 
 
 const [openModalTask, setOpenModalTask] = useState(false);
 
@@ -207,22 +205,7 @@ const [openModalTask, setOpenModalTask] = useState(false);
               )}
             </ol>
           </section>
-          
-          <section className="mt-12">
-
-         { selectedDayTodos.length > 0  ? (
-          selectedDayTodos.map((todo)=>(
-                  <Todo tasks={todo} key={todo._id}/>
-                  )
-          )): (
-            <p className='text-gray-500'>No tasks today</p>
-         )}
-                        <button
-                            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-                            type="button" onClick={handleClick}>
-                            Add
-                        </button> 
-           </section>
+       
 
 
 
@@ -318,27 +301,6 @@ function Meeting({ meeting }) {
 
 
    
-
-  )
-}
-function Todo(props){
-  return (
-
-    <ul className="bg-white shadow overflow-hidden sm:rounded-md max-w-sm mx-auto mt-16">
-<li>
-<div className="px-4 py-5 sm:px-6">
-  <div className="flex items-center justify-between">
-      <h3 className="text-lg leading-6 font-medium text-gray-900">{props.name}</h3>
-      <p className="mt-1 max-w-2xl text-sm text-gray-500">{props.description}</p>
-  </div>
-  <div className="mt-4 flex items-center justify-between">
-      <p className="text-sm font-medium text-gray-500">Status: <span className="text-green-600">Active</span></p>
-      <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
-  </div>
-</div>
-</li>
-
-</ul>
 
   )
 }
