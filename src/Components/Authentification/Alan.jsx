@@ -103,7 +103,37 @@ export default function Alan() {
         setTimeout(() => {
           navigate("/do-a-quick-consultation");
         }, 2500);
-      } else if (transcript.includes("LOG OUT") || transcript.includes("LOOK OUT.")) {
+      }else if (transcript.includes("GO TO BLOG")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/blog");
+        }, 2500);
+      } 
+      else if (transcript.includes("SIGN IN")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 2500);
+      } 
+      else if (transcript.includes("SIGN UP")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/sign-up");
+        }, 2500);
+      } 
+      else if (transcript.includes("LOG OUT") || transcript.includes("LOOK OUT.")) {
         if (authData.user)
         {
           action = {
@@ -282,7 +312,7 @@ export default function Alan() {
       case "help.":
       case "help":
         setSpeech({
-          text: "Hello, I'm Alan, a computer program. Here are some functionalities that I can provide, I can read text and navigate into pages",
+          text: "",
           language: "en-US",
           voiceIndex: actor,
         });
