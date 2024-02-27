@@ -4,12 +4,7 @@ import React, { useState } from 'react';
 
 
 
-export function showFooter(model){
-  if (!model) return <Footer/>
-  else 
-  return null;
 
-}
 
 
 
@@ -52,10 +47,7 @@ export function Collaboration() {
 
               
                        
-           <showFooter openModal/>
-           <showFooter RechercheCollab/>
-
-                    { (!openModal && !openRechercheCollab) ? <Footer/> : null}   
+          <Footer/>
          
          
 

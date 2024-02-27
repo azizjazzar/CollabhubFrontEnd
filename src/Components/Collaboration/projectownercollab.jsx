@@ -2,7 +2,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
-import FormulaireTask from "@/widgets/layout/formulaireTask";
+
 import {
   add,
   eachDayOfInterval,
@@ -95,12 +95,7 @@ export function ProjectOwnerCollab() {
 
  
 
-const [openModalTask, setOpenModalTask] = useState(false);
 
-   // Fonction pour ouvrir le modal
-   const handleClick = () => {
-    setOpenModalTask(true);
-  };
   return (
     <div className="pt-16">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
@@ -212,9 +207,7 @@ const [openModalTask, setOpenModalTask] = useState(false);
         </div>
       </div>
        
-        <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
-       <FormulaireTask open={openModalTask} onClose={() => setOpenModalTask(false)} />
-     </div>
+
     </div>
    
   )
