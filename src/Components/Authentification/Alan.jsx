@@ -14,7 +14,7 @@ export default function Alan() {
   const [scroll, setScroll] = useState(0);
   const [titleService, setTitles] = useState(false);
   const [newsPromptSpoken, setNewsPromptSpoken] = useState(false);
-  const [actor, setActor] = useState(5);
+  const [actor, setActor] = useState(2);
   const location = useLocation();
   const { authData, setAuthUserData } = useAuth();
   const [logoutSure, setLogoutSure ] = useState(false);
