@@ -96,28 +96,34 @@ const SearchResult = ({ result }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const freelancerId = userEmailInput._id;
+    const projectId = projectid;
+  
     if (validate()) {
       try {
         const formData = {
-         
           name,
           description,
           dateStart: dateStart,
           dateEnd: dateEnd,
-          freelancerId,
-          projectid,
-          
+          freelancerId: freelancerId,
+          projectId: projectId,
         };
-        console.log(formData);
-        await axios.post('https://colabhub.onrender.com/tasks', formData);
+  
+        console.log('Sending request with data:', formData);
+  
+        const response = await axios.post('https://colabhub.onrender.com/tasks', formData);
+  
+        console.log('Server response:', response.data);
+  
         alert('Task created successfully');
         onClose();
       } catch (error) {
-        console.error('Error creating consultation:', error);
+        console.error('Error creating task:', error);
         alert('Failed to create task. Please try again.');
       }
     }
   };
+  
 
   const validate = () => {
     let isValid = true;

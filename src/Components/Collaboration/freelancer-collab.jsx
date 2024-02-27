@@ -123,15 +123,17 @@ function Collabolaratuers(props){
   const  projectId=props.projectId;
   // Fonction pour ouvrir le modal
   const handleClick = () => {
-   setOpenModalTask(true);
+    Selected === 1 ? setOpenModalTask(true) : null ; 
+   
  };
 
     const [Selected, setSelected] = useState(0);
     const freelancers = props.freelancers;
     const tasks = props.tasks;
+  
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 1;
+    const itemsPerPage = 2;
     // Calculer le nombre total de pages
     const calculTotalPages=() => { return Selected === 0 ? Math.ceil(freelancers.length / itemsPerPage) : Selected === 1  ? Math.ceil(tasks.length / itemsPerPage) : 0};
    const totalPages = calculTotalPages();
@@ -196,7 +198,7 @@ function Collabolaratuers(props){
 
 
           <ul role="list" className="mt-5 divide-y divide-gray-200 border-t border-gray-200 sm:mt-0 sm:border-t-0">
-              {Selected === 0 ? <Freelancers freelancers={freelancers} start={startIndex} end={endIndex}/> : Selected === 0 ? <Todo tasks={tasks} start={startIndex} end={endIndex}/>  : console.log("page non disponible")}
+              {Selected === 0 ? <Freelancers freelancers={freelancers} start={startIndex} end={endIndex}/> : Selected === 1 ? <Todo tasks={tasks} start={startIndex} end={endIndex}/>  : console.log("page non disponible")}
 
           </ul>
           <div className="flex items-center justify-center mb-5 mt-5">
@@ -258,6 +260,7 @@ function Todo(props){
   const tasks = props.tasks;
   const start=props.start;
   const end=props.end;
+
    // Extraire les éléments à afficher sur la page actuelle
    const currentItems = tasks.slice(start, end);
     return (
