@@ -4,10 +4,12 @@ import { Footer } from '../..';
 import { useParams } from 'react-router-dom';
 import ProjectOwnerCollab from './projectownercollab';
 import FormulaireTask from "@/widgets/layout/formulaireTask";
+
+
 export function FreelancerCollab() {
 
 
-  const { projectId} = useParams();
+  const { projectId ,userId } = useParams();
   const [Tasks, setTasks] = useState([]);
   const [Freelancers, setFreelancers] = useState([]);
 
@@ -74,7 +76,7 @@ export function FreelancerCollab() {
                 <section className="relative bg-white py-16">
       
              
-              <ProjectOwnerCollab/>
+              <ProjectOwnerCollab userId={userId} freelancers={Freelancers}/>
                 </section>
 
                 <section className="relative bg-white py-16">
@@ -208,7 +210,10 @@ function Collabolaratuers(props){
               >
                 Add
         </button>
+        <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
         <FormulaireTask open={openModalTask} onClose={() => setOpenModalTask(false)} projectid={projectId}/>
+      </div>
+        
           </div>
         
 

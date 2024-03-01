@@ -54,7 +54,7 @@ export function InformationSection() {
  
 
           {projectsData.map((props, idx) => (
-            <Link to={`/freelancercollab/${props.id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+            <Link to={`/freelancercollab/${props.id}/${authData.user._id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
               
               <InfoCard key={idx} {...props} />
               </Link>

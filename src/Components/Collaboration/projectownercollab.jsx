@@ -2,6 +2,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
+import { FormulaireMeet} from "@/widgets/layout/formulaireMeet";
 
 import {
   add,
@@ -17,57 +18,30 @@ import {
   parseISO,
   startOfToday,
 } from 'date-fns'
-import { Fragment, useState } from 'react'
+import { Fragment, useState , useEffect} from 'react'
 
-const meetings = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2024-02-24T13:00',
-    endDatetime: '2022-05-11T14:30',
-  },
-  {
-    id: 2,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-20T09:00',
-    endDatetime: '2022-05-20T11:30',
-  },
-  {
-    id: 3,
-    name: 'Dries Vincent',
-    imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-20T17:00',
-    endDatetime: '2022-05-20T18:30',
-  },
-  {
-    id: 4,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-06-09T13:00',
-    endDatetime: '2022-06-09T14:30',
-  },
-  {
-    id: 5,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-13T14:00',
-    endDatetime: '2022-05-13T14:30',
-  },
-]
+
+
+
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function ProjectOwnerCollab() {
-  
+export function ProjectOwnerCollab(props) {
+
+  const userId=props.userId;
+  const freelancers=props.freelancers;
+  const [ meetings, setmeetings] = useState([]);
+  useEffect(() => {
+    fetch(`https://colabhub.onrender.com/meet/getmeets/${userId}`)
+      .then(response => response.json())
+      .then(data => setmeetings(data))
+      .catch(error => console.error("Error fetching meets:", error));
+  }, [meetings]);
+
 
   let today = startOfToday()
   let [selectedDay, setSelectedDay] = useState(today)
@@ -90,11 +64,16 @@ export function ProjectOwnerCollab() {
   }
 
   let selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    isSameDay(parseISO(meeting.dateStart), selectedDay)
   )
 
- 
+   // Fonction pour ouvrir le modal
+   const handleClick = () => {
+    setOpenModalmeet(true)
+   
+ };
 
+ const [OpenModalmeet, setOpenModalmeet] = useState(false);
 
   return (
     <div className="pt-16">
@@ -174,7 +153,7 @@ export function ProjectOwnerCollab() {
 
                   <div className="w-1 h-1 mx-auto mt-1">
                     {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
+                      isSameDay(parseISO(meeting.dateStart), day)
                     ) && (
                       <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                     )}
@@ -198,40 +177,50 @@ export function ProjectOwnerCollab() {
               ) : (
                 <p>No meetings for today.</p>
               )}
+              <button onClick={()=>{handleClick()}}
+                              className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                              type="button"
+                            >
+                              Add
+              </button>
             </ol>
           </section>
        
-
-
-
+          <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
+          <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)} userId={userId} freelancers={freelancers}/>
         </div>
+        
+         
+        
+        </div>
+       
       </div>
        
-
+                
     </div>
    
   )
 }
 
 function Meeting({ meeting }) {
-  let startDateTime = parseISO(meeting.startDatetime)
-  let endDateTime = parseISO(meeting.endDatetime)
+  let startDateTime = parseISO(meeting.dateStart)
+  let endDateTime = parseISO(meeting.dateEnd)
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
-        src={meeting.imageUrl}
+        src=''
         alt=""
         className="flex-none w-10 h-10 rounded-full"
       />
       <div className="flex-auto">
         <p className="text-gray-900">{meeting.name}</p>
         <p className="mt-0.5">
-          <time dateTime={meeting.startDatetime}>
+          <time dateTime={meeting.dateStart}>
             {format(startDateTime, 'h:mm a')}
           </time>{' '}
           -{' '}
-          <time dateTime={meeting.endDatetime}>
+          <time dateTime={meeting.dateEnd}>
             {format(endDateTime, 'h:mm a')}
           </time>
         </p>
@@ -290,12 +279,14 @@ function Meeting({ meeting }) {
         </Transition>
       </Menu>
     </li>
+    
+     
 
 
 
    
 
-  )
+  ) 
 }
 
 let colStartClasses = [
