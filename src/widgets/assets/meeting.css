@@ -1,0 +1,60 @@
+/* meeting.css */
+.meeting-container {
+    position: relative;
+    height: 100vh; /* Remplir la hauteur de l'écran */
+    border-radius: 15px; /* Ajout de coins arrondis de 15px */
+    overflow: hidden; /* Masquer le contenu qui dépasse des coins arrondis */
+    background-color: #f0f0f0; /* Couleur de fond pour le contraste */
+}
+
+.webcam-container {
+    overflow: hidden; /* Masquer le contenu qui dépasse des coins arrondis */
+    padding-top: 20px; /* Ajout d'un padding de 20px en haut */
+    padding-left: 20px; /* Ajout d'un padding de 20px à gauche */
+    padding-right: 20px; /* Ajout d'un padding de 20px à droite */
+}
+
+/* meeting.css */
+.bottom-navbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 150px; /* Augmenter la largeur de la barre inférieure à 200px */
+    background-color: #333; /* Changer la couleur de fond de la barre inférieure */
+    padding: 10px; /* Ajouter un padding de 10px */
+    border-radius: 10px; /* Ajouter des coins arrondis */
+}
+
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.icon {
+    font-size: 24px; /* Taille des icônes */
+    color: #ff8316; /* Couleur des icônes */
+}
+
+.webcam-off-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #333;
+}
+/* meeting.css */
+.chat-sidebar {
+    width: 300px; /* Largeur personnalisée de la barre latérale de chat */
+    background-color: #333; /* Couleur de fond personnalisée */
+    height: 100vh; /* Remplir la hauteur de l'écran */
+    position: fixed; /* Position fixe pour rester à droite */
+    top: 0; /* Aligner en haut */
+    right: 0; /* Aligner à droite */
+  }
+  
