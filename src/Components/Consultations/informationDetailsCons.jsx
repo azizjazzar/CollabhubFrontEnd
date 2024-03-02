@@ -7,7 +7,7 @@ import iconFour from '/img/icon4.jpg';
 export function InformationDetailsCons() {
   return (
     <div>
-    <p className="font-bold text-orange-700 border-b border-orange-200 text-lg pr-2">What to expect:</p>
+    <p className="font-bold text-orange-700 border-b border-orange-200 text-lg pr-2">You can follow these steps:</p>
       <div className="flex flex-col gap-4 mt-4">
       <div className="flex items-center gap-2">
   <img src={iconOne} alt="Schedule the consultation" style={{ width: '90px', height: '90px' }} />

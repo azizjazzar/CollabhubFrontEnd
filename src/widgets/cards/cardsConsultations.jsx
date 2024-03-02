@@ -20,7 +20,7 @@ function CardsConsultations({ handleSearchInput }) {
   
 
   useEffect(() => {
-    fetch("https://colabhub.onrender.com/consultations/Consultations")
+    fetch("http://localhost:3000/consultations/Consultations")
       .then(response => response.json())
       .then(data => {
         localStorage.setItem("consultations", JSON.stringify(data));
@@ -170,11 +170,16 @@ function CardsConsultations({ handleSearchInput }) {
           </div>
           <div className="mt-4 flex items-center">
             <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>
-            <div className="flex space-x-4">
-              {consultation.titre && (
-                <div className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs">{consultation.titre}</div>
-              )}
-            </div>
+            <div className="flex">
+  {consultation.meetingTopics.map((topic, index) => (
+    <div key={index} className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs mr-2">
+      {topic}
+    </div>
+  ))}
+</div>
+
+
+
           </div>
 
           <div className="text-gray-600 mb-1 text-sm">{consultation.description}</div>

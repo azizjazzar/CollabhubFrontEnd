@@ -33,7 +33,7 @@ function DetailsConsultation() {
 
   useEffect(() => {
     if (consultationId) {
-      fetch(`https://colabhub.onrender.com/consultations/${consultationId}`)
+      fetch(`http://localhost:3000/consultations/${consultationId}`)
         .then(response => response.json())
         .then(data => setConsultationDetails(data))
         .catch(error => console.error("Error fetching consultation details:", error));
@@ -82,7 +82,7 @@ function DetailsConsultation() {
     };
 
     try {
-      const response = await fetch("https://colabhub.onrender.com/payment/create-checkout-session", {
+      const response = await fetch("http://localhost:3000/payment/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -105,26 +105,21 @@ function DetailsConsultation() {
 
   return (
     <div className='mt-10 p-10 '>
-   
       <div className="container mx-auto my-8 p-6 border rounded shadow-lg relative">
-      <img
-  src={`https://colabhub.onrender.com/images/${users[consultationDetails.freelancerId]?.picture}`}
-  alt=""
-  className="rounded-full absolute top-4 left-4"
-  style={{ width: "60px", height: "60px" }}
-/>
+        <img
+          src={`https://colabhub.onrender.com/images/${users[consultationDetails.freelancerId]?.picture}`}
+          alt=""
+          className="rounded-full absolute top-4 left-4"
+          style={{ width: "60px", height: "60px" }}
+        />
 
-{console.log("aaaa",users[consultationDetails.freelancerId]?.picture || '')}
-{users[consultationDetails.freelancerId] && (
-  <h1 className="text-l font-bold mb-4 pl-16">
-    <span style={{ color: 'black' }}>{users[consultationDetails.freelancerId].nom + " " + users[consultationDetails.freelancerId].prenom}</span>
-    <br />
-    <span style={{ fontSize: '24px'  , color: 'gray'}}>{consultationDetails.domaineExpertise}</span>
-  </h1>
-)}
-
-
-
+        {users[consultationDetails.freelancerId] && (
+          <h1 className="text-l font-bold mb-4 pl-16">
+            <span style={{ color: 'black' }}>{users[consultationDetails.freelancerId].nom + " " + users[consultationDetails.freelancerId].prenom}</span>
+            <br />
+            <span style={{ fontSize: '24px', color: 'gray' }}>{consultationDetails.domaineExpertise}</span>
+          </h1>
+        )}
 
         <div className="flex justify-between">
           <div className="w-3/5">
@@ -142,19 +137,20 @@ function DetailsConsultation() {
                   </span>
                 )}
             </p>
-            {/* domaineExpertise user details */}
             <br />
-            <p className="font-bold text-black-700 border-b border-gray-200 text-sm pr-2">Get personalized advice on:</p>
-            <div className="flex space-x-4">
-              {/* Placeholder pour les détails */}
-            </div>
+            <p className="font-bold text-black-700 border-b border-gray-200 text-sm pr-2 mb-2">Get personalized advice on:</p>
+<div className="flex space-x-4">
+  {consultationDetails.meetingTopics && consultationDetails.meetingTopics.map((topic, index) => (
+    <div key={index} className="border border-gray-300 text-gray-500 px-2 py-1 rounded-full text-xs mr-2">
+      {topic}
+    </div>
+  ))}
+</div>
 
-            {/* 4 image de meeting  details */}
             <br />
             <InformationDetailsCons />
           </div>
 
-          {/* prix par minute  30/60 details */}
           <div className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
             <h5 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-300">Pricing</h5>
             <div className="flex items-center justify-between my-2">
@@ -178,11 +174,10 @@ function DetailsConsultation() {
                 <FaVideo className="mr-2" />
                 <span style={{ fontSize: '16px' }}>Meet Now</span>
               </label>
-              <span className="text-gray-500 dark:text-gray-400">Next available date {formatDate(consultationDetails.availabilityStart)} at {formatDate(consultationDetails.availabilityEnd)}</span>
+              <span className="text-gray-500 dark:text-gray-400">Available date {formatDate(consultationDetails.availabilityStart)} at {formatDate(consultationDetails.availabilityEnd)}</span>
             </div>
             <br />
             <div>
-              <a href="#moreTimes" className="text-orange-500 underline font-medium">See more times</a>
             </div>
             <div className="flex items-center text-base font-normal leading-tight text-gray-500 dark:text-gray-300 ms-3">
               <i className="fas fa-envelope text-lg mr-2"></i>
@@ -192,7 +187,7 @@ function DetailsConsultation() {
             <button
               type="button"
               className="mt-6 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
-              onClick={makePayment} // Placer l'événement onClick ici
+              onClick={makePayment}
             >
               Continue (${selectedPrice})
             </button>
@@ -206,7 +201,6 @@ function DetailsConsultation() {
             <br />
             <br />
             <br />
-
           </div>
         </div>
       </div>
