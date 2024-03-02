@@ -19,8 +19,8 @@ import UploadJob from "./Components/Projet/UploadJob";
 import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
-import Meeting from "./Components/Collaboration/Metting/Meeting";
-
+import Meeting from "./Components/Consultations/Metting/Meeting";
+import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 
 const router = createBrowserRouter([
   {
@@ -126,7 +126,7 @@ const router = createBrowserRouter([
       },
       {
         path:"/meeting",
-        element: <Meeting/>
+        element: <VideoRoom/>
       },
     ],
   },
