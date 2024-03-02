@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane } from 'react-icons/fa'; // Import des icônes
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa'; 
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '@/pages/authContext';
 import '@/widgets/assets/meeting.css'; // Import du fichier CSS
@@ -21,6 +21,7 @@ export const VideoRoom = () => {
     const [localTracks, setLocalTracks] = useState([]);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
+    const [isScreenSharing, setIsScreenSharing] = useState(false); // State to track screen sharing
     const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
     const [messageInput, setMessageInput] = useState(''); // État pour gérer le message
@@ -31,7 +32,6 @@ export const VideoRoom = () => {
         setIsCameraOn(newState);
         localTracks[1].setEnabled(newState); // Index 1 corresponds à la piste vidéo
 
-        // Mise à jour de l'icône de la caméra
         const cameraIcon = document.getElementById('camera-icon');
         if (cameraIcon) {
             cameraIcon.style.color = newState ? '#ff8316' : '#ccc';
@@ -47,6 +47,25 @@ export const VideoRoom = () => {
         const micIcon = document.getElementById('mic-icon');
         if (micIcon) {
             micIcon.style.color = newState ? '#ff8316' : '#ccc';
+        }
+    };
+
+    const toggleScreenSharing = async () => {
+        if (!isScreenSharing) {
+            try {
+                const screenTrack = await AgoraRTC.createScreenVideoTrack();
+                setLocalTracks(prevTracks => [...prevTracks, screenTrack]);
+                client.publish(screenTrack);
+                setIsScreenSharing(true);
+            } catch (error) {
+                console.error('Error sharing screen:', error);
+            }
+        } else {
+            // Stop screen sharing
+            localTracks[2].stop();
+            localTracks[2].close();
+            setLocalTracks(prevTracks => prevTracks.filter(track => track.getType() !== 'video')); // Remove screen track
+            setIsScreenSharing(false);
         }
     };
 
@@ -136,6 +155,9 @@ export const VideoRoom = () => {
                     <button onClick={toggleAudio}>
                         {isAudioOn ? <FaMicrophone color="#ff8316" size={22} id="mic-icon" /> : <FaMicrophoneSlash color="#ff8316" size={21} id="mic-icon" />}
                     </button>
+                    <button onClick={toggleScreenSharing}>
+                        {isScreenSharing ? <FaDesktop color="#ff8316" size={22} /> : <FaDesktop color="#ff8316" size={21} />}
+                    </button>
                 </div>
             </>
             ) : (
@@ -169,3 +191,4 @@ export const VideoRoom = () => {
         </div>
     );
 };
+
