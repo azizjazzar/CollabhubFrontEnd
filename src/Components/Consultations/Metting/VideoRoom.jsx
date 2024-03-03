@@ -147,7 +147,7 @@ export const VideoRoom = () => {
                 client.unpublish(localTracks).then(() => client.leave());
             };
         }
-    }, [authData]);
+    }, [authData,isCameraOn]);
 
     return (
         <div className="pt-24 fixed">
