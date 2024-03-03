@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa'; 
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop, FaRecordVinyl, FaEllipsisV } from 'react-icons/fa'; 
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '@/pages/authContext';
 import '@/widgets/assets/meeting.css'; // Import du fichier CSS
 import SendIcon from "@material-ui/icons/Send";
-import { IconButton } from '@material-ui/core'; // Import de IconButton de Material-UI
+import { IconButton, Menu, MenuItem } from '@material-ui/core';
+import { FaCommentAlt } from 'react-icons/fa';
+ // Import de IconButton et Menu de Material-UI
+ import iconTwo from '/img/iconmessage.jpg';
 
 const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
 const TOKEN = "007eJxTYLihsXevEu/xWX/YD3IlXljx9Oi7s81L0m+pv+DRusYSdFBBgcHYzMDMPMks1dzS0sIk1cTCwsgiycTIIDk1NTXRIMk0+azr49SGQEaG6RMmszAyQCCIz8ngnJ+Tk5iUUZrEwAAAaw4jBg==";
@@ -21,17 +24,18 @@ export const VideoRoom = () => {
     const [localTracks, setLocalTracks] = useState([]);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
-    const [isScreenSharing, setIsScreenSharing] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false); // State to track screen sharing
+    const [isRecording, setIsRecording] = useState(false); // State to track video recording
+    const [isChatOpen, setIsChatOpen] = useState(true); // State to track if chat sidebar is open or closed
+    const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
-    const [inputMessage, setInputMessage] = useState('');
-    const [screenShareElement, setScreenShareElement] = useState(null);
-
-    const { authData } = useAuth();
+    const [messageInput, setMessageInput] = useState(''); // State to manage message input
+    const [inputMessage, setInputMessage] = useState(''); // State to manage user input
 
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
-        localTracks[1].setEnabled(newState);
+        localTracks[1].setEnabled(newState); // Index 1 corresponds to video track
 
         const cameraIcon = document.getElementById('camera-icon');
         if (cameraIcon) {
@@ -42,7 +46,7 @@ export const VideoRoom = () => {
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
-        localTracks[0].setEnabled(newState);
+        localTracks[0].setEnabled(newState); // Index 0 corresponds to audio track
 
         const micIcon = document.getElementById('mic-icon');
         if (micIcon) {
@@ -57,21 +61,28 @@ export const VideoRoom = () => {
                 setLocalTracks(prevTracks => [...prevTracks, screenTrack]);
                 client.publish(screenTrack);
                 setIsScreenSharing(true);
-                setScreenShareElement(screenTrack);
             } catch (error) {
                 console.error('Error sharing screen:', error);
             }
         } else {
-            localTracks[2].stop();
-            localTracks[2].close();
-            setLocalTracks(prevTracks => prevTracks.filter(track => track.kind !== 'video'));
-            setIsScreenSharing(false);
-            if (screenShareElement) {
-                screenShareElement.stop();
-                screenShareElement.close();
-                setScreenShareElement(null);
+            // Stop screen sharing
+            const screenTrackIndex = localTracks.findIndex(track => track.getType() === 'video');
+            if (screenTrackIndex !== -1) {
+                localTracks[screenTrackIndex].stop();
+                localTracks[screenTrackIndex].close();
+                setLocalTracks(prevTracks => prevTracks.filter((_, index) => index !== screenTrackIndex)); // Remove screen track
+                setIsScreenSharing(false);
             }
         }
+    };
+
+    const toggleRecording = () => {
+        setIsRecording(prevState => !prevState);
+        // Add logic to start/stop video recording
+    };
+
+    const toggleChat = () => {
+        setIsChatOpen(prevState => !prevState);
     };
 
     const sendMessage = () => {
@@ -135,12 +146,6 @@ export const VideoRoom = () => {
                 client.off('user-published', handleUserJoined);
                 client.off('user-left', handleUserLeft);
                 client.unpublish(localTracks).then(() => client.leave());
-
-                if (screenShareElement) {
-                    screenShareElement.stop();
-                    screenShareElement.close();
-                    setScreenShareElement(null);
-                }
             };
         }
     }, [authData]);
@@ -148,57 +153,109 @@ export const VideoRoom = () => {
     return (
         <div className="pt-24">
             {authData.user ? (
-                <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 500px)' }}>
-                        {users.map(user => (
-                            <VideoPlayer key={user.uid} user={user} />
-                        ))}
-                        {isScreenSharing && (
-                            <div id="screen-share-container" className="screen-share-container w-80 h-80">
-                                {screenShareElement && screenShareElement._container}
-                            </div>
-                        )}
-                    </div>
-                    <div className="bottom-navbar">
-                        <IconButton onClick={toggleCamera} style={{ background: 'none', border: 'none' }}>
-                            {isCameraOn ? <FaVideo color="#ff8316" size={22} id="camera-icon" /> : <FaVideoSlash color="#ff8316" size={21} id="camera-icon" />}
-                        </IconButton>
-                        <IconButton onClick={toggleAudio} style={{ background: 'none', border: 'none' }}>
-                            {isAudioOn ? <FaMicrophone color="#ff8316" size={22} id="mic-icon" /> : <FaMicrophoneSlash color="#ff8316" size={21} id="mic-icon" />}
-                        </IconButton>
-                        <IconButton onClick={toggleScreenSharing} style={{ background: 'none', border: 'none' }}>
-                            {isScreenSharing ? <FaDesktop color="#ff8316" size={22} /> : <FaDesktop color="#ff8316" size={21} />}
-                        </IconButton>
-                    </div>
-                </>
+            <>
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 500px)',
+                    }}
+                >
+                    {users.map(user => (
+                        <VideoPlayer key={user.uid} user={user} />
+                    ))}
+                </div>
+
+                <div className="bottom-navbar">
+    <button onClick={toggleCamera}>
+        {isCameraOn ? (
+            <>
+                <FaVideo color="#ffff" size={22} id="camera-icon" />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Turn off camera</div>
+            </>
+        ) : (
+            <>
+                <FaVideoSlash color="#ffff" size={21} id="camera-icon" />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Turn on camera</div>
+            </>
+        )}
+    </button>
+    <button onClick={toggleAudio}>
+        {isAudioOn ? (
+            <>
+                <FaMicrophone color="#ffff" size={22} id="mic-icon" />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Mute microphone</div>
+            </>
+        ) : (
+            <>
+                <FaMicrophoneSlash color="#ffff" size={21} id="mic-icon" />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Unmute microphone</div>
+            </>
+        )}
+    </button>
+    <button onClick={toggleScreenSharing}>
+        {isScreenSharing ? (
+            <>
+                <FaDesktop color="#ffff" size={22} />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Stop screen sharing</div>
+            </>
+        ) : (
+            <>
+                <FaDesktop color="#ffff" size={21} />
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '20px' }}>Start screen sharing</div>
+            </>
+        )}
+    </button>
+    <button onClick={toggleChat}>
+        <FaPaperPlane color="#ffff" size={22} />
+        <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Open/close chat</div>
+    </button>
+    {/* Add More Options Button */}
+</div>
+
+
+
+            </>
             ) : (
-                <div>Veuillez vous connecter pour activer la vidéo</div>
+            <div>Veuillez vous connecter pour activer la vidéo</div>
             )}
-            <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "auto" }}>
-                <h2 style={{ color: "orange" }}>Chat</h2>
-                <div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
-                    <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                        {chatMessages.map((msg, index) => (
-                            <li key={index}>{msg.message}</li>
-                        ))}
-                    </ul>
+            {/* Add condition to display/hide chat sidebar */}
+            {isChatOpen && (
+                <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "auto" }}>
+<h5 style={{ color: "#3498DB", position: "absolute", top: "17%", left: "10%", transform: "translate(-50%, -50%)", fontSize: "1.2em", fontWeight: "bold" }}>
+    Chat
+</h5>
+
+ {/* Ajout de l'image */}
+ <div className="chat-image" style={{ marginTop: "170px" }}>
+    <img src={iconTwo} alt="Chat Image" style={{ width: "100%", height: "auto" }} />
+</div>
+
+        {/* Fin de l'ajout de l'image */}
+<div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
+    <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+        {chatMessages.map((msg, index) => (
+            <li key={index}>{msg.message}</li>
+        ))}
+    </ul>
+</div>
+
+                    <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
+                        <input
+                            type="text"
+                            placeholder="Type your message here..."
+                            value={inputMessage}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
+                        />
+                        <IconButton
+                            onClick={sendMessage}
+                            style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
+                        >
+                            <SendIcon />
+                        </IconButton>
+                    </div>
                 </div>
-                <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
-                    <input
-                        type="text"
-                        placeholder="Saisissez votre message ici..."
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
-                    />
-                    <IconButton
-                        onClick={sendMessage}
-                        style={{ padding: "8px", backgroundColor: "orange", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
-                    >
-                        <SendIcon />
-                    </IconButton>
-                </div>
-            </div>
+            )}
         </div>
     );
 };
