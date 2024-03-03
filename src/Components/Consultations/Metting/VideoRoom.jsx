@@ -28,17 +28,19 @@ export const VideoRoom = () => {
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
 
-    const toggleCamera = () => {
+    const toggleCamera = async () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
+    
         if (newState) {
-            localTracks[1]?.setEnabled(true).catch(error => {
-                console.error('Error enabling the video track:', error);
-            });
+            const videoTrack = await AgoraRTC.createCameraVideoTrack(); 
+            localTracks[1] = videoTrack; 
+            await client.publish(videoTrack); 
         } else {
-            localTracks[1]?.setEnabled(false).catch(error => {
-                console.error('Error disabling the video track:', error);
-            });
+            // Désactiver la caméra
+            await client.unpublish(localTracks[1]); 
+            localTracks[1].stop(); 
+            localTracks[1].close(); 
         }
     };
     
