@@ -33,24 +33,12 @@ export const VideoRoom = () => {
         setIsCameraOn(newState);
     
         if (newState) {
-            // Reactivate the camera
-            localTracks[1].setEnabled(true).then(() => {
-                client.unpublish(localTracks[1]).then(() => {
-                    client.publish(localTracks[1]);
-                }).catch(error => console.error('Error republishing the video track:', error));
-            }).catch(error => console.error('Error enabling the video track:', error));
+                window.location.reload(); // Rafraîchir la page après le changement d'état
         } else {
-            // Deactivate the camera without reloading the page
             localTracks[1].setEnabled(false).catch(error => console.error('Error disabling the video track:', error));
         }
     };
     
-    
-    
-    
-    
-    
-
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
@@ -178,11 +166,21 @@ export const VideoRoom = () => {
                             justifyItems: 'center',
                         }}
                     >
-                       {users.map(user => {
-    return (
+            {users.map(user => (
+                
+    isCameraOn && user.uid == authData.userMeeting?.uid ? (
         <VideoPlayer key={user.uid} user={user} />
-    );
-})}
+    ) : (
+        <div className='mt-36'>
+        <img
+            key={user.uid}
+            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+            alt={`User ${user.uid}`}
+            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
+        />
+        </div>
+    )
+))}
 
                     </div>
 
