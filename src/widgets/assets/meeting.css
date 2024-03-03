@@ -2,31 +2,46 @@
 .meeting-container {
     position: relative;
     height: 100vh; /* Remplir la hauteur de l'écran */
-    border-radius: 15px; /* Ajout de coins arrondis de 15px */
+    border-radius: 10px; /* Ajout de coins arrondis de 10px */
     overflow: hidden; /* Masquer le contenu qui dépasse des coins arrondis */
     background-color: #f0f0f0; /* Couleur de fond pour le contraste */
+    display: flex; /* Utiliser flexbox pour centrer les éléments */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    border: 2px solid #5DADE2; /* Ajouter une bordure bleue */
+      
+}
+body {
+    overflow: hidden; /* Empêcher le défilement */
 }
 
+
 .webcam-container {
-    overflow: hidden; /* Masquer le contenu qui dépasse des coins arrondis */
-    padding-top: 20px; /* Ajout d'un padding de 20px en haut */
-    padding-left: 20px; /* Ajout d'un padding de 20px à gauche */
-    padding-right: 20px; /* Ajout d'un padding de 20px à droite */
+    position: relative !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    border-radius: 10px !important;
+    border: 2px solid #5DADE2 !important; /* Ajout du border avec couleur bleue */
+     /* padding-left: 50px; */
+    /* Autres styles personnalisés */
 }
+
+
+
 
 /* meeting.css */
 .bottom-navbar {
-    position: absolute;
-    bottom: 2px;
-    left: 40%;
-    transform: translateX(-50%);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 78%; /* Modifier la largeur pour occuper toute la largeur de l'écran */
+    height: 60px;
+    background-color:#3498DB;
     display: flex;
     justify-content: space-between;
-    width: 300px;
-    height: 60px; /* Augmenter la largeur de la barre inférieure à 200px */
-    background-color: #333; /* Changer la couleur de fond de la barre inférieure */
-    padding: 10px; /* Ajouter un padding de 10px */
-    border-radius: 10px; /* Ajouter des coins arrondis */
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .icon-button {
@@ -35,10 +50,7 @@
     cursor: pointer;
 }
 
-.icon {
-    font-size: 22px; /* Taille des icônes augmentée à 30px */
-    color: #ffa323; /* Couleur des icônes */
-}
+
 
 .webcam-off-message {
     position: absolute;
@@ -55,13 +67,11 @@
 
 .sidebar {
     width: 350px; /* Largeur personnalisée de la barre latérale de chat */
-    background-color: #333; /* Couleur de fond personnalisée */
+    background-color: #ffffff; /* Couleur de fond personnalisée */
     height: 100vh; /* Remplir la hauteur de l'écran */
     position: fixed; /* Position fixe pour rester à droite */
     top: 0; /* Aligner en haut */
     right: 0; /* Aligner à droite */
     padding-top: 200px; /* Ajouter un padding en haut */
 }
-
-
 
