@@ -35,26 +35,22 @@ export const VideoRoom = () => {
         // Disable/enable the camera track
         localTracks[1].setEnabled(newState);
     
-        // If the user is publishing a video track, update the local stream and publish
-        if (localTracks[1].hasVideo) {
-            await localTracks[1].setEnabled(newState);
-    
-            // Remove the local video track
+        if (newState) {
+            // If toggling camera on, create a new video track and publish
+            const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
+            setLocalTracks(prevTracks => [...prevTracks, newVideoTrack]);
+            await client.publish(newVideoTrack);
+        } else {
+            // If toggling camera off, stop and close the existing video track
             const localVideoTrackIndex = localTracks.findIndex(track => track.getType() === 'video');
             if (localVideoTrackIndex !== -1) {
                 localTracks[localVideoTrackIndex].stop();
                 localTracks[localVideoTrackIndex].close();
                 setLocalTracks(prevTracks => prevTracks.filter((_, index) => index !== localVideoTrackIndex));
             }
-    
-            // Create a new video track and add it to the local tracks
-            const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
-            setLocalTracks(prevTracks => [...prevTracks, newVideoTrack]);
-    
-            // Publish the new tracks
-            await client.publish(newVideoTrack);
         }
     };
+    
     
 
     const toggleAudio = () => {
