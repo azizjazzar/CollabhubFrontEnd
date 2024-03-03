@@ -9,13 +9,9 @@ export const VideoPlayer = ({ user }) => {
   }, []);
 
   return (
-    <div>
-      Uid: {user.uid}
-      <div style={{ paddingLeft: '200px' , paddingTop: '280px'  }}>
-        <div className='webcam-container'
-          ref={ref}
-          style={{ width: '500px', height: '400px' }}
-        ></div>
+    <div className='flex pb-[160px] w-[500px]' style={{ width: '100%', height: '100vh' }}>
+      <div style={{ width: '100%', height: '100%' }}>
+        <div className='border mb-12' ref={ref} style={{ width: '100%', height: '100%' }}></div>
       </div>
     </div>
   );

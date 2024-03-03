@@ -1,18 +1,18 @@
 /* meeting.css */
 .meeting-container {
     position: relative;
-    height: 100vh; /* Remplir la hauteur de l'écran */
-    border-radius: 10px; /* Ajout de coins arrondis de 10px */
-    overflow: hidden; /* Masquer le contenu qui dépasse des coins arrondis */
-    background-color: #f0f0f0; /* Couleur de fond pour le contraste */
-    display: flex; /* Utiliser flexbox pour centrer les éléments */
-    justify-content: center; /* Centrer horizontalement */
-    align-items: center; /* Centrer verticalement */
-    border: 2px solid #5DADE2; /* Ajouter une bordure bleue */
+    height: 100vh;
+    border-radius: 10px; 
+    overflow: hidden; 
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    border: 2px solid #5DADE2;
       
 }
 body {
-    overflow: hidden; /* Empêcher le défilement */
+    overflow: auto; 
 }
 
 
@@ -22,9 +22,8 @@ body {
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     border-radius: 10px !important;
-    border: 2px solid #5DADE2 !important; /* Ajout du border avec couleur bleue */
-     /* padding-left: 50px; */
-    /* Autres styles personnalisés */
+    border: 2px solid #5DADE2 !important; 
+    overflow: auto;
 }
 
 
@@ -35,7 +34,7 @@ body {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 78%; /* Modifier la largeur pour occuper toute la largeur de l'écran */
+    width: 75%; 
     height: 60px;
     background-color:#3498DB;
     display: flex;
@@ -61,17 +60,14 @@ body {
     color: #333;
 }
 
-/* meeting.css */
-/* meeting.css */
-/* meeting.css */
 
 .sidebar {
-    width: 350px; /* Largeur personnalisée de la barre latérale de chat */
-    background-color: #ffffff; /* Couleur de fond personnalisée */
-    height: 100vh; /* Remplir la hauteur de l'écran */
-    position: fixed; /* Position fixe pour rester à droite */
-    top: 0; /* Aligner en haut */
-    right: 0; /* Aligner à droite */
-    padding-top: 200px; /* Ajouter un padding en haut */
+    width: 350px; 
+    background-color: #ffffff;
+    height: 100vh;
+    position: fixed; 
+    top: 0; 
+    right: 0; 
+    padding-top: 200px;
 }
 
