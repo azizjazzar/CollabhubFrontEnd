@@ -8,7 +8,6 @@ export const VideoPlayer = ({ user }) => {
   useEffect(() => {
     user.videoTrack.play(ref.current);
   }, [user.videoTrack]);
-console.log("leika",authData.userMeeting)
   return (
     <div className='flex pb-[160px] w-[500px]' style={{ width: '100%', height: '100vh' }}>
       <div style={{ width: '100%', height: '100%' }}>

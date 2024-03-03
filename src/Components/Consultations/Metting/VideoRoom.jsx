@@ -31,13 +31,17 @@ export const VideoRoom = () => {
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
-        localTracks[1].setEnabled(newState);
-
-        const cameraIcon = document.getElementById('camera-icon');
-        if (cameraIcon) {
-            cameraIcon.style.color = newState ? '#ff8316' : '#ccc';
+        if (newState) {
+            localTracks[1]?.setEnabled(true).catch(error => {
+                console.error('Error enabling the video track:', error);
+            });
+        } else {
+            localTracks[1]?.setEnabled(false).catch(error => {
+                console.error('Error disabling the video track:', error);
+            });
         }
     };
+    
 
     const toggleAudio = () => {
         const newState = !isAudioOn;
@@ -151,7 +155,7 @@ export const VideoRoom = () => {
         };
     
         joinChannel();
-    }, [authData.user]); // Assurez-vous d'ajouter authData.user dans le tableau des dépendances si vous utilisez l'ID de l'utilisateur.
+    }, [authData.user]);
     
     
     return (
