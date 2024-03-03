@@ -7,21 +7,36 @@ export const AuthProvider = ({ children }) => {
   const [authData, setAuthData] = useState(() => {
     const storedAuthData = localStorage.getItem('authData');
     return storedAuthData ? JSON.parse(storedAuthData) : {
-      user: { email: '' }, 
+      user: { email: '' },
       accessToken: null,
       refreshToken: null,
+      userMeeting: null,
+
     };
   });
 
-  const setAuthUserData = ({ user, accessToken, refreshToken }) => {
-    const newAuthData = { user, accessToken, refreshToken };
-    setAuthData(newAuthData);
-    localStorage.setItem('authData', JSON.stringify(newAuthData));
+  const setAuthUserData = ({ user, userMeeting, accessToken, refreshToken }) => {
+    setAuthData(previousData => ({
+      ...previousData,
+      user: user,
+      userMeeting: userMeeting,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    }));
+    localStorage.setItem('authData', JSON.stringify({
+      ...previousData,
+      user: user,
+      userMeeting: userMeeting,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    }));
   };
 
-
   const refreshAuthData = (updatedData) => {
-    setAuthUserData(updatedData);
+    setAuthData(previousData => ({
+      ...previousData,
+      ...updatedData,
+    }));
   };
 
   return (
