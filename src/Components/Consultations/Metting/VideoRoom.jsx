@@ -33,24 +33,18 @@ export const VideoRoom = () => {
         setIsCameraOn(newState);
     
         if (newState) {
-            // Réactiver la caméra
+            // Reactivate the camera
             localTracks[1].setEnabled(true).then(() => {
-                // Tentez de republier la piste vidéo si elle a été désactivée précédemment
                 client.unpublish(localTracks[1]).then(() => {
                     client.publish(localTracks[1]);
-                }).catch(error => {
-                    console.error('Error republishing the video track:', error);
-                });
-            }).catch(error => {
-                console.error('Error enabling the video track:', error);
-            });
+                }).catch(error => console.error('Error republishing the video track:', error));
+            }).catch(error => console.error('Error enabling the video track:', error));
         } else {
-            // Désactiver la caméra sans recharger la page
-            localTracks[1].setEnabled(false).catch(error => {
-                console.error('Error disabling the video track:', error);
-            });
+            // Deactivate the camera without reloading the page
+            localTracks[1].setEnabled(false).catch(error => console.error('Error disabling the video track:', error));
         }
     };
+    
     
     
     
