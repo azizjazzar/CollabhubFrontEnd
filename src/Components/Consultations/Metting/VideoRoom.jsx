@@ -178,7 +178,7 @@ export const VideoRoom = () => {
             <>
                 <FaVideoSlash color="#ffff" size={21} id="camera-icon" />
                 <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Turn on camera</div>
-               
+                <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Camera is off</div> {/* Ajout du message */}
             </>
         )}
     </button>
@@ -219,7 +219,7 @@ export const VideoRoom = () => {
             )}
             {isChatOpen && (
                 <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "auto" }}>
-<h5 style={{ color: "#F39C12", position: "absolute", top: "17%", left: "10%", transform: "translate(-50%, -50%)", fontSize: "1.2em", fontWeight: "bold" }}>
+<h5 style={{ color: "#3498DB", position: "absolute", top: "17%", left: "10%", transform: "translate(-50%, -50%)", fontSize: "1.2em", fontWeight: "bold" }}>
     Chat
 </h5>
 
@@ -245,7 +245,7 @@ export const VideoRoom = () => {
                         />
                         <IconButton
                             onClick={sendMessage}
-                            style={{ padding: "8px", backgroundColor: "#F39C12", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
+                            style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
                         >
                             <SendIcon />
                         </IconButton>
