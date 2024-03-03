@@ -28,28 +28,32 @@ export const VideoRoom = () => {
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
 
-    const toggleCamera = async () => {
+    const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
     
-        // Disable/enable the camera track
-        localTracks[1].setEnabled(newState);
-    
         if (newState) {
-            // If toggling camera on, create a new video track and publish
-            const newVideoTrack = await AgoraRTC.createCameraVideoTrack();
-            setLocalTracks(prevTracks => [...prevTracks, newVideoTrack]);
-            await client.publish(newVideoTrack);
+            // Réactiver la caméra
+            localTracks[1].setEnabled(true).then(() => {
+                // Tentez de republier la piste vidéo si elle a été désactivée précédemment
+                client.unpublish(localTracks[1]).then(() => {
+                    client.publish(localTracks[1]);
+                }).catch(error => {
+                    console.error('Error republishing the video track:', error);
+                });
+            }).catch(error => {
+                console.error('Error enabling the video track:', error);
+            });
         } else {
-            // If toggling camera off, stop and close the existing video track
-            const localVideoTrackIndex = localTracks.findIndex(track => track.getType() === 'video');
-            if (localVideoTrackIndex !== -1) {
-                localTracks[localVideoTrackIndex].stop();
-                localTracks[localVideoTrackIndex].close();
-                setLocalTracks(prevTracks => prevTracks.filter((_, index) => index !== localVideoTrackIndex));
-            }
+            // Désactiver la caméra sans recharger la page
+            localTracks[1].setEnabled(false).catch(error => {
+                console.error('Error disabling the video track:', error);
+            });
         }
     };
+    
+    
+    
     
     
 
