@@ -6,7 +6,7 @@ import { useAuth } from '@/pages/authContext';
 import SendIcon from "@material-ui/icons/Send";
 import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
-
+import ChatRoom from './chatRoom';
 const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
 const TOKEN = "007eJxTYDi/6OAei5rJ2b+f8nooT1/cEm+gK3if81ri9X/sGz+V1zorMBibGZiZJ5mlmltaWpikmlhYGFkkmRgZJKempiYaJJkmv5/+JLUhkJGBwzOPkZEBAkF8Nobk/JycxCQGBgDMZCDj";
 const CHANNEL = "collab";
@@ -31,14 +31,14 @@ export const VideoRoom = () => {
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
-    
+
         if (newState) {
-                window.location.reload(); // Rafraîchir la page après le changement d'état
+            window.location.reload();
         } else {
             localTracks[1].setEnabled(false).catch(error => console.error('Error disabling the video track:', error));
         }
     };
-    
+
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
@@ -90,30 +90,30 @@ export const VideoRoom = () => {
                     uid = authData.user.id || Math.floor(Math.random() * 100000).toString();
                     localStorage.setItem('userUID', uid); // Stocker l'UID pour les futures connexions.
                 }
-    
+
                 const handleUserJoined = async (user, mediaType) => {
                     await client.subscribe(user, mediaType);
-    
+
                     if (mediaType === 'video') {
                         setUsers(previousUsers => [...previousUsers, user]);
                         setAuthUserData({ ...authData, userMeeting: user });
                     }
-    
+
                     if (mediaType === 'audio') {
                         user.audioTrack.play();
                     }
                 };
-    
+
                 const handleUserLeft = user => {
                     setUsers(previousUsers =>
                         previousUsers.filter(u => u.uid !== user.uid)
                     );
                 };
-    
+
                 // Attacher les gestionnaires d'événements.
                 client.on('user-published', handleUserJoined);
                 client.on('user-left', handleUserLeft);
-    
+
                 // Rejoindre le canal avec l'UID spécifié.
                 await client.join(APP_ID, CHANNEL, TOKEN, uid)
                     .then(uid =>
@@ -135,25 +135,25 @@ export const VideoRoom = () => {
                         ]);
                         client.publish(tracks);
                     });
-    
+
                 // Nettoyage à la désinscription.
                 return () => {
                     localTracks.forEach(track => {
                         track.stop();
                         track.close();
                     });
-    
+
                     client.off('user-published', handleUserJoined);
                     client.off('user-left', handleUserLeft);
                     client.leave();
                 };
             }
         };
-    
+
         joinChannel();
     }, [authData.user]);
-    
-    
+
+
     return (
         <div className="pt-24 fixed">
             {authData.user ? (
@@ -161,26 +161,25 @@ export const VideoRoom = () => {
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 550px)',
+                            gridTemplateColumns: 'repeat(2, 700px)',
                             gridGap: '10px',
                             justifyItems: 'center',
                         }}
                     >
-            {users.map(user => (
-                
-    isCameraOn && user.uid == authData.userMeeting?.uid ? (
-        <VideoPlayer key={user.uid} user={user} />
-    ) : (
-        <div className='mt-36'>
-        <img
-            key={user.uid}
-            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-            alt={`User ${user.uid}`}
-            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
-        />
-        </div>
-    )
-))}
+                        {users.map(user => (
+                                isCameraOn ? (
+                                    <VideoPlayer key={user.uid} user={user} />
+                                ) : (
+                                    <div className='mt-36'>
+                                        <img
+                                            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+                                            alt={`User ${user.uid}`}
+                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
+                                        />
+                                    </div>
+                                )
+                        ))}
+
 
                     </div>
 

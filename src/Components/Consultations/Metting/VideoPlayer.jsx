@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import '@/widgets/assets/meeting.css'; // Import du fichier CSS
 import { useAuth } from '@/pages/authContext';
+
 export const VideoPlayer = ({ user }) => {
   const ref = useRef();
   const { authData, setAuthUserData } = useAuth();
-
+  const largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  
   useEffect(() => {
     user.videoTrack.play(ref.current);
   }, [user.videoTrack]);
+
   return (
-    <div className='flex pb-[160px] w-[500px]' style={{ width: '100%', height: '100vh' }}>
-      <div style={{ width: '100%', height: '100%' }}>
-        <div className='border mb-12' ref={ref} style={{ width: '100%', height: '100%' }}></div>
-      </div>
+    <div className='flex pb-[23%] w-full' style={{ width: '100%', height: '100vh' }}>
+      <div className={`border  mb-12 ${largeurEcran > 1320 ? 'w-[540px]' : 'sm:w-1/2 md:w-[200px] lg:w-[300px] 2xl:w-[500px]'}`} ref={ref} style={{ height: '100%' }}></div>
     </div>
   );
 };
