@@ -1,4 +1,4 @@
-// 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
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ function ChatGPT() {
           },
           {
             headers: {
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer `,
             },
           }
         );
