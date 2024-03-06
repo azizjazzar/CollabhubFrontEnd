@@ -316,7 +316,7 @@ function Todo(props){
           <div className="flex items-center py-5 px-4 sm:py-6 sm:px-0">
             <div className="flex min-w-0 flex-1 items-center">
               <div className="flex-shrink-0">
-                <img className="h-12 w-12 rounded-full group-hover:opacity-75" src={`https://colabhub.onrender.com/images/team-3.jpg?fbclid=IwAR3rUFimZKj70ON8cz2oG-591NlWUYiZv1UTW3jzZhyswWvaoVS-1-9Yk3I`} alt=""/>
+                <img className="h-12 w-12 rounded-full group-hover:opacity-75" src={`https://colabhub.onrender.com/images/${freelancer?.picture}`} alt=""/>
               </div>
              
 

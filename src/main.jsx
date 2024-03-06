@@ -19,8 +19,7 @@ import UploadJob from "./Components/Projet/UploadJob";
 import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
-
-
+import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 
 const router = createBrowserRouter([
   {
@@ -124,12 +123,14 @@ const router = createBrowserRouter([
         path:"/alan",
         element: <Alan/>
       },
+      {
+        path:"/meeting",
+        element: <VideoRoom/>
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
 );

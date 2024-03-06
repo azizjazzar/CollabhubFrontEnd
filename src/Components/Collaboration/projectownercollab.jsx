@@ -3,7 +3,10 @@ import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 import { FormulaireMeet} from "@/widgets/layout/formulaireMeet";
-
+import { useAuth } from '@/pages/authContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {  Link } from 'react-router-dom';
 import {
   add,
   eachDayOfInterval,
@@ -67,6 +70,19 @@ export function ProjectOwnerCollab(props) {
     isSameDay(parseISO(meeting.dateStart), selectedDay)
   )
 
+  const showNotification = () => {
+    toast.success('Vous avez un meet !', {
+      position: 'top-right',
+      autoClose: 3000, // Durée d'affichage en millisecondes
+    });
+  };
+
+  function notifyMe(meetings) {
+    meetings.filter((meeting) =>
+      isSameDay(parseISO(meeting.dateStart), today)
+    ).forEach(() => showNotification());
+  }
+
    // Fonction pour ouvrir le modal
    const handleClick = () => {
     setOpenModalmeet(true)
@@ -76,6 +92,7 @@ export function ProjectOwnerCollab(props) {
  const [OpenModalmeet, setOpenModalmeet] = useState(false);
 
   return (
+   
     <div className="pt-16">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
@@ -83,6 +100,7 @@ export function ProjectOwnerCollab(props) {
             <div className="flex items-center">
               <h2 className="flex-auto font-semibold text-gray-900">
                 {format(firstDayCurrentMonth, 'MMMM yyyy')}
+                {notifyMe(meetings)}
               </h2>
               <button
                 type="button"
@@ -205,11 +223,16 @@ export function ProjectOwnerCollab(props) {
 function Meeting({ meeting }) {
   let startDateTime = parseISO(meeting.dateStart)
   let endDateTime = parseISO(meeting.dateEnd)
-
+  const { authData, setAuthUserData } = useAuth();
   return (
+<Link to={`/meeting`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+              
+             
+             
+
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
-        src=''
+         src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
         alt=""
         className="flex-none w-10 h-10 rounded-full"
       />
@@ -281,7 +304,7 @@ function Meeting({ meeting }) {
     </li>
     
      
-
+    </Link>
 
 
    

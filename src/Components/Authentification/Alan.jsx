@@ -3,6 +3,7 @@ import TextToSpeech from "./text-to-speech/TextToSpeech";
 import SpeechToText from "./speech-to-text/SpeechToText ";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../pages/authContext';
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 
 export default function Alan() {
   const [transcript, setTranscript] = useState("");
@@ -13,11 +14,17 @@ export default function Alan() {
   const [scroll, setScroll] = useState(0);
   const [titleService, setTitles] = useState(false);
   const [newsPromptSpoken, setNewsPromptSpoken] = useState(false);
-  const [actor, setActor] = useState(5);
+  const [actor, setActor] = useState(2);
   const location = useLocation();
   const { authData, setAuthUserData } = useAuth();
   const [logoutSure, setLogoutSure ] = useState(false);
+  const [emailSure, setEmailSure ] = useState(false);
+  const [areyousure,setAreyouSure]=useState(false);
+  const [areyousure2,setAreyouSure2]=useState(false);
+  const authenticationService = new AuthenticationService();
 
+  const [sendEmail, setEmail] = useState("");
+    
   const logout = () => {
     setAuthUserData({
       user: null,
@@ -96,7 +103,37 @@ export default function Alan() {
         setTimeout(() => {
           navigate("/do-a-quick-consultation");
         }, 2500);
-      } else if (transcript.includes("LOG OUT") || transcript.includes("LOOK OUT.")) {
+      }else if (transcript.includes("GO TO BLOG")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/blog");
+        }, 2500);
+      } 
+      else if (transcript.includes("SIGN IN")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 2500);
+      } 
+      else if (transcript.includes("SIGN UP")) {
+        action = {
+          text: "Yes, going right now.",
+          language: "en-US",
+          voiceIndex: actor
+        };
+        setTimeout(() => {
+          navigate("/sign-up");
+        }, 2500);
+      } 
+      else if (transcript.includes("LOG OUT") || transcript.includes("LOOK OUT.")) {
         if (authData.user)
         {
           action = {
@@ -114,6 +151,23 @@ export default function Alan() {
           });
         }
       }
+      else if (transcript.includes("E-MAIL") ) {
+        if (authData.user)
+        {
+          setSpeech({
+            text: "Enter your your Message to sen a quick email to superviser",
+            language: "en-US",
+            voiceIndex: actor
+          });
+          setEmailSure(true)
+        }
+        else{
+          setSpeech({
+            text: "Please log in to our service so you can send email",
+            language: "en-US",
+            voiceIndex: actor})
+        }
+      }
 
       if (action) {
         setSpeech(action);
@@ -122,44 +176,102 @@ export default function Alan() {
   }, [transcript, speech, navigate]);
 
   useEffect(() => {
-    console.log(logoutSure)
-    if (speech && transcript.includes("STOP") ) {
+
+
+    if (speech && transcript.includes("STOP")) {
       setSpeech(null);
       setScroll(0);
     } else if (!speech) {
-      if (newsPromptSpoken && (transcript.includes("YES"))) {
+      if (newsPromptSpoken && transcript.includes("YES")) {
         setTitles(true);
         setNewsPromptSpoken(false);
         setScroll(300);
-      } else if (newsPromptSpoken && (transcript.includes("NO"))) {
+      } else if (newsPromptSpoken && transcript.includes("NO")) {
         setSpeech({
           text: "As you like, do you need something else?",
           language: "en-US",
           voiceIndex: actor
         });
         setNewsPromptSpoken(false);
-      } else if (logoutSure && (transcript.includes("YES"))) {
-   
-          setSpeech({
-            text: "You've been disconnected, see you later",
-            language: "en-US",
-            voiceIndex: actor
-          });
-          handleLogout();
-          setLogoutSure(false);
-        
-       
 
-      } else if (logoutSure && (transcript.includes("NO"))) {
+      } else if (logoutSure && transcript.includes("YES")) {
+
         setSpeech({
-          text: "Deconnexion failed",
+          text: "You've been disconnected, see you later",
+          language: "en-US",
+          voiceIndex: actor
+        });
+        handleLogout();
+        setLogoutSure(false);
+      } else if (logoutSure && transcript.includes("NO")) {
+        setSpeech({
+          text: "Logout canceled",
           language: "en-US",
           voiceIndex: actor
         });
         setLogoutSure(false);
+      } else if (emailSure) {
+        if (!areyousure) {
+          setSpeech({
+            text: "Do you want to review your message before sending it?",
+            language: "en-US",
+            voiceIndex: actor
+          });
+          setEmail(transcript.toLowerCase())
+          setAreyouSure(true);
+        } else {
+          if (transcript.includes("YES")) {
+            setSpeech({
+              text: "Your message is: " + sendEmail + ". Do you want to send it?",
+              language: "en-US",
+              voiceIndex: actor
+            });
+            setAreyouSure(false);
+            setEmailSure(false)
+            setAreyouSure2(true);
+          } else if (transcript.includes("NO")) {
+            setSpeech({
+              text: "do you want to send it ?",
+              language: "en-US",
+              voiceIndex: actor
+            });
+            setAreyouSure(false);
+            setEmailSure(false)
+            setAreyouSure2(true);
+          }
+        }
+      } else if (areyousure2) {
+        if (transcript.includes("YES")) {
+          setSpeech({
+            text: "Your email has been sent.",
+            language: "en-US",
+            voiceIndex: actor
+          });
+          if (authData.user)
+          {
+            authenticationService.sendEmailToAdmin(authData.user?.email,sendEmail,authData.user?.nom + " " +authData.user?.prenom)
+          }
+          else{
+            setSpeech({
+              text: "Please log in to send email",
+              language: "en-US",
+              voiceIndex: actor})
+          }
+         
+          
+        } else if (transcript.includes("NO")) {
+          setSpeech({
+            text: "Your email has been canceled.",
+            language: "en-US",
+            voiceIndex: actor
+          });
+        }
+        setAreyouSure2(false);
       }
     }
-  }, [transcript, newsPromptSpoken, speech, logoutSure]);
+  }, [transcript, newsPromptSpoken, speech, logoutSure, emailSure, areyousure, areyousure2]);
+  
+  
   
   useEffect(() => {
     window.scrollTo({
@@ -204,7 +316,7 @@ export default function Alan() {
       case "help.":
       case "help":
         setSpeech({
-          text: "Hello, I'm Alan, a computer program. Here are some functionalities that I can provide, I can read text and navigate into pages",
+          text: "",
           language: "en-US",
           voiceIndex: actor,
         });

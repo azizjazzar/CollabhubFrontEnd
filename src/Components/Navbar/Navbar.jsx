@@ -89,9 +89,9 @@ function Navbar({ brandName, routes, action }) {
           
         )
       ))}
-                     <div className="fixed bottom-10 left-10">
-        <Alan />
-      </div>
+                     {/* <div className="fixed bottom-10 left-10">
+        <Alan /> */}
+      {/* </div> */}
 
       {/* Utilisation du composant ProfileMenu */}
       
