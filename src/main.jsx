@@ -20,6 +20,7 @@ import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
+import ChatGPT from "./Components/Consultations/Metting/IA/Chatgpt";
 
 const router = createBrowserRouter([
   {
@@ -127,6 +128,11 @@ const router = createBrowserRouter([
         path:"/meeting",
         element: <VideoRoom/>
       },
+      ,
+      {
+        path:"/chatgpt",
+        element: <ChatGPT/>
+      }
     ],
   },
 ]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa';
 import { VideoPlayer } from './VideoPlayer';
@@ -8,13 +8,13 @@ import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
 import ChatRoom from './chatRoom';
 const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
-const TOKEN = "007eJxTYDi/6OAei5rJ2b+f8nooT1/cEm+gK3if81ri9X/sGz+V1zorMBibGZiZJ5mlmltaWpikmlhYGFkkmRgZJKempiYaJJkmv5/+JLUhkJGBwzOPkZEBAkF8Nobk/JycxCQGBgDMZCDj";
+const TOKEN = "007eJxTYNj8QzrKatqP9t3ZAcE7NKuWttbE3W3Yl6V6ZvGhv2v3F4cqMBibGZiZJ5mlmltaWpikmlhYGFkkmRgZJKempiYaJJkmV4m9SG0IZGSo/1/HwsgAgSA+G0Nyfk5OYhIDAwAoySJ8";
 const CHANNEL = "collab";
-
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
 });
+
 
 export const VideoRoom = () => {
     const [users, setUsers] = useState([]);
@@ -27,6 +27,62 @@ export const VideoRoom = () => {
     const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
+    const [transcribedText, setTranscribedText] = useState('');
+    const [listeningText, setListeningText] = useState(''); // État pour stocker le texte transcrit pendant l'écoute
+    const [isListening, setIsListening] = useState(false); // État pour suivre si la reconnaissance vocale est active
+
+    useEffect(() => {
+        let recognition = null;
+    
+        const startSpeechToText = () => {
+            recognition = new window.webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+    
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                setListeningText(prevText => prevText + transcript);
+                setTranscribedText(prevTranscription => prevTranscription + transcript + ' '); 
+            };
+    
+            recognition.onend = () => {
+                if (isListening) { 
+                    recognition.start();
+                }
+            };
+    
+            recognition.start();
+        };
+    
+        const stopSpeechToText = () => {
+            localStorage.setItem('transcribedText', transcribedText);
+            if (recognition) {
+                recognition.stop();
+            }
+        };
+        
+    
+        if (isListening) {
+            startSpeechToText();
+        } else {
+            stopSpeechToText();
+        }
+    
+        return () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        };
+    }, [isListening]); 
+    
+    
+
+    const toggleSpeechToText = () => {
+        setIsListening(prev => !prev); // Inverser l'état de la reconnaissance vocale
+        if (!isListening) {
+            setTranscribedText(listeningText); // Sauvegarder le texte transcrit actuel avant de démarrer
+            setListeningText(''); // Réinitialiser le texte transcrit pendant l'écoute
+        }
+    };
 
     const toggleCamera = () => {
         const newState = !isCameraOn;
@@ -84,11 +140,10 @@ export const VideoRoom = () => {
     useEffect(() => {
         const joinChannel = async () => {
             if (authData.user) {
-                // Essayer de récupérer l'UID du localStorage ou générer un nouvel UID.
                 let uid = localStorage.getItem('userUID');
                 if (!uid) {
                     uid = authData.user.id || Math.floor(Math.random() * 100000).toString();
-                    localStorage.setItem('userUID', uid); // Stocker l'UID pour les futures connexions.
+                    localStorage.setItem('userUID', uid); 
                 }
 
                 const handleUserJoined = async (user, mediaType) => {
@@ -170,11 +225,11 @@ export const VideoRoom = () => {
                                 isCameraOn ? (
                                     <VideoPlayer key={user.uid} user={user} />
                                 ) : (
-                                    <div className='mt-36'>
+                                    <div className='mt-52 mr-20'>
                                         <img
                                             src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
                                             alt={`User ${user.uid}`}
-                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
+                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  
                                         />
                                     </div>
                                 )
@@ -228,6 +283,14 @@ export const VideoRoom = () => {
                             <FaPaperPlane color="#ffff" size={22} />
                             <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Open/close chat</div>
                         </button>
+                        <div>
+            <button onClick={toggleSpeechToText}>
+                {isListening ? 'Stop Speech to Text' : 'Start Speech to Text'}
+            </button>
+
+          
+        </div>
+
                     </div>
                 </>
             ) : (
@@ -240,6 +303,9 @@ export const VideoRoom = () => {
                     </h5>
 
                     <div className="chat-image" style={{ marginTop: "170px" }}>
+                    <div>
+                <p>Transcribed Text: {transcribedText}</p>
+            </div>
                         <img src={iconTwo} alt="Chat Image" style={{ width: "100%", height: "auto" }} />
                     </div>
 
@@ -259,6 +325,7 @@ export const VideoRoom = () => {
                             onChange={(e) => setInputMessage(e.target.value)}
                             style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
                         />
+                        
                         <IconButton
                             onClick={sendMessage}
                             style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
