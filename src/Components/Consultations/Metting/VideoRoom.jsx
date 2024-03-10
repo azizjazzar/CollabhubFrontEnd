@@ -40,9 +40,12 @@ export const VideoRoom = () => {
     
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
+                const currentTime = new Date().toLocaleTimeString();
+                const transcriptionWithDateTime = `${currentTime}: ${transcript}`;
                 setListeningText(prevText => prevText + transcript);
-                setTranscribedText(prevTranscription => prevTranscription + transcript + ' '); 
+                setTranscribedText(prevTranscription => prevTranscription + transcriptionWithDateTime + ' '); 
             };
+            
     
             recognition.onend = () => {
                 if (isListening) { 
@@ -216,8 +219,8 @@ export const VideoRoom = () => {
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 700px)',
-                            gridGap: '10px',
+                            gridTemplateColumns: 'repeat(2, 630px)',
+                            gridGap: '8px',
                             justifyItems: 'center',
                         }}
                     >

@@ -21,6 +21,8 @@ import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 import ChatGPT from "./Components/Consultations/Metting/IA/Chatgpt";
+import Gemini from "./Components/Consultations/Metting/IA/Gemini";
+
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,11 @@ const router = createBrowserRouter([
         
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        
+        path: "/bard",
+        element: <Gemini />,
       },
       {
         name: "Collaboration",

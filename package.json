@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "2.0.18",
@@ -35,6 +36,7 @@
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-autosuggest": "^10.1.0",
+    "react-barcode": "^1.5.0",
     "react-datepicker": "^6.1.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.50.1",
@@ -44,6 +46,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-typed": "^2.0.12",
     "react-webcam": "^7.2.0",
+    "recharts": "^2.12.2",
     "regenerator-runtime": "^0.14.1",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.7.4",
