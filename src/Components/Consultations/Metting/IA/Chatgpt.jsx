@@ -8,52 +8,42 @@ function ChatGPT() {
 
   useEffect(() => {
     const transcribedText = localStorage.getItem('transcribedText');
+  
     const fetchData = async () => {
       try {
-        console.log("chatgpy",transcribedText)
-
         const res = await axios.post(
-          'https://api.openai.com/v1/chat/completions',
+          'https://colabhub.onrender.com/api/auth/chatgpt',
           {
-            model: 'gpt-3.5-turbo',
-            messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              {
-                role: 'user',
-                content: `I will give you a text speech about the user in the meeting and you're gonna give me mood statistics for each time point where the mood can be (happy, sad, nervous, excited), and I want you to format it like this: [(the time), (mood),(the time), (mood) ...]. This is the text: ${transcribedText}`,
-              }
-            ],
-          },
-          {
-            headers: {
-              Authorization: "Bearer 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",
-            },
+            transcribedText: transcribedText
           }
         );
-
-        const answer = res.data.choices[0].message.content;
-        console.log(answer);
+        const answer = res.data.answer;
+        if (answer.startsWith("I'm sorry")) {
+          console.error("Error from the OpenAI API:", answer);
+          return;
+        }
+  
         setResponse(answer);
-
+  
         // Parse the response to extract time and mood data
         const moodRegex = /\((\d{2}:\d{2}:\d{2}), (\w+)\)/g;
         let matches;
         const parsedData = [];
-
+  
         while ((matches = moodRegex.exec(answer)) !== null) {
           const [_, time, mood] = matches;
           parsedData.push({ time, mood });
         }
-
+  
         setMoodStatistics(parsedData);
       } catch (error) {
         console.error("Error fetching data from the OpenAI API:", error);
       }
     };
-
+  
     fetchData();
   }, []);
-
+  
 
 
   return (
@@ -63,8 +53,8 @@ function ChatGPT() {
 )}
       <div>
         <StatsComponent></StatsComponent>
-        <PieChartComponent></PieChartComponent>
-        <LineChartComponent></LineChartComponent>
+        <PieChartComponent moodStatistics={moodStatistics}/>
+        <LineChartComponent moodStatistics={moodStatistics} />
         <RadialPieChartComponent></RadialPieChartComponent>
         <div className='pl-8'>
         <RadarChartComponent moodStatistics={moodStatistics} />
