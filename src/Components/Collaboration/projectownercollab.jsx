@@ -29,6 +29,7 @@ import { Fragment, useState , useEffect} from 'react'
 
 
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -223,6 +224,8 @@ export function ProjectOwnerCollab(props) {
 function Meeting({ meeting }) {
   let startDateTime = parseISO(meeting.dateStart)
   let endDateTime = parseISO(meeting.dateEnd)
+
+
   const { authData, setAuthUserData } = useAuth();
   return (
 <Link to={`/meeting`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
@@ -273,15 +276,15 @@ function Meeting({ meeting }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
+                  <Link to={`/suggestion/${meeting.name}`}
+                
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm'
                     )}
                   >
-                    Edit
-                  </a>
+                    Suggestions 
+                  </Link>
                 )}
               </Menu.Item>
               <Menu.Item>
@@ -298,6 +301,7 @@ function Meeting({ meeting }) {
                 )}
               </Menu.Item>
             </div>
+         
           </Menu.Items>
         </Transition>
       </Menu>
