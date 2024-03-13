@@ -16,7 +16,8 @@ function PaymentSuccess() {
 
     // Generate a random uid with 4 digits
     const uid = generateRandomUid(4);
-    getToken("collaab", uid, 90000);
+    const channelName = generateRandomChannelName();
+    getToken(channelName, uid, 90000);
   }, []);
 
   // Function to send emails
@@ -38,7 +39,7 @@ function PaymentSuccess() {
     try {
       const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${uid}/${expiration}`);
       const token = response.data.token;
-      const meetingUrl = `http://localhost:5173/meeting?token=${token}`;
+      const meetingUrl = `http://localhost:5173/meeting?token=${token}&channel=${channel}`;
       setMeetingUrl(meetingUrl);
       sendEmails(masterEmail, clientEmail, meetingUrl); // Move sendEmails function call here
     } catch (error) {

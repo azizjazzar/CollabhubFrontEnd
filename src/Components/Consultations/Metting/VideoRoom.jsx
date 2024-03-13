@@ -12,7 +12,8 @@ const APP_ID = "3e022011a0274ad2938a1a9aaf565cf0";
 const urlParams = new URLSearchParams(window.location.search);
 const newToken = urlParams.get('token');
 const TOKEN = decodeURIComponent(newToken);
-const CHANNEL = "collaab";
+const newchannel = urlParams.get('channel');
+const CHANNEL = decodeURIComponent(newchannel);
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
