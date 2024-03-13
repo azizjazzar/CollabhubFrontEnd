@@ -134,6 +134,33 @@ class AuthenticationService {
         console.error('Error during API request:', error);
       }
   }
+  async addstats(client, clientId) {
+    try {
+      const apiUrl = 'https://colabhub.onrender.com/stats/';
+      const response = await axios.get(apiUrl);
+  
+      const apiPayload = {};
+  
+      if (response.data.clientA == null) {
+        apiPayload.clientA = client;
+        apiPayload.clientAID = clientId;
+      } else {
+        apiPayload.clientB = client;
+        apiPayload.clientBID = clientId;
+      }
+  
+      try {
+        const addApiUrl = 'https://colabhub.onrender.com/stats/add';
+        const addResponse = await axios.post(addApiUrl, apiPayload);
+        console.log('API response:', addResponse.data);
+      } catch (addError) {
+        console.error('Error during API add request:', addError);
+      }
+    } catch (error) {
+      console.error('Error during API request:', error);
+    }
+  }
+  
  
 }
 

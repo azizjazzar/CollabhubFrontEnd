@@ -9,7 +9,9 @@ import iconTwo from '/img/iconmessage.jpg';
 import { FaVolumeUp } from 'react-icons/fa';
 
 const APP_ID = "3e022011a0274ad2938a1a9aaf565cf0";
-const TOKEN = "007eJxTYLBJL39wj3+S/sf1PcylVasXNqbe3WD3/PqJds9fFrxcPCkKDMapBkZGBoaGiQZG5iaJKUaWxhaJhomWiYlppmamyWkG1/+9S20IZGTIuLGUiZEBAkF8dobk/JycxMQkBgYA6SsiEw==";
+const urlParams = new URLSearchParams(window.location.search);
+const newToken = urlParams.get('token');
+const TOKEN = decodeURIComponent(newToken);
 const CHANNEL = "collaab";
 const client = AgoraRTC.createClient({
     mode: 'rtc',

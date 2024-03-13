@@ -22,7 +22,7 @@ import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 import ChatGPT from "./Components/Consultations/Metting/IA/Chatgpt";
 import Gemini from "./Components/Consultations/Metting/IA/Gemini";
-
+import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
 
 const router = createBrowserRouter([
   {
@@ -139,6 +139,10 @@ const router = createBrowserRouter([
       {
         path:"/chatgpt",
         element: <ChatGPT/>
+      },
+      {
+        path: "/payment-success",
+        element: <PaymentSuccess />
       }
     ],
   },

@@ -52,13 +52,15 @@ function ChatGPT() {
   <p>Response: {response}</p>
 )}
       <div>
+        
         <StatsComponent></StatsComponent>
-        <PieChartComponent moodStatistics={moodStatistics}/>
-        <LineChartComponent moodStatistics={moodStatistics} />
-        <RadialPieChartComponent></RadialPieChartComponent>
         <div className='pl-8'>
         <RadarChartComponent moodStatistics={moodStatistics} />
         </div>
+        <PieChartComponent moodStatistics={moodStatistics}/>
+        <LineChartComponent moodStatistics={moodStatistics} />
+        <RadialPieChartComponent></RadialPieChartComponent>
+      
       </div>
       <div>
         <h2>Mood Statistics</h2>

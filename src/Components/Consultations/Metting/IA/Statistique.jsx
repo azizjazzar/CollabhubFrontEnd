@@ -47,14 +47,6 @@ const StatsComponent = () => {
 
 <hr className="my-10 border-gray-400" /> {/* Ligne grise avec une marge top/bottom de 10px */}
 
-    <BarChart width={600} height={300} data={data}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="value" fill="#8884d8" />
-    </BarChart>
     </div>
   );
 };

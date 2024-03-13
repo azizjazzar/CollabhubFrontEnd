@@ -15,7 +15,6 @@ function DetailsConsultation() {
   const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
   const navigate = useNavigate();
   const authenticationService = new AuthenticationService();
-
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
     "60min": consultationDetails.prixParMinute * 2,
@@ -70,39 +69,41 @@ function DetailsConsultation() {
   }
 
   const makePayment = async () => {
-    if (!authData.user) {
-      navigate('/sign-in');
-      return;
-    }
-
-    const stripe = await stripePromise;
-
-    const body = {
-      amount: selectedPrice,
-    };
-
     try {
+
       const response = await fetch("https://colabhub.onrender.com/payment/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          amount: selectedPrice,
+        }),
       });
-
+  
       const session = await response.json();
+      localStorage.setItem('master', users[consultationDetails.freelancerId]?.email);
+      localStorage.setItem('client', authData.user.email );
+            const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({
         sessionId: session.sessionId,
       });
-
+  
       if (result.error) {
-        console.error(result.error);
+        console.error(result.error.message);
+      } else {
+      
+        console.log("Redirection réussie");
       }
     } catch (error) {
-      console.error('Error making payment:', error);
+      console.error('Erreur lors du paiement:', error);
     }
   };
+  
 
+
+  
+  
   return (
     <div className='mt-10 p-10 '>
    
@@ -114,7 +115,6 @@ function DetailsConsultation() {
   style={{ width: "60px", height: "60px" }}
 />
 
-{console.log("aaaa",users[consultationDetails.freelancerId]?.picture || '')}
 {users[consultationDetails.freelancerId] && (
   <h1 className="text-l font-bold mb-4 pl-16">
     <span style={{ color: 'black' }}>{users[consultationDetails.freelancerId].nom + " " + users[consultationDetails.freelancerId].prenom}</span>
@@ -192,7 +192,7 @@ function DetailsConsultation() {
             <button
               type="button"
               className="mt-6 text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
-              onClick={makePayment} // Placer l'événement onClick ici
+              onClick={makePayment} 
             >
               Continue (${selectedPrice})
             </button>
