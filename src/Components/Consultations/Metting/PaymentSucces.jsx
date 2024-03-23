@@ -15,9 +15,10 @@ function PaymentSuccess() {
     setClientEmail(clientEmailFromStorage);
 
     // Generate a random uid with 4 digits
-    const uid = generateRandomUid(4);
     const channelName = generateRandomChannelName();
-    getToken(channelName, uid, 90000);
+    getToken(channelName, 1710908040);
+    sendEmails(masterEmail, clientEmail, meetingUrl); 
+
   }, []);
 
   // Function to send emails
@@ -35,22 +36,18 @@ function PaymentSuccess() {
   };
 
   // Function to get meeting token
-  const getToken = async (channel, uid, expiration) => {
+  const getToken = async (channel, expiration) => {
     try {
-      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${uid}/${expiration}`);
+      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${expiration}`);
       const token = response.data.token;
-      const meetingUrl = `http://localhost:5173/meeting?token=${token}&channel=${channel}`;
-      setMeetingUrl(meetingUrl);
-      sendEmails(masterEmail, clientEmail, meetingUrl); // Move sendEmails function call here
+      const encodedToken = encodeURIComponent(token); // Encodez seulement le token
+      const message = `http://localhost:5173/meeting?token=${encodedToken}&channel=${channel}`;
+      setMeetingUrl(message);
     } catch (error) {
       console.error('Error fetching meeting token:', error);
     }
   };
-
-  // Helper function to generate a random uid with a specified number of digits
-  const generateRandomUid = (digits) => {
-    return Math.floor(Math.random() * Math.pow(10, digits));
-  };
+  
 
   // Helper function to generate a random channel name starting with "collabhub" followed by random digits
   const generateRandomChannelName = () => {
@@ -59,7 +56,7 @@ function PaymentSuccess() {
   };
 
   return (
-    <div className="pt-32">
+    <div className="pt-32 ">
       <h1>Payment Successful</h1>
       <p>Master Email: {masterEmail}</p>
       <p>Client Email: {clientEmail}</p>

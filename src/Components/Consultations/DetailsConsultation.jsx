@@ -84,6 +84,8 @@ function DetailsConsultation() {
       const session = await response.json();
       localStorage.setItem('master', users[consultationDetails.freelancerId]?.email);
       localStorage.setItem('client', authData.user.email );
+      localStorage.setItem('clientA', users[consultationDetails.freelancerId]._id);
+      localStorage.setItem('clientB', authData.user._id );
             const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({
         sessionId: session.sessionId,

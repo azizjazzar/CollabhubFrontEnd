@@ -12,7 +12,7 @@ export const VideoPlayer = ({ user }) => {
   }, [user.videoTrack]);
 
   return (
-    <div className='flex pb-[23%] w-full' style={{ width: '100%', height: '100vh' }}>
+    <div className='flex pb-[2%] w-full' style={{ width: '100%', height: '95vh' }}>
       <div className={`border  mb-12 ${largeurEcran > 1320 ? 'w-[600px]' : 'sm:w-1/2 md:w-[200px] lg:w-[300px] 2xl:w-[500px]'}`} ref={ref} style={{ height: '100%' }}></div>
     </div>
   );

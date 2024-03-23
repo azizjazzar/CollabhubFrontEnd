@@ -7,13 +7,14 @@ import SendIcon from "@material-ui/icons/Send";
 import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
 import { FaVolumeUp } from 'react-icons/fa';
+import Statistiques from '@/Services/statistiques/Statistiques';
 
-const APP_ID = "3e022011a0274ad2938a1a9aaf565cf0";
+const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
 const urlParams = new URLSearchParams(window.location.search);
-const newToken = urlParams.get('token');
-const TOKEN = decodeURIComponent(newToken);
-const newchannel = urlParams.get('channel');
-const CHANNEL = decodeURIComponent(newchannel);
+const TOKEN = decodeURIComponent(urlParams.get('token'));
+const CHANNEL = decodeURIComponent(urlParams.get('channel'))
+const StatistiquesService = new Statistiques();
+
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
@@ -41,11 +42,11 @@ export const VideoRoom = () => {
     const minutes = currentTime.getMinutes();
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedTime = `${hours}:${formattedMinutes}`;
-   
+
 
     useEffect(() => {
         let recognition = null;
-
+        
         const startSpeechToText = () => {
             recognition = new window.webkitSpeechRecognition();
             recognition.lang = 'en-US';
@@ -73,12 +74,21 @@ export const VideoRoom = () => {
             recognition.start();
         };
 
-        const stopSpeechToText = () => {
+        const stopSpeechToText = async () => {
             localStorage.setItem('transcribedText', transcribedText);
+            const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
+            if (isClientAEmpty) {
+                // Appelez la méthode addStatistique pour ajouter une nouvelle statistique
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, '1', TOKEN, CHANNEL);
+            } else {
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'transcribedText', TOKEN, CHANNEL);
+
+              }
             if (recognition) {
                 recognition.stop();
             }
         };
+        
 
         if (isAudioOn) {
             startSpeechToText();
@@ -194,7 +204,7 @@ export const VideoRoom = () => {
                             uid,
                         ])
                     )
-                    .then(([tracks, uid]) => {
+                    .then(([tracks, UID]) => {
                         const [audioTrack, videoTrack] = tracks;
                         setLocalTracks(tracks);
                         setUsers(previousUsers => [
@@ -231,7 +241,7 @@ export const VideoRoom = () => {
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 630px)',
+                            gridTemplateColumns: 'repeat(2, 600px)',
                             gridGap: '8px',
                             justifyItems: 'center',
                         }}

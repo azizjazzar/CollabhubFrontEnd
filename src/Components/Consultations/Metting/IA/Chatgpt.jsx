@@ -59,7 +59,6 @@ function ChatGPT() {
         </div>
         <PieChartComponent moodStatistics={moodStatistics}/>
         <LineChartComponent moodStatistics={moodStatistics} />
-        <RadialPieChartComponent></RadialPieChartComponent>
       
       </div>
       <div>
