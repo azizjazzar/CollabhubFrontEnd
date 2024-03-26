@@ -4,7 +4,6 @@ import axios from "axios";
 const BASE_URL = "https://colabhub.onrender.com";
 
 class Statistiques {
-  // Méthode pour ajouter une statistique
   async addStatistique(clientAID, clientBID, clientA, clientB, token, channel) {
     try {
         await axios.post(`${BASE_URL}/stats/add`, {
@@ -30,15 +29,45 @@ async isClientAEmptyInDatabase(token, channel) {
         return response.data;
     } catch (error) {
         console.error("Error checking if clientA is empty in the database:", error);
-        return true; // Par défaut, retourner true en cas d'erreur
+        return true; 
     }
 }
+async getMetting(token, channel) {
+  try {
+      // Effectuer une requête à la base de données pour vérifier si le champ clientA est vide
+      const response = await axios.post(`${BASE_URL}/meeting-token-channel`, {
+          token,
+          channel
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Error checking if clientA is empty in the database:", error);
+      return true; 
+  }
+}
 
-  
-  // Méthode pour obtenir toutes les statistiques
+
   async getAllStatistiques() {
     try {
       const response = await axios.get(`${BASE_URL}/stats`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      return [];
+    }
+  }
+  async getAllStatistiquesCounts() {
+    try {
+      const response = await axios.get(`${BASE_URL}/stats-counts`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      return [];
+    }
+  }
+  async getTotalTransactionAmount() {
+    try {
+      const response = await axios.get(`${BASE_URL}/payment/total-transaction-amount`);
       return response.data;
     } catch (error) {
       console.error("Error fetching statistics:", error);

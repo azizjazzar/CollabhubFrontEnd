@@ -97,7 +97,7 @@ const PieChartComponent = ({ moodStatistics }) => {
 
 const LineChartComponent = ({ moodStatistics }) => {
   return (
-    <LineChart width={600} height={300} data={moodStatistics}>
+    <LineChart width={900} height={300} data={moodStatistics}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="time" />
       <YAxis />

@@ -160,6 +160,15 @@ class AuthenticationService {
       console.error('Error during API request:', error);
     }
   }
+  async getCountUsers() {
+    try {
+      const response = await axios.get(`https://colabhub.onrender.com/api/auth/userCount`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      return [];
+    }
+  }
   
  
 }

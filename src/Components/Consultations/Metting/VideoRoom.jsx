@@ -78,11 +78,14 @@ export const VideoRoom = () => {
             localStorage.setItem('transcribedText', transcribedText);
             const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
             if (isClientAEmpty) {
-                // Appelez la méthode addStatistique pour ajouter une nouvelle statistique
-                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, '1', TOKEN, CHANNEL);
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL);
             } else {
-                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'transcribedText', TOKEN, CHANNEL);
-
+                const meetupdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
+                if (localStorage.getItem('clientA') != meetupdate.clientAID) 
+                {
+                    meetupdate.clientB= transcribedText
+                    await StatistiquesService.updateStatistiqueById(meetupdate._id,meetupdate)
+                }
               }
             if (recognition) {
                 recognition.stop();

@@ -14,18 +14,21 @@ function App() {
     { name: 'Blog', path: '/blog' },
     { name: 'sign in', path: '/sign-in' },
     { name: 'sign up', path: '/sign-up' },
-    
   ];
+
+  const location = useLocation();
+
+  // Vérifiez si l'emplacement actuel est '/dashboard'
+  const isDashboard = location.pathname === '/dashboard';
+
   return (
     <>
-    <AuthProvider>
-
-    <Navbar routes={routes} />
-      <Outlet />
-    
-    </AuthProvider>
-     
+      <AuthProvider>
+        {!isDashboard && <Navbar routes={routes} />}
+        <Outlet />
+      </AuthProvider>
     </>
   );
 }
+
 export default App;
