@@ -13,7 +13,7 @@ const ChatApplication = () => {
   };
 
   return (
-    <div className="flex h-screen p-20">
+    <div className="flex h-screen p-10">
       {/* Sidebar */}
       <div className="w-80 bg-white shadow overflow-hidden p-6">
         <div className="p-5">
