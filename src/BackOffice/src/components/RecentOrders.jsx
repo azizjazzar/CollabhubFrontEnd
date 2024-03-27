@@ -8,57 +8,51 @@ import AuthenticationService from '@/Services/Authentification/AuthentificationS
 const pageSize = 10; // Nombre d'éléments par page
 
 export default function RecentOrders() {
-	const [currentPage, setCurrentPage] = useState(1);
-	const [stats, setStats] = useState([]);
-	const [userData, setUserData] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [stats, setStats] = useState([]);
+    const [userData, setUserData] = useState({});
+    const [cachedData, setCachedData] = useState({}); 
 
-	const StatistiqueService = new Statistiques();
-	const AuthenticationS = new AuthenticationService();
+    const StatistiqueService = new Statistiques();
+    const AuthenticationS = new AuthenticationService();
 
-	// Calcule le nombre total de pages
-	const totalPages = Math.ceil(stats.length / pageSize);
+    // Calcule le nombre total de pages
+    const totalPages = Math.ceil(stats.length / pageSize);
 
-	// Récupère les données de la page actuelle
-	const currentOrders = stats.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    // Récupère les données de la page actuelle
+    const currentOrders = stats.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const statsData = await StatistiqueService.getAllStatistiques();
-			setStats(statsData);
-		};
-	
-		fetchData(); // Appel initial au chargement du composant
-	
-		const interval = setInterval(() => {
-			fetchData(); // Appel périodique pour récupérer de nouvelles données
-		}, 1000); // Appel toutes les 5 secondes
-	
-		return () => clearInterval(interval); // Nettoyage de l'intervalle lors du démontage du composant
-	}, []);
-	
+    useEffect(() => {
+        const fetchData = async () => {
+            if (cachedData[currentPage]) {
+                setStats(cachedData[currentPage].stats);
+                setUserData(cachedData[currentPage].userData);
+            } else {
+                const statsData = await StatistiqueService.getAllStatistiques();
+                const userdata = {};
+                for (const champ of statsData) {
+                    const userA = await getUserById(champ.clientAID);
+                    const userB = await getUserById(champ.clientBID);
+                    userdata[champ.clientAID] = userA;
+                    userdata[champ.clientBID] = userB;
+                }
+                setStats(statsData);
+                setUserData(userdata);
+                setCachedData({ ...cachedData, [currentPage]: { stats: statsData, userData: userdata } });
+            }
+        };
 
-	useEffect(() => {
-		const fetchUserNames = async () => {
-			const userdata = {};
-			for (const champ of currentOrders) {
-				const userA = await getUserById(champ.clientAID);
-				const userB = await getUserById(champ.clientBID);
-				userdata[champ.clientAID] = userA;
-				userdata[champ.clientBID] = userB;
-			}
-			setUserData(userdata);
-		}
-		fetchUserNames();
-	}, [currentOrders]);
+        fetchData(); // Appel initial au chargement du composant
+    }, [currentPage]); // Déclenche la mise à jour lorsque la page actuelle change
 
-	const handlePageChange = (page) => {
-		setCurrentPage(page);
-	};
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
-	const getUserById = async (userId) => {
-		const user = await AuthenticationS.getUserById(userId);
-		return user;
-	};
+    const getUserById = async (userId) => {
+        const user = await AuthenticationS.getUserById(userId);
+        return user;
+    };
 
 	return (
 		<div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">

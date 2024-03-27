@@ -3,6 +3,8 @@ import { IoBagHandle, IoPieChart, IoPeople, IoCart } from 'react-icons/io5';
 import Statistiques from '@/Services/statistiques/Statistiques';
 import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
+const pollingInterval = 5000; // Interval de polling en millisecondes
+
 export default function DashboardStatsGrid() {
     const StatistiquesService = new Statistiques();
     const AuthenticationS = new AuthenticationService();
@@ -11,33 +13,34 @@ export default function DashboardStatsGrid() {
     const [totalUserCount,setUserCount] = useState(0);
 
     useEffect(() => {
-        const fetchTotalCustomers = async () => {
+        const fetchData = async () => {
             try {
-                const data = await StatistiquesService.getAllStatistiquesCounts();
-                setTotalCustomers(data.count);
+                const customersData = await StatistiquesService.getAllStatistiquesCounts();
+                setTotalCustomers(customersData.count);
+                
+                const amountData = await StatistiquesService.getTotalTransactionAmount();
+                setTotalAmount(amountData.totalAmountInUSD);
+                
+                const userData = await AuthenticationS.getCountUsers();
+                setUserCount(userData.totalUsers);
             } catch (error) {
-                console.error('Erreur lors de la récupération du nombre total de clients :', error);
+                console.error('Erreur lors de la récupération des données:', error);
             }
         };
-        const fetchTotalAmount = async () => {
-            try {
-                const data = await StatistiquesService.getTotalTransactionAmount();
-                setTotalAmount(data.totalAmountInUSD);
-            } catch (error) {
-                console.error('Erreur lors de la récupération du nombre total de clients :', error);
-            }
+
+        // Fonction de polling pour récupérer les données périodiquement
+        const pollingData = () => {
+            fetchData();
         };
-        const fetchTotalUser = async () => {
-            try {
-                const data = await AuthenticationS.getCountUsers();
-                setUserCount(data.totalUsers);
-            } catch (error) {
-                console.error('Erreur lors de la récupération du nombre total de clients :', error);
-            }
+
+        fetchData(); // Appel initial pour récupérer les données une fois
+
+        const intervalId = setInterval(pollingData, pollingInterval); // Appel périodique
+
+        // Nettoyage de l'intervalle lors du démontage du composant
+        return () => {
+            clearInterval(intervalId);
         };
-        fetchTotalAmount();
-        fetchTotalCustomers();
-        fetchTotalUser();
     }, []);
 
     return (
