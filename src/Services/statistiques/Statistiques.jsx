@@ -4,7 +4,8 @@ import axios from "axios";
 const BASE_URL = "https://colabhub.onrender.com";
 
 class Statistiques {
-  async addStatistique(clientAID, clientBID, clientA, clientB, token, channel) {
+
+  async addStatistique(clientAID, clientBID, clientA, clientB, token, channel,responseClientA,responseClientB) {
     try {
         await axios.post(`${BASE_URL}/stats/add`, {
             clientAID,
@@ -12,7 +13,9 @@ class Statistiques {
             clientA,
             clientB,
             token,
-            channel
+            channel,
+            responseClientA,
+            responseClientB
         });
     } catch (error) {
         console.error("Error adding statistic:", error);
@@ -103,6 +106,37 @@ async getMetting(token, channel) {
       console.error("Error deleting statistic by ID:", error);
     }
   }
+  async gemini(trans) {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/api/auth/geminiAnalyse`,
+        {
+          transcribedText: trans
+        }
+      );
+      const answer = res.data.answer;
+      if (answer.startsWith("I'm sorry")) {
+        console.error("Error from the OpenAI API:", answer);
+        return;
+      }
+
+      // Parse the response to extract time and mood data
+      const moodRegex = /\((\d{2}:\d{2}:\d{2}), (\w+)\)/g;
+      let matches;
+      const parsedData = [];
+
+      while ((matches = moodRegex.exec(answer)) !== null) {
+        const [_, time, mood] = matches;
+        parsedData.push({ time, mood });
+      }
+
+      return [answer, parsedData];
+    } catch (error) {
+      console.error("Error fetching data from the OpenAI API:", error);
+    }
+  };
+  
+  
   
 }
 

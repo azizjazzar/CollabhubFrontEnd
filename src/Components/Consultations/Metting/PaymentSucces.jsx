@@ -17,7 +17,7 @@ function PaymentSuccess() {
     // Generate a random uid with 4 digits
     const channelName = generateRandomChannelName();
     getToken(channelName, 1710908040);
-    sendEmails(masterEmail, clientEmail, meetingUrl); 
+    //sendEmails(masterEmail, clientEmail, meetingUrl); 
 
   }, []);
 

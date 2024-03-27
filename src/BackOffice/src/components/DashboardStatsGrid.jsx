@@ -50,7 +50,6 @@ export default function DashboardStatsGrid() {
                     <span className="text-sm text-gray-500 font-light">Total Users</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">{totalUserCount}</strong>
-                        <span className="text-sm text-green-500 pl-2">-343</span>
                     </div>
                 </div>
             </BoxWrapper>
@@ -73,7 +72,6 @@ export default function DashboardStatsGrid() {
                     <span className="text-sm text-gray-500 font-light">Total Consultaions Amounts</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">{totalAmount}$</strong>
-                        <span className="text-sm text-green-500 pl-2">+30</span>
                     </div>
                 </div>
             </BoxWrapper>

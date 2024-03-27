@@ -78,12 +78,18 @@ export const VideoRoom = () => {
             localStorage.setItem('transcribedText', transcribedText);
             const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
             if (isClientAEmpty) {
-                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL);
+                const result = await StatistiquesService.gemini(transcribedText);
+                console.log("hetha",result)
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL,result[0],"in Progress ...");
             } else {
                 const meetupdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
                 if (localStorage.getItem('clientA') != meetupdate.clientAID) 
                 {
+
                     meetupdate.clientB= transcribedText
+                    const result2 = await StatistiquesService.gemini(transcribedText);
+
+                    meetupdate.responseClientB=result2[0]
                     await StatistiquesService.updateStatistiqueById(meetupdate._id,meetupdate)
                 }
               }

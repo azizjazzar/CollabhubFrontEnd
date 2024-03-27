@@ -6,13 +6,13 @@ export function getOrderStatus(status) {
 					{status.replaceAll('_', ' ').toLowerCase()}
 				</span>
 			)
-		case 'CONFIRMED':
+		case 'REJECTED':
 			return (
-				<span className="capitalize py-1 px-2 rounded-md text-xs text-orange-600 bg-orange-100">
+				<span className="capitalize py-1 px-2 rounded-md text-xs text-white bg-red-500 ">
 					{status.replaceAll('_', ' ').toLowerCase()}
 				</span>
 			)
-		case 'SHIPPED':
+		case 'CONFIRMED':
 			return (
 				<span className="capitalize py-1 px-2 rounded-md text-xs text-teal-600 bg-teal-100">
 					{status.replaceAll('_', ' ').toLowerCase()}
