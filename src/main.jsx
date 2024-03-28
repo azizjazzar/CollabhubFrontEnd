@@ -29,6 +29,7 @@ import Gemini from "./Components/Consultations/Metting/IA/Gemini";
 import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
 import Dashboard from "./BackOffice/src/pages/Dashboard";
 import Layout from "./BackOffice/src/components/shared/Layout";
+import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -48,10 +49,13 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           {
-            path: "",
+            path: "", 
             element: <Dashboard />
           },
-        
+          {
+            path: "usersSatistique", 
+            element: <UsersSatistique />
+          }
         ]
       },
       {

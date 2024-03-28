@@ -18,9 +18,9 @@ function App() {
 
   const location = useLocation();
 
-  // Vérifiez si l'emplacement actuel est '/dashboard'
-  const isDashboard = location.pathname === '/dashboard';
-
+  // Vérifiez si l'emplacement actuel est '/dashboard' ou '/dashboard/usersSatistique'
+  const isDashboard = location.pathname.startsWith('/dashboard');
+  
   return (
     <>
       <AuthProvider>

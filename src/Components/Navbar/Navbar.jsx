@@ -7,8 +7,6 @@ import logoSrc from "/public/img/logoshih.png";
 import { useAuth } from "@/pages/authContext";
 import { AnimatePresence, motion } from "framer-motion"; 
 import { Button } from "flowbite-react";
-import Alan from "../Authentification/Alan";
-import axios from 'axios';
 
 
 function Navbar({ brandName, routes, action }) {
@@ -40,13 +38,7 @@ function Navbar({ brandName, routes, action }) {
     setShowProfileDropdown(!showProfileDropdown);
   };
 
-  const handleTabClick = (name) => {
-    if (selectedTab === name) {
-      setSelectedTab(null);
-    } else {
-      setSelectedTab(name);
-    }
-  };
+
 
   const navList = (
     <ul className="mb-4 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -89,11 +81,7 @@ function Navbar({ brandName, routes, action }) {
           
         )
       ))}
-                     {/* <div className="fixed bottom-10 left-10">
-        <Alan /> */}
-      {/* </div> */}
-
-      {/* Utilisation du composant ProfileMenu */}
+                    
       
       {authData.user && (
           <div className="profile relative ml-24" onClick={toggleProfileDropdown}>

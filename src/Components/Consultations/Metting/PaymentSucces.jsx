@@ -13,11 +13,13 @@ function PaymentSuccess() {
     const clientEmailFromStorage = localStorage.getItem('client');
     setMasterEmail(masterEmailFromStorage);
     setClientEmail(clientEmailFromStorage);
-
-    // Generate a random uid with 4 digits
     const channelName = generateRandomChannelName();
-    getToken(channelName, 1710908040);
-    //sendEmails(masterEmail, clientEmail, meetingUrl); 
+    
+    // Dynamically generate expiration date (7 days from today)
+    const expirationDays = 7; // Change this value as needed
+    const expirationTimestamp = Math.floor((new Date().getTime() / 1000) + (expirationDays * 24 * 60 * 60));
+    
+    getToken(channelName, expirationTimestamp);
 
   }, []);
 

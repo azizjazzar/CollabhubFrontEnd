@@ -30,24 +30,8 @@ const title = () => {
 
 const StatsComponent = () => {
   return (
-<div className="text-center mt-15">
-      {/* Englobez le titre, l'icône et le paragraphe dans une div avec la classe floating */}
-      <div className="flex items-center justify-center">
-  <div> 
-    <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-5xl dark:text-white">
-      Analyzing Client Mood During{' '}
-      <span className="text-orange-500">Meetings</span>
-    </h1>
-    <p className="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
-      Explore how clients feel during virtual meetings and gain insights to improve collaboration and satisfaction.
-    </p>
-  </div>
-
-</div>
-
-<hr className="my-10 border-gray-400" /> {/* Ligne grise avec une marge top/bottom de 10px */}
-
-    </div>
+<>
+</>
   );
 };
 
@@ -55,6 +39,12 @@ const PieChartComponent = ({ moodStatistics }) => {
   if (!moodStatistics || moodStatistics.length === 0) {
     // Afficher un message ou retourner un composant de chargement
     return <div>No mood statistics available</div>;
+  }
+
+  // Assurez-vous que moodStatistics est un tableau avant de l'utiliser
+  if (!Array.isArray(moodStatistics)) {
+    console.error('moodStatistics is not an array');
+    return null;
   }
 
   const moodCounts = moodStatistics.reduce((acc, cur) => {
@@ -125,6 +115,10 @@ const RadialPieChartComponent = () => {
 };
 
 const RadarChartComponent = ({ moodStatistics }) => {
+  if (!Array.isArray(moodStatistics)) {
+    return <div>No mood statistics available</div>;
+  }
+
   const moodCounts = moodStatistics.reduce((acc, cur) => {
     acc[cur.mood] = (acc[cur.mood] || 0) + 1;
     return acc;
@@ -148,5 +142,6 @@ const RadarChartComponent = ({ moodStatistics }) => {
     </RadarChart>
   );
 };
+
 
 export { StatsComponent, PieChartComponent, LineChartComponent, RadialPieChartComponent, RadarChartComponent };

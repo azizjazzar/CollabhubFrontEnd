@@ -1,6 +1,6 @@
 import DashboardStatsGrid from '../components/DashboardStatsGrid'
 import TransactionChart from '../components/TransactionChart'
-import RecentOrders from '../components/RecentOrders'
+import RecentOrders from '../components/AcueilStats'
 import BuyerProfilePieChart from '../components/BuyerProfilePieChart'
 import PopularProducts from '../components/PopularProducts'
 import React, { useEffect, useState } from 'react';
@@ -31,13 +31,11 @@ export default function Dashboard() {
 		<div className="pt-3 flex flex-col gap-4 bg-blue-gray">
 			<DashboardStatsGrid />
 			<div className="flex flex-row gap-4 w-full">
-			<LineChartComponent  moodStatistics={moodStatistics} /> 
-			<PieChartComponent moodStatistics={moodStatistics}/>
+			
 			</div>
 			<div className="flex flex-row gap-4 w-full">
 				<RecentOrders />
 			</div>
-			<PopularProducts />
 
 			<div className="flex flex-row gap-4 w-full">
 			</div>
