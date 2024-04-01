@@ -21,6 +21,7 @@ import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
+import Video from "./Components/Collaboration/video";
 
 const router = createBrowserRouter([
   {
@@ -131,6 +132,10 @@ const router = createBrowserRouter([
       {
         path:"/suggestion/:subject",
         element: <SuggestionComponent/>
+      },
+      {
+        path:"/video",
+        element: <Video/>
       },
     ],
   },
