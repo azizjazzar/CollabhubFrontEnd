@@ -52,7 +52,7 @@ async getMetting(token, channel) {
 
   async getAllStatistiques() {
     try {
-      const response = await axios.get(`${BASE_URL}/stats`);
+      const response = await axios.get(`${BASE_URL}/allstats`);
       return response.data;
     } catch (error) {
       console.error("Error fetching statistics:", error);

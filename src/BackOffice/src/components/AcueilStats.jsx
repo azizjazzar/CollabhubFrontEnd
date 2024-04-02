@@ -7,52 +7,53 @@ import AuthenticationService from '@/Services/Authentification/AuthentificationS
 
 const pageSize = 10; // Nombre d'éléments par page
 
-export default function RecentOrders() {
+export default function AcueilStats() {
     const [currentPage, setCurrentPage] = useState(1);
     const [stats, setStats] = useState([]);
-    const [userData, setUserData] = useState({});
-    const [cachedData, setCachedData] = useState({});
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false); // Define the loading state
     const StatistiqueService = new Statistiques();
     const AuthenticationS = new AuthenticationService();
+    
+    // Define cachedData for caching fetched statistics data
+    const [cachedData, setCachedData] = useState({});
 
-    // Calcule le nombre total de pages
     const totalPages = Math.ceil(stats.length / pageSize);
 
-    // Récupère les données de la page actuelle
     const currentOrders = stats.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     useEffect(() => {
         const fetchData = async () => {
             if (cachedData[currentPage]) {
                 setStats(cachedData[currentPage].stats);
-                setUserData(cachedData[currentPage].userData);
             } else {
                 const statsData = await StatistiqueService.getAllStatistiques();
-                const userdata = {};
-                for (const champ of statsData) {
-                    const userA = await getUserById(champ.clientAID);
-                    const userB = await getUserById(champ.clientBID);
-                    userdata[champ.clientAID] = userA;
-                    userdata[champ.clientBID] = userB;
-                }
                 setStats(statsData);
-                setUserData(userdata);
-                setCachedData({ ...cachedData, [currentPage]: { stats: statsData, userData: userdata } });
+                setCachedData(prevState => ({
+                    ...prevState,
+                    [currentPage]: { stats: statsData }
+                }));
             }
         };
-
+    
         fetchData(); // Appel initial au chargement du composant
-    }, [currentPage]); // Déclenche la mise à jour lorsque la page actuelle change
+    
+        const interval = setInterval(() => {
+            fetchData();
+            // Force la mise à jour du composant
+            setForceUpdate(prev => !prev);
+        }, 5000); // Rafraîchir les données toutes les 5 secondes
+    
+        return () => clearInterval(interval); 
+    }, [currentPage, cachedData]); 
+    
+    // État pour forcer la mise à jour du composant
+    const [forceUpdate, setForceUpdate] = useState(false);
+    
+    
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-    };
-
-    const getUserById = async (userId) => {
-        const user = await AuthenticationS.getUserById(userId);
-        return user;
     };
 
     const handleRowClick = (champ) => {
@@ -74,61 +75,64 @@ export default function RecentOrders() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentOrders.map((champ) => (
-                            <tr key={champ._id} onClick={() => handleRowClick(champ)} className="hover:bg-gray-100 select-none">
-                                <td className="border border-gray-400 px-4 py-2">
-                                    <div className='flex items-center pr'>
-                                        {userData[champ.clientAID]?.picture ? (
+                        {loading ? (
+                            <tr><td colSpan="5">Loading...</td></tr>
+                        ) : (
+
+                            currentOrders.map((champ) => (
+                                <tr key={champ._id} onClick={() => handleRowClick(champ)} className="hover:bg-gray-100 select-none">
+                                    <td className="border border-gray-400 px-4 py-2">
+                                        {champ.clientA && champ.clientA.picture ? (
                                             <div className='flex items-center pr'>
                                                 <img
-                                                    src={`https://colabhub.onrender.com/images/${userData[champ.clientAID]?.picture || 'team-1.jpg'}`}
+                                                    src={`https://colabhub.onrender.com/images/${champ.clientA.picture || 'team-1.jpg'}`}
                                                     alt="User"
                                                     className="w-8 h-8 mr-2 rounded-full"
                                                 />
-                                                <span className='text-center'>{userData[champ.clientAID]?.nom} {userData[champ.clientAID]?.prenom}</span>
+                                                <span className='text-center'>{champ.clientA.nom} {champ.clientA.prenom}</span>
                                             </div>
                                         ) : (
                                             "loading..."
                                         )}
-                                    </div>
-                                </td>
-                                <td className="border border-gray-400 px-4 py-2">
-                                    {userData[champ.clientBID]?.picture ? (
-                                        <div className='flex items-center '>
-                                            <img
-                                                src={`https://colabhub.onrender.com/images/${userData[champ.clientBID]?.picture || 'team-1.jpg'}`}
-                                                alt="User"
-                                                className="w-8 h-8 mr-2 rounded-full"
-                                            />
-                                            <span className='text-center'>{userData[champ.clientBID]?.nom} {userData[champ.clientBID]?.prenom}</span>
-                                        </div>
-                                    ) : (
-                                        "loading..."
-                                    )}
-                                </td>
-                                <td className="border border-gray-400 px-4 py-2 text-center">  {champ.channel} </td>
-                                <td className="border border-gray-400 px-4 py-2 text-center">{format(new Date(champ.dateEnrg), 'dd MMM yyyy')}</td>
-                                <td className="border border-gray-400 py-2 text-center">
-								{getOrderStatus("CONFIRMED")}
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
-		{/* Boutons de pagination */}
-		<div className="flex justify-center mt-4">
-			{[...Array(totalPages).keys()].map((page) => (
-				<button
-					key={page}
-					className={`px-3 py-1 mx-1 ${currentPage === page + 1 ? 'bg-gray-200' : 'bg-white'
-						} border border-gray-300`}
-					onClick={() => handlePageChange(page + 1)}
-				>
-					{page + 1}
-				</button>
-			))}
-		</div>
-	</div>
-);
+                                    </td>
+                                    <td className="border border-gray-400 px-4 py-2">
+                                        {champ.clientB && champ.clientB.picture ? (
+                                            <div className='flex items-center '>
+                                                <img
+                                                    src={`https://colabhub.onrender.com/images/${champ.clientB.picture || 'team-1.jpg'}`}
+                                                    alt="User"
+                                                    className="w-8 h-8 mr-2 rounded-full"
+                                                />
+                                                <span className='text-center'>{champ.clientB.nom} {champ.clientB.prenom}</span>
+                                            </div>
+                                        ) : (
+                                            "loading..."
+                                        )}
+                                    </td>
+                                    <td className="border border-gray-400 px-4 py-2 text-center">  {champ.channel} </td>
+                                    <td className="border border-gray-400 px-4 py-2 text-center">{format(new Date(champ.dateEnrg), 'dd MMM yyyy')}</td>
+                                    <td className="border border-gray-400 py-2 text-center">
+                                        {getOrderStatus("CONFIRMED")}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            {/* Boutons de pagination */}
+            <div className="flex justify-center mt-4">
+                {[...Array(totalPages).keys()].map((page) => (
+                    <button
+                        key={page}
+                        className={`px-3 py-1 mx-1 ${currentPage === page + 1 ? 'bg-gray-200' : 'bg-white'
+                            } border border-gray-300`}
+                        onClick={() => handlePageChange(page + 1)}
+                    >
+                        {page + 1}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
 }

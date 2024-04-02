@@ -1,6 +1,6 @@
 import DashboardStatsGrid from '../components/DashboardStatsGrid'
 import TransactionChart from '../components/TransactionChart'
-import RecentOrders from '../components/AcueilStats'
+import AcueilStats from '../components/AcueilStats'
 import BuyerProfilePieChart from '../components/BuyerProfilePieChart'
 import PopularProducts from '../components/PopularProducts'
 import React, { useEffect, useState } from 'react';
@@ -34,7 +34,7 @@ export default function Dashboard() {
 			
 			</div>
 			<div className="flex flex-row gap-4 w-full">
-				<RecentOrders />
+				<AcueilStats />
 			</div>
 
 			<div className="flex flex-row gap-4 w-full">
