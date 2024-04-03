@@ -2,7 +2,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-
 import { ThemeProvider } from "@material-tailwind/react";
 import "../public/css/tailwind.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -22,6 +21,7 @@ import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
 import Video from "./Components/Collaboration/video";
+
 
 const router = createBrowserRouter([
   {
@@ -137,10 +137,14 @@ const router = createBrowserRouter([
         path:"/video",
         element: <Video/>
       },
+ 
+      
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+
     <RouterProvider router={router} />
+    
 );

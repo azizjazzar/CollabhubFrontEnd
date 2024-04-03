@@ -21,10 +21,12 @@ function App() {
     <AuthProvider>
 
     <Navbar routes={routes} />
-      <Outlet />
+    <Outlet />
+ 
+     
     
     </AuthProvider>
-     
+  
     </>
   );
 }

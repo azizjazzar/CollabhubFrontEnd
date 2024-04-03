@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 
-const APP_ID = "votre_app_id";
-const TOKEN = "votre_token";
+const APP_ID = "67a5503c4b134d80baec1767141115d3";
+const TOKEN = "007eJxTYDj+deK9ll8nNDk8LASyqqZ77D4VsW713rL8TcvPixW8i6tQYDAzTzQ1NTBONkkyNDZJsTBISkxNNjQ3Mzc0MTQ0NE0xLtzJk9YQyMjw0SqXiZEBAkF8Nobk/JycxCQGBgD3ryDt";
 const CHANNEL = "collab";
 
 const agoraChatClient = AgoraRTC.createClient({

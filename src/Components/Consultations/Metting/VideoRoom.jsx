@@ -7,9 +7,10 @@ import SendIcon from "@material-ui/icons/Send";
 import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
 import ChatRoom from './chatRoom';
+
 const APP_ID = "67a5503c4b134d80baec1767141115d3";
-const TOKEN = "007eJxTYBDefPrc/MB/fcYra7VmXgu4s8jLZrZA7abDhtbfJwYGdTQoMJiZJ5qaGhgnmyQZGpukWBgkJaYmG5qbmRuaGBoamqYYX1R7kdoQyMgQr/yIiZEBAkF8FobcxMw8BgYAfbUftQ==";
-const CHANNEL = "main";
+const TOKEN = "007eJxTYDj+deK9ll8nNDk8LASyqqZ77D4VsW713rL8TcvPixW8i6tQYDAzTzQ1NTBONkkyNDZJsTBISkxNNjQ3Mzc0MTQ0NE0xLtzJk9YQyMjw0SqXiZEBAkF8Nobk/JycxCQGBgD3ryDt";
+const CHANNEL = "collab";
 
 const client = AgoraRTC.createClient({
     mode: 'rtc',
@@ -81,6 +82,7 @@ export const VideoRoom = () => {
             setInputMessage('');
         }
     };
+
     useEffect(() => {
         const joinChannel = async () => {
             if (authData.user) {
@@ -153,7 +155,6 @@ export const VideoRoom = () => {
         joinChannel();
     }, [authData.user]);
 
-
     return (
         <div className="pt-24 fixed">
             {authData.user ? (
@@ -167,20 +168,18 @@ export const VideoRoom = () => {
                         }}
                     >
                         {users.map(user => (
-                                isCameraOn ? (
-                                    <VideoPlayer key={user.uid} user={user} />
-                                ) : (
-                                    <div className='mt-36'>
-                                        <img
-                                            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-                                            alt={`User ${user.uid}`}
-                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
-                                        />
-                                    </div>
-                                )
+                            isCameraOn ? (
+                                <VideoPlayer key={user.uid} user={user} />
+                            ) : (
+                                <div className='mt-36'>
+                                    <img
+                                        src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+                                        alt={`User ${user.uid}`}
+                                        style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
+                                    />
+                                </div>
+                            )
                         ))}
-
-
                     </div>
 
                     <div className="bottom-navbar">
