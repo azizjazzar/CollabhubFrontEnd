@@ -6,16 +6,14 @@ Brief description of your project. Mention its purpose and main features.
 ## Table of Contents
 
 - [Demo](#demo)
-- [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Setup Instructions](#setup-instructions)
 - [Usage](#usage)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Demo
 
-Collubhub is an innovative platform leveraging cutting-edge AI and voice recognition technologies to connect freelancers with clients seeking their services. Its primary purpose is to revolutionize the way freelancers and clients collaborate by providing seamless communication and efficient project management tools.
+Collabhub is an innovative platform leveraging cutting-edge AI and voice recognition technologies to connect freelancers with clients seeking their services. Its primary purpose is to revolutionize the way freelancers and clients collaborate by providing seamless communication and efficient project management tools.
 
 ## Technologies Used
 
@@ -28,5 +26,9 @@ Collubhub is an innovative platform leveraging cutting-edge AI and voice recogni
 
  - Clone project https://github.com/azizjazzar/CollubHubFrontEnd.git
  - npm install
+ - 
+## License
+
+This project is open-source .
 
 
