@@ -26,7 +26,7 @@ Collubhub is an innovative platform leveraging cutting-edge AI and voice recogni
   - 
 ## Setup Instructions
 
-1 -Clone project https://github.com/azizjazzar/CollubHubFrontEnd.git
-2 -npm install
+ - Clone project https://github.com/azizjazzar/CollubHubFrontEnd.git
+ - npm install
 
 
