@@ -15,8 +15,7 @@ Brief description of your project. Mention its purpose and main features.
 
 ## Demo
 
-Provide a link to a live demo of your project, if available. Screenshots or gifs can also be included to showcase its functionality.
-
+Collubhub is an innovative platform leveraging cutting-edge AI and voice recognition technologies to connect freelancers with clients seeking their services. Its primary purpose is to revolutionize the way freelancers and clients collaborate by providing seamless communication and efficient project management tools.
 ## Features
 
 List the main features of your project. Highlight what sets it apart from similar platforms and any unique functionalities it offers.
