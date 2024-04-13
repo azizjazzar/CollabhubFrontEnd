@@ -1,0 +1,30 @@
+/* BlogDetails.css */
+
+.blog-details-container {
+    /* Styles pour le conteneur de tous les détails du blog */
+  }
+  
+  .card {
+    /* Styles pour la carte contenant le contenu du blog */
+  }
+  
+  .comments-section {
+    /* Styles pour la section des commentaires */
+  }
+  
+  .suggested-blogs-container {
+    text-align: center;
+  }
+  
+  .suggested-blog-card {
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  
+  .suggested-blog-card {
+    margin: auto; /* Centre le blog suggéré horizontalement */
+    max-width: 600px; /* Limite la largeur pour une meilleure lisibilité */
+  }
+  
+  /* Ajoutez plus de styles au besoin */
+   

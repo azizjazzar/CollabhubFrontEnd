@@ -79,17 +79,17 @@ export const VideoRoom = () => {
             const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
             if (isClientAEmpty) {
                 const result = await StatistiquesService.gemini(transcribedText);
-                console.log("hetha",result)
-                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL,result[0],"in Progress ...");
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL,result[0],"in Progress ...","in progress");
             } else {
                 const meetupdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
                 if (localStorage.getItem('clientA') != meetupdate.clientAID) 
                 {
-
                     meetupdate.clientB= transcribedText
                     const result2 = await StatistiquesService.gemini(transcribedText);
 
                     meetupdate.responseClientB=result2[0]
+                    const gem=await StatistiquesService.geminiwithtext(`i will give you a speech about two client i want you to analyse the conversion and tell me if the conversetion went well or no you will return me only one word 'confirmed' 'declined' client a: ${localStorage.getItem('clientA')} client b: ${localStorage.getItem('clientB')}   `)
+                    meetupdate.status=gem
                     await StatistiquesService.updateStatistiqueById(meetupdate._id,meetupdate)
                 }
               }

@@ -50,6 +50,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.8.0",
     "react-select-country-list": "^2.2.3",
+    "react-simple-chatbot": "^0.6.1",
     "react-speech-recognition": "^3.10.0",
     "react-typed": "^2.0.12",
     "react-webcam": "^7.2.0",
@@ -60,6 +61,7 @@
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.7.4",
     "stripe": "^14.17.0",
+    "styled-components": "^4.4.1",
     "three": "^0.161.0",
     "tw-elements-react": "^1.0.0-alpha2",
     "words-to-numbers": "^1.5.1"

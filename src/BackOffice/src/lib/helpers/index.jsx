@@ -6,7 +6,7 @@ export function getOrderStatus(status) {
 					{status.replaceAll('_', ' ').toLowerCase()}
 				</span>
 			)
-		case 'REJECTED':
+		case 'DECLINED':
 			return (
 				<span className="capitalize py-1 px-2 rounded-md text-xs text-white bg-red-500 ">
 					{status.replaceAll('_', ' ').toLowerCase()}

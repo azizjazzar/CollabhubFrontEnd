@@ -5,7 +5,7 @@ import { getOrderStatus } from '../lib/helpers';
 import Statistiques from '@/Services/statistiques/Statistiques';
 import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
-const pageSize = 10; // Nombre d'éléments par page
+const pageSize = 20; // Nombre d'éléments par page
 
 export default function AcueilStats() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -112,7 +112,7 @@ export default function AcueilStats() {
                                     <td className="border border-gray-400 px-4 py-2 text-center">  {champ.channel} </td>
                                     <td className="border border-gray-400 px-4 py-2 text-center">{format(new Date(champ.dateEnrg), 'dd MMM yyyy')}</td>
                                     <td className="border border-gray-400 py-2 text-center">
-                                        {getOrderStatus("CONFIRMED")}
+                                    {champ.status ? getOrderStatus(champ.status.toUpperCase()) : ''}
                                     </td>
                                 </tr>
                             ))

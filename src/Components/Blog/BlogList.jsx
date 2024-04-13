@@ -8,6 +8,7 @@ import { useAuth } from "@/pages/authContext";
 import { Footer } from "@/widgets/layout/footer";
 import TitleBlog from '@/widgets/layout/titleBlog';
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
+import Chatbot from './ChatBot';
 
 const BlogList = () => {
     const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
@@ -350,7 +351,8 @@ alt="User"
                 </div>
             )}
 
-            <div className="fixed bottom-4 right-4">
+           
+            <div className="fixed bottom-5 right-3">
                 <a
                     href="#"
                     onClick={handleToggleModal}
@@ -400,7 +402,9 @@ alt="User"
                                         className="mt-1 p-2 border rounded-md w-full"
                                     />
                                 </div>
+                                <div className="fixed bottom-5 right-5">
 
+</div>
                                 <div className="mb-4">
                                     <label htmlFor="content" className="block text-sm font-medium text-gray-600">
                                         Content
@@ -438,6 +442,7 @@ alt="User"
             {/* Footer */}
             <Footer />
         </div>
+        
     );
 };
 

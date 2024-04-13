@@ -5,7 +5,7 @@ const BASE_URL = "https://colabhub.onrender.com";
 
 class Statistiques {
 
-  async addStatistique(clientAID, clientBID, clientA, clientB, token, channel,responseClientA,responseClientB) {
+  async addStatistique(clientAID, clientBID, clientA, clientB, token, channel,responseClientA,responseClientB,status) {
     try {
         await axios.post(`${BASE_URL}/stats/add`, {
             clientAID,
@@ -15,7 +15,8 @@ class Statistiques {
             token,
             channel,
             responseClientA,
-            responseClientB
+            responseClientB,
+            status,
         });
     } catch (error) {
         console.error("Error adding statistic:", error);
@@ -136,8 +137,22 @@ async getMetting(token, channel) {
     }
   };
   
-  
-  
+async geminiwithtext(trans) {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/geminiAnalyseWithText`,
+      {
+        text: trans
+      }
+    );
+    return res.data.answer;
+  } catch (error) {
+    console.error("Error fetching data from the OpenAI API:", error);
+  }
+};
+
+
+
 }
 
 export default Statistiques;

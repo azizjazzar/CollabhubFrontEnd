@@ -73,7 +73,7 @@ export function UsersSatistique() {
                     alt="User"
                     className="w-[200px] h-[200px] rounded-full mb-2"
                 />
-            <span className='text-center'>{userB.nom} {userB.prenom}</span>
+                <span className='text-center'>{userB.nom} {userB.prenom}</span>
                 <StatsComponent></StatsComponent>
                 <div className='pl-8'>
                     <RadarChartComponent moodStatistics={ClientBStats} />

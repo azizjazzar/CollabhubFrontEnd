@@ -1,0 +1,25 @@
+/* SimpleForm.css */
+
+/* Styles for the ChatBot component */
+.chatbot-container {
+  position: fixed;
+  top: 7rem;
+  right: 1rem;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Customize the chat message styles */
+.rsc-container {
+  background-color: #f0f0f0;
+}
+
+.rsc-content {
+  color: #333;
+}
+
+/* Customize the user input styles */
+.rsc-user {
+  background-color: #007bff;
+  color: #fff;
+}

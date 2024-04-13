@@ -1,13 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { PieChart, Pie, Cell, LineChart, Line, RadialBarChart, RadialBar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
-const data = [
-  { name: 'Janvier', value: 400 },
-  { name: 'Février', value: 300 },
-  { name: 'Mars', value: 200 },
-  { name: 'Avril', value: 500 },
-  { name: 'Mai', value: 600 },
-];
+
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6633'];
 const title = () => {
