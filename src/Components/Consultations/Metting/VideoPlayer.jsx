@@ -56,11 +56,13 @@ export const VideoPlayer = ({ user }) => {
 
 
   return (
-    <div className='flex pb-[23%] w-full' style={{ width: '100%', height: '100vh' }}>
-         <div className='flex items-center'>
-        <video className='w-full' crossOrigin='anonymous' ref={videoRef} autoPlay />
-    </div>
-    <canvas className='absolute top-20' ref={canvasRef} width="940" height="650" />
-    </div>
+
+   
+
+   
+    <div className='flex pb-[2%] w-full' style={{ width: '100%', height: '95vh' }}>
+       <video className={`border  mb-12 ${largeurEcran > 1320 ? 'w-[600px]' : 'sm:w-1/2 md:w-[200px] lg:w-[300px] 2xl:w-[500px]'}`} ref={videoRef} style={{ height: '100%' }}>   </video>
+       <canvas className='absolute top-20' ref={canvasRef} width="940" height="650" />
+     </div>
   );
 };

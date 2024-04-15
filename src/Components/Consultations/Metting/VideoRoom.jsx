@@ -15,6 +15,7 @@ const CHANNEL = "collab";
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
+    autoSubscribe: false
 });
 
 export const VideoRoom = () => {
