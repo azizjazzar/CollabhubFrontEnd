@@ -23,7 +23,6 @@ const BlogDetails = () => {
   const { authData } = useAuth();
   const [suggestedBlogs, setSuggestedBlogs] = useState([]);
   const [currentSuggestedBlogIndex, setCurrentSuggestedBlogIndex] = useState(0);
-
   const fetchBlogDetails = async () => {
     try {
       const response = await axios.get(`https://colabhub.onrender.com/blogs/${id}`);
@@ -34,8 +33,8 @@ const BlogDetails = () => {
       setAuthor(authorResponse);
       // Fetch suggested blogs
       const suggestedResponse = await axios.get('https://colabhub.onrender.com/blogs/Blogs');
-      // Exclure le blog actuel des suggestions
-      const filteredSuggestedBlogs = suggestedResponse.data.filter(suggestedBlog => suggestedBlog._id !== id);
+      // Filter suggested blogs based on the current blog's category
+      const filteredSuggestedBlogs = suggestedResponse.data.filter(suggestedBlog => suggestedBlog.category === blogData.category && suggestedBlog._id !== id);
       setSuggestedBlogs(filteredSuggestedBlogs);
     } catch (error) {
       console.error('Error fetching blog details:', error);
@@ -44,6 +43,7 @@ const BlogDetails = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchBlogDetails();
@@ -152,21 +152,22 @@ const BlogDetails = () => {
           <div key={comment._id} className="bg-white p-6 mb-6 rounded-md shadow-md">
             <div className="flex items-center mb-4">
               <img
-                src={comment.user && comment.user.picture ? `https://colabhub.onrender.com/images/${comment.user.picture}` : '/img/team-1.jpg'}
+                src={comment.user && comment.user.picture ? `https://colabhub.onrender.com/images/${comment.user.picture}` : '/img/team-11.JPG'}
                 alt="User" className="w-10 h-10 rounded-full mr-3"
               />
               <span className="text-gray-700 font-semibold">{comment.user ? `${comment.user.nom} ${comment.user.prenom}` : 'Idriss el bessi'}</span>
             </div>
             <p className="text-gray-800">{comment.text}</p>
             <div className="flex items-center mt-4">
-              <button className="flex items-center text-blue-500 hover:underline mr-3" onClick={() => handleLike(comment._id)}>
-                <FaThumbsUp className="mr-1" /> 
-                <span className="ml-1">Likes ({comment.likes ? comment.likes.length : 0})</span>
-              </button>
-              <button className="flex items-center text-red-500 hover:underline" onClick={() => handleDislike(comment._id)}>
-                <FaThumbsDown className="mr-1" /> 
-                <span className="ml-1">Dislikes ({comment.dislikes ? comment.dislikes.length : 0})</span>
-              </button>
+            <button className="flex items-center text-blue-500 hover:underline mr-3 bg-white" onClick={() => handleLike(comment._id)}>
+   <FaThumbsUp className="mr-1" /> 
+  <span className="ml-1">Likes ({comment.likes ? comment.likes.length : 0})</span>
+</button>
+<button className="flex items-center text-red-500 hover:underline bg-white" onClick={() => handleDislike(comment._id)}>
+  <FaThumbsDown className="mr-1" /> 
+  <span className="ml-1">Dislikes ({comment.dislikes ? comment.dislikes.length : 0})</span>
+</button>
+
             </div>
             <p className="text-gray-500 mt-2">Posted on: {format(new Date(comment.date), 'MMMM dd, yyyy')}</p>
           </div>

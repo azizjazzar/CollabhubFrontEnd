@@ -11,15 +11,15 @@ import AuthenticationService from "@/Services/Authentification/AuthentificationS
 import Chatbot from './ChatBot';
 
 const BlogList = () => {
-    const { authData } = useAuth(); // Replace with the actual structure of your authentication hook
+    const { authData } = useAuth();
     const [blogs, setBlogs] = useState([]);
     const [sortByDate, setSortByDate] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('');
     const authenticationService = new AuthenticationService();
-    const [userDataMap, setUserDataMap] = useState({}); 
-
+    const [userDataMap, setUserDataMap] = useState({});
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -39,7 +39,6 @@ const BlogList = () => {
                 });
         });
     };
-    
 
     const fetchBlogs = async () => {
         try {
@@ -57,6 +56,7 @@ const BlogList = () => {
     const toggleSortOrder = () => {
         setSortByDate((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     };
+
     useEffect(() => {
         const fetchUserData = async () => {
             const userDataPromises = blogs.map(async (blog) => {
@@ -73,8 +73,7 @@ const BlogList = () => {
     
         fetchUserData();
     }, [blogs]);
-    
-    
+
     const sortBlogsByDate = () => {
         return blogs.sort((a, b) => {
             const dateA = new Date(a.date);
@@ -89,9 +88,13 @@ const BlogList = () => {
         blog.content.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const filteredByCategory = selectedCategory
+        ? filteredBlogs.filter((blog) => blog.category === selectedCategory)
+        : filteredBlogs;
+
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = filteredBlogs.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = filteredByCategory.slice(indexOfFirstPost, indexOfLastPost);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -128,7 +131,7 @@ const BlogList = () => {
         try {
             const response = await axios.post('https://colabhub.onrender.com/blogs/addBlog', {
                 ...formData,
-                userId: authData.user._id, // Use the ID of the authenticated user
+                userId: authData.user._id,
             });
     
             console.log('Blog added successfully:', response.data);
@@ -140,14 +143,18 @@ const BlogList = () => {
         handleToggleModal();
     };
 
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+    };
+
     return (
         <div className="blog-list-container p-20 mt-10 relative">
             <TitleBlog />
 
             <img
-                src="/img/blogback.jpg" // Replace with the path to your image
+                src="/img/blogback.jpg"
                 alt="Blog Background"
-                className="w-full h-[450px] mb-8" // Adjust the class based on your sizing and margin needs
+                className="w-full h-[450px] mb-8"
             />
 
             <div className="flex justify-between items-center mb-8">
@@ -172,36 +179,95 @@ const BlogList = () => {
                 />
             </div>
 
+            <div className="mb-4">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-600 mb-1">Filter by Category</label>
+<div className="flex flex-wrap gap-2">
+    <button
+        onClick={() => setSelectedCategory('')}
+        className={`border p-2 rounded-md ${selectedCategory === '' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        All
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Web')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Web' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Web
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Mobile')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Mobile' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Mobile
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Design')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Design' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Design
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Blockchain')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Blockchain' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Blockchain
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Cybersecurity')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Cybersecurity' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Cybersecurity
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Data Science')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Data Science' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Data Science
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Cloud')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Cloud' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Cloud
+    </button>
+    <button
+        onClick={() => setSelectedCategory('Other')}
+        className={`border p-2 rounded-md ${selectedCategory === 'Other' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+    >
+        Other
+    </button>
+</div>
+
+
+            </div>
+
             {currentPosts.length > 0 && currentPage === 1 ? (
                 <div className="flex">
                     <div className="lg:w-3/4">
                         <ul className="space-y-6">
-                        {currentPosts.map((blog) => {
-    const user = userDataMap[blog.userId]; 
-    return (
-        <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-            <div className="flex items-center mb-4">
-                <img
-src={user && user.picture ? `https://colabhub.onrender.com/images/${user.picture}` : '/img/team-1.jpg'}
-alt="User"
-                    className="w-10 h-10 rounded-full mr-2"
-                />
-                <span className="text-gray-700">
-                    {user ? `${user.nom} ${user.prenom}` : 'Loading data'}
-                </span>
-            </div>
-            <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-            <p className="text-gray-600">{blog.description}</p>
-            <p className="text-gray-500 mt-2">
-                Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-            </p>
-            <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                See More
-            </Link>
-        </li>
-    );
-})}
-
+                            {currentPosts.map((blog) => (
+                                <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+                                    <div className="flex items-center mb-4">
+                                        <img
+                                            src={userDataMap[blog.userId] && userDataMap[blog.userId].picture ? `https://colabhub.onrender.com/images/${userDataMap[blog.userId].picture}` : '/img/team-1.jpg'}
+                                            alt="User"
+                                            className="w-10 h-10 rounded-full mr-2"
+                                        />
+                                        <span className="text-gray-700">
+                                            {userDataMap[blog.userId] ? `${userDataMap[blog.userId].nom} ${userDataMap[blog.userId].prenom}` : 'idriss '}
+                                        </span>
+                                    </div>
+                                    <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+                                    <p className="text-gray-600">{blog.description}</p>
+                                    <p className="text-gray-500 mt-1">Category: {blog.category}</p> {/* Affichage de la catégorie */}
+                                    <p className="text-gray-500 mt-2">
+                                        Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+                                    </p>
+                                    <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+                                        See More
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
 
                         <div className="flex justify-center mt-4 border p-4 rounded-lg">
@@ -220,7 +286,7 @@ alt="User"
                                             Previous
                                         </button>
                                     </li>
-                                    {Array.from({ length: Math.ceil(filteredBlogs.length / postsPerPage) }).map(
+                                    {Array.from({ length: Math.ceil(filteredByCategory.length / postsPerPage) }).map(
                                         (_, index) => (
                                             <li key={index} className="page-item">
                                                 <button
@@ -239,9 +305,9 @@ alt="User"
                                     <li className="page-item">
                                         <button
                                             onClick={nextPage}
-                                            disabled={currentPage === Math.ceil(filteredBlogs.length / postsPerPage)}
+                                            disabled={currentPage === Math.ceil(filteredByCategory.length / postsPerPage)}
                                             className={`page-link py-2 px-4 rounded ${
-                                                currentPage === Math.ceil(filteredBlogs.length / postsPerPage)
+                                                currentPage === Math.ceil(filteredByCategory.length / postsPerPage)
                                                     ? 'bg-gray-300 text-gray-600'
                                                     : 'bg-white text-orange-500 hover:bg-orange-200'
                                             }`}
@@ -270,31 +336,30 @@ alt="User"
                 <div>
                     {currentPosts.length > 0 ? (
                         <ul className="space-y-6">
-                           {currentPosts.map((blog) => {
-    const user = userDataMap[blog.userId]; 
-    return (
-        <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
-            <div className="flex items-center mb-4">
-                <img
-src={user && user.picture ? `https://colabhub.onrender.com/images/${user.picture}` : '/img/team-1.jpg'}
-alt="User"
-                    className="w-10 h-10 rounded-full mr-2"
-                />
-                <span className="text-gray-700">
-                    {user ? `${user.nom} ${user.prenom}` : 'Loading data'}
-                </span>
-            </div>
-            <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
-            <p className="text-gray-600">{blog.description}</p>
-            <p className="text-gray-500 mt-2">
-                Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
-            </p>
-            <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
-                See More
-            </Link>
-        </li>
-    );
-})}
+                        {currentPosts.map((blog) => (
+    <li key={blog._id} className="bg-white rounded-lg p-6 shadow-md">
+        <div className="flex items-center mb-4">
+            <img
+                src={userDataMap[blog.userId] && userDataMap[blog.userId].picture ? `https://colabhub.onrender.com/images/${userDataMap[blog.userId].picture}` : '/img/team-1.jpg'}
+                alt="User"
+                className="w-10 h-10 rounded-full mr-2"
+            />
+            <span className="text-gray-700">
+                {userDataMap[blog.userId] ? `${userDataMap[blog.userId].nom} ${userDataMap[blog.userId].prenom}` : 'idriss '}
+            </span>
+        </div>
+        <h2 className="text-2xl font-semibold mb-2">{blog.title}</h2>
+        <p className="text-gray-600">{blog.description}</p>
+        <p className="text-gray-500 mt-1">Category: {blog.category}</p> {/* Affichage de la catégorie */}
+        <p className="text-gray-500 mt-1">
+            Posted on {format(new Date(blog.date), 'MMMM dd, yyyy')}
+        </p>
+        <Link to={`/blog/${blog._id}`} className="text-blue-500 hover:underline">
+            See More
+        </Link>
+    </li>
+))}
+
                         </ul>
                     ) : (
                         <p className="text-gray-600">No blog posts available at the moment.</p>
@@ -316,7 +381,7 @@ alt="User"
                                         Previous
                                     </button>
                                 </li>
-                                {Array.from({ length: Math.ceil(filteredBlogs.length / postsPerPage) }).map(
+                                {Array.from({ length: Math.ceil(filteredByCategory.length / postsPerPage) }).map(
                                     (_, index) => (
                                         <li key={index} className="page-item">
                                             <button
@@ -335,9 +400,9 @@ alt="User"
                                 <li className="page-item">
                                     <button
                                         onClick={nextPage}
-                                        disabled={currentPage === Math.ceil(filteredBlogs.length / postsPerPage)}
+                                        disabled={currentPage === Math.ceil(filteredByCategory.length / postsPerPage)}
                                         className={`page-link py-2 px-4 rounded ${
-                                            currentPage === Math.ceil(filteredBlogs.length / postsPerPage)
+                                            currentPage === Math.ceil(filteredByCategory.length / postsPerPage)
                                                 ? 'bg-gray-300 text-gray-600'
                                                 : 'bg-white text-orange-500 hover:bg-orange-200'
                                         }`}
@@ -351,7 +416,6 @@ alt="User"
                 </div>
             )}
 
-           
             <div className="fixed bottom-5 right-3">
                 <a
                     href="#"
@@ -368,7 +432,7 @@ alt="User"
                     <div className="bg-white p-8 max-w-2xl w-full rounded-md flex">
                         <div className="w-full">
                             <img
-                                src="/img/blog-f.jpg" // Replace with the path to your image
+                                src="/img/blog-f.jpg"
                                 alt="Blog Image"
                                 className="w-full h-full object-cover rounded-md"
                             />
@@ -402,9 +466,7 @@ alt="User"
                                         className="mt-1 p-2 border rounded-md w-full"
                                     />
                                 </div>
-                                <div className="fixed bottom-5 right-5">
 
-</div>
                                 <div className="mb-4">
                                     <label htmlFor="content" className="block text-sm font-medium text-gray-600">
                                         Content
@@ -439,7 +501,6 @@ alt="User"
                 </div>
             )}
 
-            {/* Footer */}
             <Footer />
         </div>
         

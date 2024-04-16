@@ -105,3 +105,30 @@ button {
 button:hover {
     background-color: #ff6f00;
 }
+.suggested-questions {
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.suggested-question {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.suggested-question:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.suggested-question-text {
+    font-size: 14px;
+    color: #333;
+}
+
+.suggested-question-icon {
+    margin-right: 8px;
+}
