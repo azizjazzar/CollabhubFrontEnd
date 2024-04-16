@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
 import './App.css'
 import Navbar from "./Components/Navbar/Navbar";
 import { AuthProvider } from "./pages/authContext";
-
+import Alan from "./Components/Authentification/Alan";
 function App() {
   const routes = [
     { name: 'Home', path: '/' },
@@ -25,7 +25,11 @@ function App() {
     <>
       <AuthProvider>
         {!isDashboard && <Navbar routes={routes} />}
+     
         <Outlet />
+        <div className="fixed  bottom-5 left-5">
+        <Alan ></Alan>
+        </div>
       </AuthProvider>
     </>
   );
