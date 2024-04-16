@@ -2,6 +2,28 @@ import axios from 'axios';
 
 class AuthenticationService {
   
+  async  sendEmailToAdmin(userEmail, message, clientName) {
+    try {
+      const apiUrl = 'https://colabhub.onrender.com/api/auth/sendemail';
+      const apiPayload = {
+        userEmail: userEmail,
+        message: message,
+        clientName: clientName
+      };
+      const response = await axios.post(apiUrl, apiPayload);
+      if (response.data.success) {
+        console.log('Email sent successfully');
+        return true;
+      } else {
+        console.error('Failed to send email:', response.data.message);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
+  }
+  
     async updateUserPicture(email, formData) {
         try {
           await axios.put(`https://colabhub.onrender.com/api/auth/updatePicture/${email}`, formData, {
@@ -112,7 +134,7 @@ class AuthenticationService {
         console.error('Error during API request:', error);
       }
   }
-  
+ 
 }
 
 export default AuthenticationService;

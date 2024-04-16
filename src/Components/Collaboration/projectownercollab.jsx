@@ -2,7 +2,11 @@ import { Menu, Transition } from '@headlessui/react'
 import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
-import FormulaireTask from "@/widgets/layout/formulaireTask";
+import { FormulaireMeet} from "@/widgets/layout/formulaireMeet";
+import { useAuth } from '@/pages/authContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {  Link } from 'react-router-dom';
 import {
   add,
   eachDayOfInterval,
@@ -17,58 +21,32 @@ import {
   parseISO,
   startOfToday,
 } from 'date-fns'
-import { Fragment, useState } from 'react'
+import { Fragment, useState , useEffect} from 'react'
 
-const meetings = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2024-02-24T13:00',
-    endDatetime: '2022-05-11T14:30',
-  },
-  {
-    id: 2,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-20T09:00',
-    endDatetime: '2022-05-20T11:30',
-  },
-  {
-    id: 3,
-    name: 'Dries Vincent',
-    imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-20T17:00',
-    endDatetime: '2022-05-20T18:30',
-  },
-  {
-    id: 4,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-06-09T13:00',
-    endDatetime: '2022-06-09T14:30',
-  },
-  {
-    id: 5,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-05-13T14:00',
-    endDatetime: '2022-05-13T14:30',
-  },
-]
+
+
+
+
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function ProjectOwnerCollab(props) {
-  
-  const tasks = props.tasks;
+
+  const userId=props.userId;
+  const freelancers=props.freelancers;
+  const [ meetings, setmeetings] = useState([]);
+  useEffect(() => {
+    fetch(`https://colabhub.onrender.com/meet/getmeets/${userId}`)
+      .then(response => response.json())
+      .then(data => setmeetings(data))
+      .catch(error => console.error("Error fetching meets:", error));
+  }, [meetings]);
+
+
   let today = startOfToday()
   let [selectedDay, setSelectedDay] = useState(today)
   let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -90,20 +68,32 @@ export function ProjectOwnerCollab(props) {
   }
 
   let selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    isSameDay(parseISO(meeting.dateStart), selectedDay)
   )
 
-  let selectedDayTodos = tasks.filter((task) =>
-  isSameDay(parseISO(task.dateStart), selectedDay)
-)
+  const showNotification = () => {
+    toast.success('Vous avez un meet !', {
+      position: 'top-right',
+      autoClose: 3000, // Durée d'affichage en millisecondes
+    });
+  };
 
-const [openModalTask, setOpenModalTask] = useState(false);
+  function notifyMe(meetings) {
+    meetings.filter((meeting) =>
+      isSameDay(parseISO(meeting.dateStart), today)
+    ).forEach(() => showNotification());
+  }
 
    // Fonction pour ouvrir le modal
    const handleClick = () => {
-    setOpenModalTask(true);
-  };
+    setOpenModalmeet(true)
+   
+ };
+
+ const [OpenModalmeet, setOpenModalmeet] = useState(false);
+
   return (
+   
     <div className="pt-16">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
@@ -111,6 +101,7 @@ const [openModalTask, setOpenModalTask] = useState(false);
             <div className="flex items-center">
               <h2 className="flex-auto font-semibold text-gray-900">
                 {format(firstDayCurrentMonth, 'MMMM yyyy')}
+                {notifyMe(meetings)}
               </h2>
               <button
                 type="button"
@@ -181,7 +172,7 @@ const [openModalTask, setOpenModalTask] = useState(false);
 
                   <div className="w-1 h-1 mx-auto mt-1">
                     {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
+                      isSameDay(parseISO(meeting.dateStart), day)
                     ) && (
                       <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                     )}
@@ -197,65 +188,66 @@ const [openModalTask, setOpenModalTask] = useState(false);
                 {format(selectedDay, 'MMM dd, yyy')}
               </time>
             </h2>
+         
             <ol className="mt-4 space-y-10 text-sm leading-6 text-gray-500">
               {selectedDayMeetings.length > 0 ? (
                 selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting.id} />
+                  <Meeting meeting={meeting} key={meeting._id}  />
                 ))
               ) : (
                 <p>No meetings for today.</p>
               )}
+              <button onClick={()=>{handleClick()}}
+                              className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                              type="button"
+                            >
+                              Add
+              </button>
             </ol>
           </section>
-          
-          <section className="mt-12">
-
-         { selectedDayTodos.length > 0  ? (
-          selectedDayTodos.map((todo)=>(
-                  <Todo tasks={todo} key={todo._id}/>
-                  )
-          )): (
-            <p className='text-gray-500'>No tasks today</p>
-         )}
-                        <button
-                            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-                            type="button" onClick={handleClick}>
-                            Add
-                        </button> 
-           </section>
-
-
-
+       
+          <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
+          <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)} userId={userId} freelancers={freelancers}/>
         </div>
+        
+         
+        
+        </div>
+       
       </div>
        
-        <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
-       <FormulaireTask open={openModalTask} onClose={() => setOpenModalTask(false)} />
-     </div>
+                
     </div>
    
   )
 }
 
-function Meeting({ meeting }) {
-  let startDateTime = parseISO(meeting.startDatetime)
-  let endDateTime = parseISO(meeting.endDatetime)
+function Meeting({ meeting}) {
+  let startDateTime = parseISO(meeting.dateStart)
+  let endDateTime = parseISO(meeting.dateEnd)
 
+
+  const { authData, setAuthUserData } = useAuth();
   return (
+<Link to={`/meeting`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+              
+             
+             
+
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <img
-        src={meeting.imageUrl}
+         src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
         alt=""
         className="flex-none w-10 h-10 rounded-full"
       />
       <div className="flex-auto">
         <p className="text-gray-900">{meeting.name}</p>
         <p className="mt-0.5">
-          <time dateTime={meeting.startDatetime}>
+          <time dateTime={meeting.dateStart}>
             {format(startDateTime, 'h:mm a')}
           </time>{' '}
           -{' '}
-          <time dateTime={meeting.endDatetime}>
+          <time dateTime={meeting.dateEnd}>
             {format(endDateTime, 'h:mm a')}
           </time>
         </p>
@@ -285,16 +277,18 @@ function Meeting({ meeting }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
+                  <Link to={`/suggestion/${meeting.name}/${meeting._id}`}
+                
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm'
                     )}
                   >
-                    Edit
-                  </a>
+                  
+                    Suggestions 
+                  </Link>
                 )}
+               
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
@@ -310,37 +304,19 @@ function Meeting({ meeting }) {
                 )}
               </Menu.Item>
             </div>
+         
           </Menu.Items>
         </Transition>
       </Menu>
     </li>
-
+    
+     
+    </Link>
 
 
    
 
-  )
-}
-function Todo(props){
-  return (
-
-    <ul className="bg-white shadow overflow-hidden sm:rounded-md max-w-sm mx-auto mt-16">
-<li>
-<div className="px-4 py-5 sm:px-6">
-  <div className="flex items-center justify-between">
-      <h3 className="text-lg leading-6 font-medium text-gray-900">{props.name}</h3>
-      <p className="mt-1 max-w-2xl text-sm text-gray-500">{props.description}</p>
-  </div>
-  <div className="mt-4 flex items-center justify-between">
-      <p className="text-sm font-medium text-gray-500">Status: <span className="text-green-600">Active</span></p>
-      <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
-  </div>
-</div>
-</li>
-
-</ul>
-
-  )
+  ) 
 }
 
 let colStartClasses = [

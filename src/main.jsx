@@ -2,7 +2,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-
 import { ThemeProvider } from "@material-tailwind/react";
 import "../public/css/tailwind.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -19,7 +18,9 @@ import UploadJob from "./Components/Projet/UploadJob";
 import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
-
+import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
+import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
+import Video from "./Components/Collaboration/video";
 
 
 const router = createBrowserRouter([
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         name: "Freelancercollab",
-        path: "/freelancercollab/:projectId",
+        path: "/freelancercollab/:projectId/:userId",
         element: <FreelancerCollab/>,
       },
     
@@ -124,12 +125,26 @@ const router = createBrowserRouter([
         path:"/alan",
         element: <Alan/>
       },
+      {
+        path:"/meeting",
+        element: <VideoRoom/>
+      },
+      {
+        path:"/suggestion/:subject/:meetingId",
+        element: <SuggestionComponent/>
+      },
+      {
+        path:"/video",
+        element: <Video/>
+      },
+ 
+      
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+
     <RouterProvider router={router} />
-  </React.StrictMode>
+    
 );
