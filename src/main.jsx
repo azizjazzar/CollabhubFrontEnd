@@ -130,7 +130,7 @@ const router = createBrowserRouter([
         element: <VideoRoom/>
       },
       {
-        path:"/suggestion/:subject",
+        path:"/suggestion/:subject/:meetingId",
         element: <SuggestionComponent/>
       },
       {

@@ -2,27 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+
+
+
+
+
 export function SuggestionComponent() {
-  const { subject } = useParams();
-  const [chatbotResponse, setChatbotResponse] = useState('');
+  const { subject ,meetingId } = useParams();
+  const [suggestion, setsuggestion] = useState('');
+
+
+  
+
+
+
 
   useEffect(() => {
-    const handleChatRequest = async () => {
+    const fetchSuggestion = async () => {
       try {
-        const response = await axios.post('https://colabhub.onrender.com/api/auth/geminiAnalyseWithText', {
-          text: "give me suggestion to ask on a meet about "+subject +"do not give me titles ", 
-        });
-
-        setChatbotResponse(response.data.answer);
+        const response = await axios.get(`https://colabhub.onrender.com/meet/display-suggestion/${meetingId}`);
+        const data = response.data;
+  
+        if (!data.suggestion) {
+          const geminiResponse = await axios.post('https://colabhub.onrender.com/api/auth/geminiAnalyseWithText', {
+            text: "give me suggestion to ask on a meet about " + subject + "do not give me titles ",
+          });
+          setsuggestion(geminiResponse.data.answer);
+        } else {
+          setsuggestion(data.suggestion);
+        }
       } catch (error) {
-        console.error('Error making API request from React:', error);
+        console.error('Error fetching or processing suggestion:', error.message);
       }
     };
+  
+    fetchSuggestion();
+  }, [meetingId, subject]);
 
-    handleChatRequest();
-  }, []); // Empty dependency array to run once when the component mounts
-
-  let phrases = chatbotResponse.split('*');
+  const handleAddSuggestion = async () => {
+    try {
+      await axios.put(`https://colabhub.onrender.com/meet/fill-suggestion/${meetingId}`, { suggestion });
+      console.log('Suggestion filled successfully');
+    } catch (error) {
+      console.error('Error filling suggestion:', error);
+    }
+  };
+  let phrases = suggestion.split('*');
 
 // Supprimez les éléments vides résultant de la séparation
 phrases = phrases.filter(phrase => phrase.trim() !== "");
@@ -30,9 +55,10 @@ phrases = phrases.filter(phrase => phrase.trim() !== "");
 
 
   return (
+    
     <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-gray-200 p-20 mt-10">
       <div className="container mx-auto">
-        
+     
       <section>
             <div className="py-16">
                 <div className="mx-auto px-6 max-w-6xl text-gray-500">
@@ -57,8 +83,13 @@ phrases = phrases.filter(phrase => phrase.trim() !== "");
                         ))}
                     </div>
                 </div>
+
             </div>
         </section>
+   
+    
+      <button onClick={handleAddSuggestion}>Save Suggestion</button>
+
 
       </div>
     </div>

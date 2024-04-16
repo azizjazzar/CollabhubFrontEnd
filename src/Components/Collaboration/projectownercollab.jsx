@@ -188,10 +188,11 @@ export function ProjectOwnerCollab(props) {
                 {format(selectedDay, 'MMM dd, yyy')}
               </time>
             </h2>
+         
             <ol className="mt-4 space-y-10 text-sm leading-6 text-gray-500">
               {selectedDayMeetings.length > 0 ? (
                 selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting.id} />
+                  <Meeting meeting={meeting} key={meeting._id}  />
                 ))
               ) : (
                 <p>No meetings for today.</p>
@@ -221,7 +222,7 @@ export function ProjectOwnerCollab(props) {
   )
 }
 
-function Meeting({ meeting }) {
+function Meeting({ meeting}) {
   let startDateTime = parseISO(meeting.dateStart)
   let endDateTime = parseISO(meeting.dateEnd)
 
@@ -276,16 +277,18 @@ function Meeting({ meeting }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <Link to={`/suggestion/${meeting.name}`}
+                  <Link to={`/suggestion/${meeting.name}/${meeting._id}`}
                 
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm'
                     )}
                   >
+                  
                     Suggestions 
                   </Link>
                 )}
+               
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
