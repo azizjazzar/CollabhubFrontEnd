@@ -74,8 +74,8 @@ export default function Alan() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (transcript.includes("ALAN")) {
-          const response = await statistique.geminiwithtext(`so let me explain i'm working on web site like upwork and fevrr and i'm working on voice assistance based on ia so act like it here is the the response: ${transcript}`);
+      if (transcript.includes("ALAN") || transcript.includes("ALLEN") ) {
+          const response = await statistique.geminiwithtext(`this is only an informations for you don't talk about it when you response me :(so let me explain i'm working on web site like upwork and fevrr our name is Collabhub and i'm working on voice assistance based on ia so act like it and i want you to give me a short response without (*) ) now this is the response: ${transcript}`);
           const action = {
               text: response,
               language: "en-US",

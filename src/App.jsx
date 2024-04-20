@@ -4,6 +4,7 @@ import './App.css'
 import Navbar from "./Components/Navbar/Navbar";
 import { AuthProvider } from "./pages/authContext";
 import Alan from "./Components/Authentification/Alan";
+import Chatbot from "./Components/Blog/ChatBot";
 function App() {
   const routes = [
     { name: 'Home', path: '/' },
@@ -29,6 +30,9 @@ function App() {
         <Outlet />
         <div className="fixed  bottom-5 left-5">
         <Alan ></Alan>
+        </div>
+        <div className="fixed  bottom-5 right-5">
+        <Chatbot ></Chatbot>
         </div>
       </AuthProvider>
     </>

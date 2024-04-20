@@ -1,3 +1,5 @@
+// Chatbot.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Chatbot.css';
@@ -6,7 +8,7 @@ const Chatbot = () => {
     const [userMessage, setUserMessage] = useState('');
     const [botResponses, setBotResponses] = useState([]);
     const [currentOptions, setCurrentOptions] = useState([]);
-    const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
     const [suggestedQuestions, setSuggestedQuestions] = useState([]);
     const allQuestions = [
         "Qu'est-ce que CollabHub ?",
@@ -20,7 +22,7 @@ const Chatbot = () => {
         "Je veux trouver un projet",
         "Je veux écrire un blog",
         "Je veux faire une consultation",
-        "je veux faire une collaboration"
+        "Je veux faire une collaboration"
     ];
 
     useEffect(() => {
@@ -91,7 +93,7 @@ const Chatbot = () => {
     };
 
     const toggleChatbot = () => {
-        setIsChatbotOpen(prevState => !prevState);
+        setIsChatbotOpen(true);
     };
 
     const handleKeyDown = (e) => {
@@ -116,59 +118,62 @@ const Chatbot = () => {
     };
 
     return (
-        <>
+        <div className="chatbot-container">
+            {!isChatbotOpen && (
+                <button className="chatbot-button" onClick={toggleChatbot}>
+                    <img src="/img/chatbot.png" alt="Bot Icon" />
+                </button>
+            )}
             {isChatbotOpen && (
-                <div className="chatbot-container">
-                    <div className="chat-window">
-                        <div className="chat-header">
-                            <div className="avatar">
-                                <img src="/img/chatbot.png" alt="Bot Avatar" />
-                            </div>
-                            <div className="bot-info">
-                                <div className="bot-name">Collabhub Bot</div>
-                                <div className="bot-status">Online</div>
-                            </div>
-                            <button className="close-button" onClick={toggleChatbot}>X</button>
+                <div className="chat-window">
+                    <div className="chat-header">
+                        <div className="avatar">
+                            <img src="/img/chatbot.png" alt="Bot Avatar" />
                         </div>
-                        <div className="chat-messages">
-                            {botResponses.slice().reverse().map((message, index) => (
-                                <div key={index} className={message.type === 'user' ? 'user-message' : 'bot-message'}>
-                                    {message.type === 'bot' && (
-                                        <div className="avatar">
-                                            <img src="/img/chatbot.png" alt="Bot Avatar" />
-                                        </div>
-                                    )}
-                                    <div className="message-content">
-                                        {message.type === 'user' ? 'You: ' : ''}
-                                        {message.content}
+                        <div className="bot-info">
+                            <div className="bot-name">Collabhub Bot</div>
+                            <div className="bot-status">Online</div>
+                        </div>
+                        <button className="close-button" onClick={() => setIsChatbotOpen(false)}>X</button>
+                    </div>
+                    <div className="chat-messages">
+                        {botResponses.slice().reverse().map((message, index) => (
+                            <div key={index} className={message.type === 'user' ? 'user-message' : 'bot-message'}>
+                                {message.type === 'bot' && (
+                                    <div className="avatar">
+                                        <img src="/img/chatbot.png" alt="Bot Avatar" />
                                     </div>
+                                )}
+                                <div className="message-content">
+                                    {message.type === 'user' ? 'You: ' : ''}
+                                    {message.content}
                                 </div>
-                            ))}
-                        </div>
-                        <div className="chat-input">
-                            <input
-                                type="text"
-                                value={userMessage}
-                                onChange={(e) => {
-                                    setUserMessage(e.target.value);
-                                    searchQuestions(e.target.value);
-                                }}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Type your message..."
-                            />
-                            <button onClick={sendMessage}>Send</button>
-                        </div>
-                        <div className="suggested-questions">
-                            {suggestedQuestions.map((question, index) => (
-                                <div key={index} className="suggested-question" onClick={() => setUserMessage(question)}>
-                                    <span className="suggested-question-text">{question}</span>
-                                </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="chat-input">
+                        <input
+                            type="text"
+                            value={userMessage}
+                            onChange={(e) => {
+                                setUserMessage(e.target.value);
+                                searchQuestions(e.target.value);
+                            }}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Type your message..."
+                        />
+                        <button onClick={sendMessage}>Send</button>
+                    </div>
+                    <div className="suggested-questions">
+                        {suggestedQuestions.map((question, index) => (
+                            <div key={index} className="suggested-question" onClick={() => setUserMessage(question)}>
+                                <span className="suggested-question-text">{question}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

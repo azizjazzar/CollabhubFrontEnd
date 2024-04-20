@@ -165,8 +165,11 @@ function CardsConsultations({ handleSearchInput }) {
             {consultation.prixParMinute}$ per 30 minute
             &nbsp;&nbsp;&nbsp;&nbsp;
             <div className="flex items-center text-orange-500">
-              <i className="fas fa-star text-orange-400"></i> 4.9 ({consultation.reviews} reviews)
-            </div>
+    <i className="fas fa-star text-orange-400"></i>
+    {" "}
+    {users[consultation.freelancerId] && (users[consultation.freelancerId].rate || 0)}
+</div>
+
           </div>
           <div className="mt-4 flex items-center">
             <p className="text-blue-500 border-b border-gray-200 text-sm pr-2">Meeting topics:</p>

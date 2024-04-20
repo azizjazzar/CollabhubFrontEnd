@@ -10,6 +10,8 @@ import AuthenticationService from "@/Services/Authentification/AuthentificationS
 
 const BuyProject = () => {
   const [services, setServices] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [servicesPerPage] = useState(8); // Nombre de services par page
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { authData } = useAuth();
   const authenticationService = new AuthenticationService();
@@ -69,10 +71,17 @@ const BuyProject = () => {
     }
   };
 
+  // Pagination
+  const indexOfLastService = currentPage * servicesPerPage;
+  const indexOfFirstService = indexOfLastService - servicesPerPage;
+  const currentServices = services.slice(indexOfFirstService, indexOfLastService);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       
-      <section className="px-4 pt-20 pb-48 mt-10 p-20">
+      <section className="px-4 pt-20 pb-48 mt-10 p-10">
         <div className="container mx-auto">
           <section className="relative bg-white py-16">
             <ServiceTitle />
@@ -101,7 +110,7 @@ const BuyProject = () => {
             </div>
           </section>
           <div className="mt-18 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
-            {services.map(service => (
+            {currentServices.map(service => (
               <div key={service._id}>
                 <Link to={`/serviceDetails/${service._id}`}>
                   <ServiceCardWrapper service={service} authenticationService={authenticationService} />
@@ -109,14 +118,17 @@ const BuyProject = () => {
               </div>
             ))}
           </div>
+          <Pagination
+            servicesPerPage={servicesPerPage}
+            totalServices={services.length}
+            paginate={paginate}
+          />
         </div>
       </section>
       {isFormOpen && <AddServiceForm open={isFormOpen} onClose={closeForm} />}
     </>
   );
 };
-
-export default BuyProject;
 
 const ServiceCardWrapper = ({ service, authenticationService }) => {
   const [userData, setUserData] = useState(null);
@@ -144,3 +156,27 @@ const ServiceCardWrapper = ({ service, authenticationService }) => {
     />
   );
 };
+
+const Pagination = ({ servicesPerPage, totalServices, paginate }) => {
+  const pageNumbers = [];
+
+  for (let i = 1; i <= Math.ceil(totalServices / servicesPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <nav className="mt-4">
+      <ul className="pagination">
+        {pageNumbers.map(number => (
+          <li key={number} className="page-item">
+            <button onClick={() => paginate(number)} className="page-link">
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
+
+export default BuyProject;

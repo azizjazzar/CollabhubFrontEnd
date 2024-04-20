@@ -8,13 +8,14 @@ import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
 import { FaVolumeUp } from 'react-icons/fa';
 import Statistiques from '@/Services/statistiques/Statistiques';
+import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
 const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
 const urlParams = new URLSearchParams(window.location.search);
 const TOKEN = decodeURIComponent(urlParams.get('token'));
 const CHANNEL = decodeURIComponent(urlParams.get('channel'))
 const StatistiquesService = new Statistiques();
-
+const authuser= new AuthenticationService();
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
@@ -75,28 +76,45 @@ export const VideoRoom = () => {
         };
 
         const stopSpeechToText = async () => {
-            localStorage.setItem('transcribedText', transcribedText);
-            const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
-            if (isClientAEmpty) {
-                const result = await StatistiquesService.gemini(transcribedText);
-                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'),transcribedText, 'in Progress ...', TOKEN, CHANNEL,result[0],"in Progress ...","in progress");
-            } else {
-                const meetupdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
-                if (localStorage.getItem('clientA') != meetupdate.clientAID) 
-                {
-                    meetupdate.clientB= transcribedText
-                    const result2 = await StatistiquesService.gemini(transcribedText);
-
-                    meetupdate.responseClientB=result2[0]
-                    const gem=await StatistiquesService.geminiwithtext(`i will give you a speech about two client i want you to analyse the conversion and tell me if the conversetion went well or no you will return me only one word 'confirmed' 'declined' client a: ${localStorage.getItem('clientA')} client b: ${localStorage.getItem('clientB')}   `)
-                    meetupdate.status=gem
-                    await StatistiquesService.updateStatistiqueById(meetupdate._id,meetupdate)
+            try {
+                localStorage.setItem('transcribedText', transcribedText);
+                const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
+        
+                if (isClientAEmpty) {
+                    const result = await StatistiquesService.gemini(transcribedText);
+                    await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result[0], "in Progress ...", "in progress");
+                } else {
+                    const meetingUpdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
+                    const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                    const userB = await authuser.getUserById(localStorage.getItem('clientB'));
+                    if (localStorage.getItem('clientA') != meetingUpdate.clientAID) {
+                        meetingUpdate.clientB = transcribedText;
+                        const result2 = await StatistiquesService.gemini(transcribedText);
+                        meetingUpdate.responseClientB = result2[0];
+                        const gem = await StatistiquesService.geminiwithtext(`I will provide you with a speech about two clients. I want you to analyze the conversation and tell me if the conversation went well or not. You will return me only one word: 'confirmed', 'declined', or 'inappropriate'. (If everything is okay, return 'confirmed'; if there are insults, return 'inappropriate'; if the conversation is not correct, return 'declined'). Client A: ${userA.clientA} Client B: ${userB.clientB}`);
+                        meetingUpdate.status = gem;
+                        await StatistiquesService.updateStatistiqueById(meetingUpdate._id, meetingUpdate);
+                        if (gem === "declined") {
+                            const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                            if (userA.rate >= 0)
+                            await authuser.updatebyid(userA._id, { rate: userA.rate - 0.75 });
+                        } else if (gem === "inappropriate") {
+                            await authuser.updatebyid(userA._id, { rate: 0 });
+                        }
+                        else if (gem === "confirmed") {
+                            await authuser.updatebyid(userA._id, { rate: userA.rate+0.50 });
+                        }
+                    }
                 }
-              }
-            if (recognition) {
-                recognition.stop();
+        
+                if (recognition) {
+                    recognition.stop();
+                }
+            } catch (error) {
+                console.error('Error in stopSpeechToText:', error);
             }
         };
+        
         
 
         if (isAudioOn) {

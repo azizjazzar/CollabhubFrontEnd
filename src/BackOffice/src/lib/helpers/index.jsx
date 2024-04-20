@@ -1,8 +1,8 @@
 export function getOrderStatus(status) {
 	switch (status) {
-		case 'PLACED':
+		case 'INAPROPRIATE':
 			return (
-				<span className="capitalize py-1 px-2 rounded-md text-xs text-sky-600 bg-sky-100">
+				<span className="capitalize py-1 px-2 rounded-md text-xs text-white bg-purple-500 ">
 					{status.replaceAll('_', ' ').toLowerCase()}
 				</span>
 			)

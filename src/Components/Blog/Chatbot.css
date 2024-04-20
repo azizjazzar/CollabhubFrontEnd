@@ -132,3 +132,42 @@ button:hover {
 .suggested-question-icon {
     margin-right: 8px;
 }
+
+.close-button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.chatbot-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff8c00;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.chatbot-button img {
+    width: 60px; /* Ajustez la taille de l'image selon vos besoins */
+    height: 60px; /* Ajustez la taille de l'image selon vos besoins */
+    object-fit: cover;
+    border-radius: 50%; /* Assurez-vous que l'image est également arrondie */
+}
+
+
+.chatbot-button:hover {
+    background-color: #ff6f00;
+}

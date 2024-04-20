@@ -48,6 +48,18 @@ class AuthenticationService {
           throw error;
         }
       }
+      async updatebyid(id, updateData) {
+        try {
+          const updatedUser = await axios.put(`https://colabhub.onrender.com/api/auth/updatebyid/${id}`, updateData);
+          if (!updatedUser.data.success) {
+            throw new Error(updatedUser.data.message || 'User not found by id');
+          }
+          return updatedUser.data.success;
+        } catch (error) {
+          console.error('Error updating user:', error);
+          throw error;
+        }
+      }
 
    async login(userLogin, setAuthUserData, setError, navigate) {
     try {
