@@ -10,7 +10,6 @@ import AuthenticationService from "@/Services/Authentification/AuthentificationS
 export function SignUp() {
   
   const { authData, setAuthUserData } = useAuth();
-  const clientId ="932936140177-958d507k9pfvmkd53o46and5uv941q8l.apps.googleusercontent.com"
   const [user, setUser] = useState({ FirstName: '', LastName: '', Password: '', Email: '', ConfirmPassword: '', Country: '', Checkbox: true, Type: "Utilisateur" });
   const [selectedCountry, setSelectedCountry] = useState('');
   const [errors, setErrors] = useState({});

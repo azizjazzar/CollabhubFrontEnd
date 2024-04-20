@@ -6,20 +6,26 @@ import { useAuth } from '@/pages/authContext';
 import SendIcon from "@material-ui/icons/Send";
 import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
-import ChatRoom from './chatRoom';
+import { FaVolumeUp } from 'react-icons/fa';
+import Statistiques from '@/Services/statistiques/Statistiques';
+import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
-const APP_ID = "67a5503c4b134d80baec1767141115d3";
-const TOKEN = "007eJxTYDj+deK9ll8nNDk8LASyqqZ77D4VsW713rL8TcvPixW8i6tQYDAzTzQ1NTBONkkyNDZJsTBISkxNNjQ3Mzc0MTQ0NE0xLtzJk9YQyMjw0SqXiZEBAkF8Nobk/JycxCQGBgD3ryDt";
-const CHANNEL = "collab";
-
+const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
+const urlParams = new URLSearchParams(window.location.search);
+const TOKEN = decodeURIComponent(urlParams.get('token'));
+const CHANNEL = decodeURIComponent(urlParams.get('channel'))
+const StatistiquesService = new Statistiques();
+const authuser= new AuthenticationService();
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
     autoSubscribe: false
 });
+const MAX_CHARACTERS_DISPLAYED = 200;
 
 export const VideoRoom = () => {
     const [users, setUsers] = useState([]);
+    const [showMore, setShowMore] = useState(false);
     const [localTracks, setLocalTracks] = useState([]);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
@@ -29,28 +35,123 @@ export const VideoRoom = () => {
     const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
+    const [transcribedText, setTranscribedText] = useState('');
+    const [listeningText, setListeningText] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedTime = `${hours}:${formattedMinutes}`;
+
+
+    useEffect(() => {
+        let recognition = null;
+        
+        const startSpeechToText = () => {
+            recognition = new window.webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+        
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript;
+                const currentTime = new Date().toLocaleTimeString();
+                const transcriptionWithDateTime = `${currentTime}: ${transcript}`;
+                setListeningText(prevText => prevText + transcript);
+                setTranscribedText(prevTranscription => prevTranscription + transcriptionWithDateTime + ' '); 
+            };
+        
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                recognition.stop();
+            };
+        
+            recognition.onend = () => {
+                if (isListening && isAudioOn) { 
+                    recognition.start(); 
+                }
+            };
+        
+            recognition.start();
+        };
+
+        const stopSpeechToText = async () => {
+            try {
+                localStorage.setItem('transcribedText', transcribedText);
+                const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
+        
+                if (isClientAEmpty) {
+                    const result = await StatistiquesService.gemini(transcribedText);
+                    await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result[0], "in Progress ...", "in progress");
+                } else {
+                    const meetingUpdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
+                    const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                    const userB = await authuser.getUserById(localStorage.getItem('clientB'));
+                    if (localStorage.getItem('clientA') != meetingUpdate.clientAID) {
+                        meetingUpdate.clientB = transcribedText;
+                        const result2 = await StatistiquesService.gemini(transcribedText);
+                        meetingUpdate.responseClientB = result2[0];
+                        const gem = await StatistiquesService.geminiwithtext(`I will provide you with a speech about two clients. I want you to analyze the conversation and tell me if the conversation went well or not. You will return me only one word: 'confirmed', 'declined', or 'inappropriate'. (If everything is okay, return 'confirmed'; if there are insults, return 'inappropriate'; if the conversation is not correct, return 'declined'). Client A: ${userA.clientA} Client B: ${userB.clientB}`);
+                        meetingUpdate.status = gem;
+                        await StatistiquesService.updateStatistiqueById(meetingUpdate._id, meetingUpdate);
+                        if (gem === "declined") {
+                            const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                            if (userA.rate >= 0)
+                            await authuser.updatebyid(userA._id, { rate: userA.rate - 0.75 });
+                        } else if (gem === "inappropriate") {
+                            await authuser.updatebyid(userA._id, { rate: 0 });
+                        }
+                        else if (gem === "confirmed") {
+                            await authuser.updatebyid(userA._id, { rate: userA.rate+0.50 });
+                        }
+                    }
+                }
+        
+                if (recognition) {
+                    recognition.stop();
+                }
+            } catch (error) {
+                console.error('Error in stopSpeechToText:', error);
+            }
+        };
+        
+        
+
+        if (isAudioOn) {
+            startSpeechToText();
+        } else {
+            stopSpeechToText();
+        }
+
+        return () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        };
+    }, [isAudioOn]);
+
+
 
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
-
-        if (newState) {
-            window.location.reload();
-        } else {
-            localTracks[1].setEnabled(false).catch(error => console.error('Error disabling the video track:', error));
-        }
     };
 
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
-        localTracks[0].setEnabled(newState);
-
+    
+        if (localTracks[0]) {
+            localTracks[0].setEnabled(newState);
+        }
+    
         const micIcon = document.getElementById('mic-icon');
         if (micIcon) {
             micIcon.style.color = newState ? '#ff8316' : '#ccc';
         }
     };
+    
 
     const toggleScreenSharing = async () => {
         if (!isScreenSharing) {
@@ -84,14 +185,22 @@ export const VideoRoom = () => {
         }
     };
 
+    const handleShowMore = () => {
+        setShowMore(true);
+    };
+
+    const handleShowLess = () => {
+        setShowMore(false);
+    };
+
+
     useEffect(() => {
         const joinChannel = async () => {
             if (authData.user) {
-                // Essayer de récupérer l'UID du localStorage ou générer un nouvel UID.
                 let uid = localStorage.getItem('userUID');
                 if (!uid) {
                     uid = authData.user.id || Math.floor(Math.random() * 100000).toString();
-                    localStorage.setItem('userUID', uid); // Stocker l'UID pour les futures connexions.
+                    localStorage.setItem('userUID', uid); 
                 }
 
                 const handleUserJoined = async (user, mediaType) => {
@@ -113,11 +222,9 @@ export const VideoRoom = () => {
                     );
                 };
 
-                // Attacher les gestionnaires d'événements.
                 client.on('user-published', handleUserJoined);
                 client.on('user-left', handleUserLeft);
 
-                // Rejoindre le canal avec l'UID spécifié.
                 await client.join(APP_ID, CHANNEL, TOKEN, uid)
                     .then(uid =>
                         Promise.all([
@@ -125,7 +232,7 @@ export const VideoRoom = () => {
                             uid,
                         ])
                     )
-                    .then(([tracks, uid]) => {
+                    .then(([tracks, UID]) => {
                         const [audioTrack, videoTrack] = tracks;
                         setLocalTracks(tracks);
                         setUsers(previousUsers => [
@@ -139,7 +246,6 @@ export const VideoRoom = () => {
                         client.publish(tracks);
                     });
 
-                // Nettoyage à la désinscription.
                 return () => {
                     localTracks.forEach(track => {
                         track.stop();
@@ -157,29 +263,29 @@ export const VideoRoom = () => {
     }, [authData.user]);
 
     return (
-        <div className="pt-24 fixed">
+        <div className="fixed w-full h-full overflow-hidden">
             {authData.user ? (
                 <>
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 700px)',
-                            gridGap: '10px',
+                            gridTemplateColumns: 'repeat(2, 600px)',
+                            gridGap: '8px',
                             justifyItems: 'center',
                         }}
                     >
                         {users.map(user => (
-                            isCameraOn ? (
-                                <VideoPlayer key={user.uid} user={user} />
-                            ) : (
-                                <div className='mt-36'>
-                                    <img
-                                        src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-                                        alt={`User ${user.uid}`}
-                                        style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
-                                    />
-                                </div>
-                            )
+                                isCameraOn ? (
+                                    <VideoPlayer key={user.uid} user={user} />
+                                ) : (
+                                    <div className='mt-52 mr-20'>
+                                        <img
+                                            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+                                            alt={`User ${user.uid}`}
+                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  
+                                        />
+                                    </div>
+                                )
                         ))}
                     </div>
 
@@ -233,41 +339,62 @@ export const VideoRoom = () => {
             ) : (
                 <div>Veuillez vous connecter pour activer la vidéo</div>
             )}
-            {isChatOpen && (
-                <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "auto" }}>
-                    <h5 style={{ color: "#3498DB", position: "absolute", top: "17%", left: "10%", transform: "translate(-50%, -50%)", fontSize: "1.2em", fontWeight: "bold" }}>
-                        Chat
-                    </h5>
+{isChatOpen && (
+    <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "hidden" }}>
+        <div className="chat-image" style={{ marginTop: "7rem" }}>
+            <img src={iconTwo} alt="Chat Image" style={{ width: "70%", height: "auto" }} />
+        </div>
+        <div className="transcribed-text" style={{ marginTop: "1rem", marginBottom: "0.1rem", maxHeight: "300px", overflowY: "auto" }}>
+            {transcribedText && (
+                <div className="flex items-start gap-2.5">
+                   <img
+    className="w-8 h-8 rounded-full"
+    src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+    alt={`User ${authData.user?.name}`}
+/>
 
-                    <div className="chat-image" style={{ marginTop: "170px" }}>
-                        <img src={iconTwo} alt="Chat Image" style={{ width: "100%", height: "auto" }} />
-                    </div>
+                    <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
+                        <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{authData.user?.nom} {authData.user?.prenom}</span>
 
-                    <div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
-                        <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                            {chatMessages.map((msg, index) => (
-                                <li key={index}>{msg.message}</li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
-                        <input
-                            type="text"
-                            placeholder="Type your message here..."
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
-                        />
-                        <IconButton
-                            onClick={sendMessage}
-                            style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
-                        >
-                            <SendIcon />
-                        </IconButton>
+                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{formattedTime}</span>
+                        </div>
+                        <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">{transcribedText}</p>
                     </div>
                 </div>
             )}
         </div>
+        <div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
+            <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+                {chatMessages.map((msg, index) => (
+                    <li key={index}>{msg.message}</li>
+                ))}
+            </ul>
+        </div>
+        <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
+            <input
+                type="text"
+                placeholder="Type your message here..."
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
+            />
+            <IconButton
+                onClick={sendMessage}
+                style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
+            >
+                <SendIcon />
+            </IconButton>
+        </div>
+    </div>
+)}
+
+
+
+
+        </div>
     );
 };
+
+
+

@@ -48,6 +48,18 @@ class AuthenticationService {
           throw error;
         }
       }
+      async updatebyid(id, updateData) {
+        try {
+          const updatedUser = await axios.put(`https://colabhub.onrender.com/api/auth/updatebyid/${id}`, updateData);
+          if (!updatedUser.data.success) {
+            throw new Error(updatedUser.data.message || 'User not found by id');
+          }
+          return updatedUser.data.success;
+        } catch (error) {
+          console.error('Error updating user:', error);
+          throw error;
+        }
+      }
 
    async login(userLogin, setAuthUserData, setError, navigate) {
     try {
@@ -134,6 +146,42 @@ class AuthenticationService {
         console.error('Error during API request:', error);
       }
   }
+  async addstats(client, clientId) {
+    try {
+      const apiUrl = 'https://colabhub.onrender.com/stats/';
+      const response = await axios.get(apiUrl);
+  
+      const apiPayload = {};
+  
+      if (response.data.clientA == null) {
+        apiPayload.clientA = client;
+        apiPayload.clientAID = clientId;
+      } else {
+        apiPayload.clientB = client;
+        apiPayload.clientBID = clientId;
+      }
+  
+      try {
+        const addApiUrl = 'https://colabhub.onrender.com/stats/add';
+        const addResponse = await axios.post(addApiUrl, apiPayload);
+        console.log('API response:', addResponse.data);
+      } catch (addError) {
+        console.error('Error during API add request:', addError);
+      }
+    } catch (error) {
+      console.error('Error during API request:', error);
+    }
+  }
+  async getCountUsers() {
+    try {
+      const response = await axios.get(`https://colabhub.onrender.com/api/auth/userCount`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      return [];
+    }
+  }
+  
  
 }
 

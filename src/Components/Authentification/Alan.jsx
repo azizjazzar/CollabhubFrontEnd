@@ -4,7 +4,7 @@ import SpeechToText from "./speech-to-text/SpeechToText ";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../pages/authContext';
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
-
+import Statistiques from "@/Services/statistiques/Statistiques";
 export default function Alan() {
   const [transcript, setTranscript] = useState("");
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Alan() {
   const [areyousure,setAreyouSure]=useState(false);
   const [areyousure2,setAreyouSure2]=useState(false);
   const authenticationService = new AuthenticationService();
-
+  const statistique = new Statistiques();
   const [sendEmail, setEmail] = useState("");
     
   const logout = () => {
@@ -73,8 +73,20 @@ export default function Alan() {
   }, [location.pathname]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      if (transcript.includes("ALAN") || transcript.includes("ALLEN") ) {
+          const response = await statistique.geminiwithtext(`this is only an informations for you don't talk about it when you response me :(so let me explain i'm working on web site like upwork and fevrr our name is Collabhub and i'm working on voice assistance based on ia so act like it and i want you to give me a short response without (*) ) now this is the response: ${transcript}`);
+          const action = {
+              text: response,
+              language: "en-US",
+              voiceIndex: actor
+          };
+          setSpeech(action);
+      }
+  };
     if (!speech) {
       let action = null;
+      fetchData();
 
       if (transcript.includes("GO TO SERVICE")) {
         action = {
@@ -132,7 +144,8 @@ export default function Alan() {
         setTimeout(() => {
           navigate("/sign-up");
         }, 2500);
-      } 
+      }
+    
       else if (transcript.includes("LOG OUT") || transcript.includes("LOOK OUT.")) {
         if (authData.user)
         {
@@ -172,6 +185,7 @@ export default function Alan() {
       if (action) {
         setSpeech(action);
       }
+
     }
   }, [transcript, speech, navigate]);
 
@@ -269,6 +283,7 @@ export default function Alan() {
         setAreyouSure2(false);
       }
     }
+  
   }, [transcript, newsPromptSpoken, speech, logoutSure, emailSure, areyousure, areyousure2]);
   
   

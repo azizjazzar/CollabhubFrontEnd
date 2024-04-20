@@ -7,9 +7,6 @@ import logoSrc from "/public/img/logoshih.png";
 import { useAuth } from "@/pages/authContext";
 import { AnimatePresence, motion } from "framer-motion"; 
 import { Button } from "flowbite-react";
-import Alan from "../Authentification/Alan";
-import axios from 'axios';
-
 
 function Navbar({ brandName, routes, action }) {
   
@@ -40,16 +37,10 @@ function Navbar({ brandName, routes, action }) {
     setShowProfileDropdown(!showProfileDropdown);
   };
 
-  const handleTabClick = (name) => {
-    if (selectedTab === name) {
-      setSelectedTab(null);
-    } else {
-      setSelectedTab(name);
-    }
-  };
+
 
   const navList = (
-    <ul className="mb-4 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="flex flex-col gap-2 text-inherit justify-center lg:flex-row lg:items-center lg:gap-6">
       {routes.map(({ name, path, icon, href, target }) => (
         (authData.user && (name === "sign in" || name === "sign up")) ? null : (
           <Typography
@@ -89,11 +80,7 @@ function Navbar({ brandName, routes, action }) {
           
         )
       ))}
-                     {/* <div className="fixed bottom-10 left-10">
-        <Alan /> */}
-      {/* </div> */}
-
-      {/* Utilisation du composant ProfileMenu */}
+                    
       
       {authData.user && (
           <div className="profile relative ml-24" onClick={toggleProfileDropdown}>
@@ -135,7 +122,7 @@ function Navbar({ brandName, routes, action }) {
   );
 
   return (
-    <div className="w-full fixed z-50 bg-white top-0">
+    <div className="w-full  fixed z-50 bg-white top-0 flex items-center pl-[200px]">
       <MTNavbar color="transparent">
         <div className="mx-auto flex items-center justify-between text-black">
           <Link to="/">
@@ -147,7 +134,9 @@ function Navbar({ brandName, routes, action }) {
               />
             </div>
           </Link>
-          <div className={`lg:block ${openNav ? 'hidden' : ''}`}>{navList}</div>
+          <div className="flex-grow lg:flex lg:items-center lg:justify-center pl-[200px]"> 
+            {navList}
+          </div>
           <div className="hidden gap-2 lg:flex">
             {React.cloneElement(action, {
               className: "hidden lg:inline-block",
@@ -169,7 +158,9 @@ function Navbar({ brandName, routes, action }) {
         </div>
       </MTNavbar>
       <hr />
+
     </div>
+    
   );
 }
 
