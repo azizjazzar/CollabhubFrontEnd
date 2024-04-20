@@ -18,7 +18,7 @@ import {
 import nft1 from '/img/details.jpg';
 import nft2 from '/img/details2.jpg';
 
-export function FormulaireTask({ open, onClose }) {
+export function FormulaireTask({ open, onClose , projectid}) {
   const [name, setname] = useState('');
   const [description, setDescription] = useState('');
 
@@ -29,11 +29,10 @@ export function FormulaireTask({ open, onClose }) {
   const { authData, setAuthUserData } = useAuth();
   const [nameError, setnameError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
-
-
   const [dateStartError, setdateStartError] = useState('');
   const [dateEndError, setdateEndError] = useState('');
-
+  const [userEmailInput, setuserEmailInput] = useState("");
+  const [freelancer, setfreelancer] = useState("");
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prevImage) => prevImage === nft1 ? nft2 : nft1);
@@ -42,29 +41,89 @@ export function FormulaireTask({ open, onClose }) {
     return () => clearInterval(interval);
   }, []);
 
+{/* fatch list des utlisteurs par son email */}
+  const fetchData = async(value) => {
+
+    try {
+      const response = await fetch("https://colabhub.onrender.com/api/auth/users");
+      const json = await response.json();
+    
+      const results = json.filter((user) => {
+        return (
+          value &&
+          user &&
+          user.email &&
+          user.email.toLowerCase().includes(value)
+        );
+      });
+    
+      setfreelancer(results);
+    } catch (error) {
+      console.error("Erreur de requête Fetch :", error);
+    }
+    
+  };
+
+
+  const handleChange = (value) => {
+
+    setuserEmailInput(value);
+    fetchData(value);
+
+    
+  };
+ const SearchResultsList = ({ results }) => {
+    return (
+      <div className="results-list">
+        {results.map((result, id) => {
+          return <SearchResult result={result} key={id} />;
+        })}
+      </div>
+    );
+  };
+const SearchResult = ({ result }) => {
+    return (
+      <div
+        className="search-result"
+        onClick={(e) =>{setfreelancer(result), setuserEmailInput(result)}}
+      >
+        
+       { result.nom}
+        
+      </div>
+    );
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const freelancerId = userEmailInput._id;
+    const projectId = projectid;
+  
     if (validate()) {
       try {
         const formData = {
-          _id,
           name,
           description,
           dateStart: dateStart,
           dateEnd: dateEnd,
-          projectId:authData.user._id,
-          
+          freelancerId: freelancerId,
+          projectId: projectId,
         };
-        await axios.post('https://colabhub.onrender.com/tasks', formData);
-        alert('Consultation created successfully');
+  
+        console.log('Sending request with data:', formData);
+  
+        const response = await axios.post('https://colabhub.onrender.com/tasks', formData);
+  
+        console.log('Server response:', response.data);
+  
+        alert('Task created successfully');
         onClose();
       } catch (error) {
-        console.error('Error creating consultation:', error);
-        alert('Failed to create consultation. Please try again.');
+        console.error('Error creating task:', error);
+        alert('Failed to create task. Please try again.');
       }
     }
   };
+  
 
   const validate = () => {
     let isValid = true;
@@ -92,7 +151,7 @@ export function FormulaireTask({ open, onClose }) {
     
 
     if (dateStart >= dateEnd) {
-      setdateStartError('Availability start must be before availability end');
+      setdateStartError('tasky start must be before tasky end');
       isValid = false;
     } else {
       setdateStartError('');
@@ -115,7 +174,7 @@ export function FormulaireTask({ open, onClose }) {
         <img src={currentImage} alt='/' style={{ width: '50%', height: '100%', objectFit: 'cover', borderTopLeftRadius: '8px', borderBottomLeftRadius: '8px', marginTop: '100px', marginBottom: 'auto' ,marginLeft: '10px' }} />
         <div className='flex flex-col p-4 w-1/2'>
           <Card color="transparent" shadow={false}>
-            <Typography variant="h4" color="orange">
+            <Typography variant="h4" color="bleu">
               New task
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
@@ -161,6 +220,31 @@ export function FormulaireTask({ open, onClose }) {
                   }}
                 />
                 {descriptionError && <Typography color="red">{descriptionError}</Typography>}
+    
+                {/* collaborateurs  */}
+
+                <Typography variant="h6" color="blue-gray" className="-mb-3">
+                  Collaborator Email 
+                </Typography>
+                <Input
+                  size="lg"
+                  value ={!userEmailInput ? null :   userEmailInput.email}
+                   placeholder='Email'
+            
+                  onChange={(e) => handleChange(e.target.value)}
+                  className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                  labelProps={{
+                    className: "before:content-none after:content-none",
+                  }}
+                />
+               
+                {freelancer.length > 0 && (
+                  <div className="App">
+                      {<SearchResultsList results={freelancer} />}
+                   </div>
+                )}
+                {nameError && <Typography color="red">{nameError}</Typography>}
+
 
                 
                 {/* Task Start */}
@@ -174,12 +258,12 @@ export function FormulaireTask({ open, onClose }) {
                     if (date) {
                       setdateStartError('');
                       if (dateEnd && date >= dateEnd) {
-                        setdateEndError('Availability end must be after availability start');
+                        setdateEndError('tasky end must be after tasky start');
                       } else {
                         setdateEndError('');
                       }
                     } else {
-                      setdateStartError('Please select availability start date');
+                      setdateStartError('Please select tasky start date');
                     }
                   }}
                   showTimeSelect
@@ -191,9 +275,9 @@ export function FormulaireTask({ open, onClose }) {
                 {/* Message d'erreur pour l'heure de début */}
                 {dateStartError && <Typography color="red">{dateStartError}</Typography>}
                 
-                {/* Availability End */}
+                {/* task End */}
                 <Typography variant="h6" color="blue-gray" className="-mb-3">
-                  Availability End
+                Task End
                 </Typography>
                 <DatePicker
                   selected={dateEnd}
@@ -202,12 +286,12 @@ export function FormulaireTask({ open, onClose }) {
                     if (date) {
                       setdateEndError('');
                       if (dateStart && date <= dateStart) {
-                        setdateStartError('Availability start must be before availability end');
+                        setdateStartError('task start must be before tasky end');
                       } else {
                         setdateStartError('');
                       }
                     } else {
-                      setdateEndError('Please select availability end date');
+                      setdateEndError('Please select tasky end date');
                     }
                   }}
                   showTimeSelect
@@ -220,26 +304,9 @@ export function FormulaireTask({ open, onClose }) {
                 {dateEndError && <Typography color="red">{dateEndError}</Typography>}
                 
               </div>
-              <Checkbox
-                label={
-                  <Typography
-                    variant="small"
-                    color="gray"
-                    className="flex items-center font-normal"
-                  >
-                    I agree the
-                    <a
-                      href="#"
-                      className="font-medium transition-colors hover:text-gray-900"
-                    >
-                      &nbsp;Terms and Conditions
-                    </a>
-                  </Typography>
-                }
-                containerProps={{ className: "-ml-2.5" }}
-              />
-              <Button className="mt-6" fullWidth color="orange" type="submit">
-                Add Consultation
+
+              <Button className="mt-6" fullWidth color="bleu" type="submit">
+                Add Task
               </Button>
             </form>
           </Card>

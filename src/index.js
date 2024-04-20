@@ -11,5 +11,8 @@ export * from "@/widgets/layout/TitleConsultations";
 export * from "@/widgets/layout/SideBarConsultations";
 export * from "@/widgets/layout/formulaireConsultation";
 export * from "@/widgets/layout/formulaireTask";
+export * from "@/widgets/layout/formulaireMeet";
+export * from "@/widgets/layout/SuggestionComponent";
+
 
 

@@ -3,14 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { Footer } from '../..';
 import { useParams } from 'react-router-dom';
 import ProjectOwnerCollab from './projectownercollab';
+import FormulaireTask from "@/widgets/layout/formulaireTask";
 
 
+export function FreelancerCollab() {
 
-export function FreelancerCollab(props) {
 
-
-  const { projectId} = useParams();
+  const { projectId ,userId } = useParams();
   const [Tasks, setTasks] = useState([]);
+  const [Freelancers, setFreelancers] = useState([]);
 
   useEffect(() => {
     fetch(`https://colabhub.onrender.com/tasks/project/${projectId}`)
@@ -18,6 +19,14 @@ export function FreelancerCollab(props) {
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching tasks by project  details:", error));
   }, [projectId]);
+
+  useEffect(() => {
+    fetch(`https://colabhub.onrender.com/jobs/getFreelancersByJob/${projectId}`)
+      .then(response => response.json())
+      .then(data => setFreelancers(data))
+      .catch(error => console.error("Error fetching tasks by project  details:", error));
+  }, [projectId]);
+
 
 
 
@@ -61,143 +70,21 @@ export function FreelancerCollab(props) {
 
    
 
-          <section className="relative bg-white py-16">
-                            
-                                <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 lg:max-w-screen-xl py-12">
-             
-                          <div className="grid lg:grid-cols-3 lg:gap-4 mt-4 lg:mt-8">
-
-                              <div className="lg:flex lg:items-center lg:justify-between border p-4 rounded mt-4 lg:mt-0">
-                                  <div className="flex-1 min-w-0 mt-5 lg:mt-0">
-                                      <a href="#">
-                                          <div className="flex">
-                                              <div>
-                                                  <div className="flex lg:mt-0 lg:ml-0">
-                                                      <span className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-gray-400 mt-1">
-                                                          <img className="rounded-full" src="https://loremflickr.com/g/320/240/girl"/>
-                                                      </span>
-                                                  </div>
-
-                                              </div>
-
-                                              <div className="ml-4">
-                                                  <h2 className="text-xl font-semibold text-gray-500">
-                                                      Cory Zue
-                                                  </h2>
-                                                  <div className="text-gray-400 text-sm">
-                                                      Building an internet empire, one side-project at a time
-                                                  </div>
-                                                  <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap">
-                                                      <div className="mt-2 flex items-center leading-5 text-gray-400 sm:mr-6 text-sm">
-                                                          <svg className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" fill="currentColor"
-                                                              viewBox="0 0 20 20">
-                                                              <path fill-rule="evenodd"
-                                                                  d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
-                                                                  clip-rule="evenodd"></path>
-                                                              <path
-                                                                  d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z">
-                                                              </path>
-                                                          </svg>
-                                                          7
-                                                          projects
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </a>
-                                  </div>
-                              </div>
-
-                              <div className="lg:flex lg:items-center lg:justify-between border p-4 rounded mt-4 lg:mt-0">
-                                  <div className="flex-1 min-w-0 mt-5 lg:mt-0">
-                                      <a href="#">
-                                          <div className="flex">
-                                              <div>
-                                                  <div className="flex lg:mt-0 lg:ml-0">
-                                                      <span className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-gray-400 mt-1">
-                                                          <img className="rounded-full" src="https://loremflickr.com/g/320/240/boy"/>
-                                                      </span>
-                                                  </div>
-
-                                              </div>
-
-                                              <div className="ml-4">
-                                                  <h2 className="text-xl font-semibold text-gray-500">
-                                                      Pat Walls
-                                                  </h2>
-                                                  <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap">
-                                                      <div className="mt-2 flex items-center leading-5 text-gray-400 sm:mr-6 text-sm">
-                                                          <svg className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" fill="currentColor"
-                                                              viewBox="0 0 20 20">
-                                                              <path fill-rule="evenodd"
-                                                                  d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
-                                                                  clip-rule="evenodd"></path>
-                                                              <path
-                                                                  d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z">
-                                                              </path>
-                                                          </svg>
-                                                          11
-                                                          projects
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </a>
-                                  </div>
-                              </div>
-
-                              <div className="lg:flex lg:items-center lg:justify-between border p-4 rounded mt-4 lg:mt-0">
-                                  <div className="flex-1 min-w-0 mt-5 lg:mt-0">
-                                      <a href="#">
-                                          <div className="flex">
-                                              <div>
-                                                  <div className="flex lg:mt-0 lg:ml-0">
-                                                      <span className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-gray-400 mt-1">
-                                                          <img className="rounded-full" src="https://loremflickr.com/g/320/240/boy"/>
-                                                      </span>
-                                                  </div>
-
-                                              </div>
-
-                                              <div className="ml-4">
-                                                  <h2 className="text-xl font-semibold text-gray-500">
-                                                      Sharath Kuruganty
-                                                  </h2>
-                                                  <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap">
-                                                      <div className="mt-2 flex items-center leading-5 text-gray-400 sm:mr-6 text-sm">
-                                                          <svg className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" fill="currentColor"
-                                                              viewBox="0 0 20 20">
-                                                              <path fill-rule="evenodd"
-                                                                  d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
-                                                                  clip-rule="evenodd">
-                                                              </path>
-                                                              <path
-                                                                  d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z">
-                                                              </path>
-                                                          </svg>
-                                                          8
-                                                          projects
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </a>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-
-         </section>
-              
 
 
 
                 <section className="relative bg-white py-16">
       
              
-        <ProjectOwnerCollab tasks={Tasks}/>
+              <ProjectOwnerCollab userId={userId} freelancers={Freelancers}/>
                 </section>
 
+                <section className="relative bg-white py-16">
+                       <Collabolaratuers freelancers={Freelancers} tasks ={Tasks} projectId={projectId}/>   
+                       
+                    
+
+                </section>
                 
 
                 <section className="relative bg-white py-20">
@@ -208,7 +95,8 @@ export function FreelancerCollab(props) {
 
                 
 
-
+       
+              
 
 
            
@@ -230,6 +118,302 @@ export function FreelancerCollab(props) {
    
   );
 }
+
+function Collabolaratuers(props){
+
+  const [openModalTask, setOpenModalTask] = useState(false);
+  const  projectId=props.projectId;
+  // Fonction pour ouvrir le modal
+  const handleClick = () => {
+    Selected === 1 ? setOpenModalTask(true) : null ; 
+   
+ };
+
+    const [Selected, setSelected] = useState(0);
+    const freelancers = props.freelancers;
+    const tasks = props.tasks;
+  
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 2;
+    // Calculer le nombre total de pages
+    const calculTotalPages=() => { return Selected === 0 ? Math.ceil(freelancers.length / itemsPerPage) : Selected === 1  ? Math.ceil(tasks.length / itemsPerPage) : 0};
+   const totalPages = calculTotalPages();
+    console.log(totalPages);
+    // Calculer l'index de début et de fin pour les éléments à afficher sur la page actuelle
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const num = navigationNumbers(totalPages); 
+  
+    const handlePageChange = (newPage) => {
+      setCurrentPage(newPage);
+    };
+
+    function HandleSelected(index){
+        return index === 0   ?  setSelected(0)  : index === 1  ?  setSelected(1) : setSelected(2)
+  
+        
+    }
+    function NavSelection(index )
+    {
+        return Selected === index ? "border-purple-500 text-purple-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+     
+    }
+    return (
+       
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="px-4 sm:px-0">
+       
+         
+         
+   
+            <div className="hidden sm:block">
+              <div className="border-b border-gray-200">
+              <nav className="mt-2 -mb-px flex justify-center space-x-8" aria-label="Tabs">
+                  
+                    <button onClick={() => HandleSelected(0)} className={NavSelection(0)} >
+                    Collborators
+                      
+                        <span className= {  Selected === 0 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state:on="Current" x-state:off="Default" x-state-description="Current: &quot;bg-purple-100 text-purple-600&quot;, Default: &quot;bg-gray-100 text-gray-900&quot;">{freelancers.length}</span>
+                      </button>
+                  
+                    <button  onClick={() => HandleSelected(1)} className={NavSelection(1)}>
+                      Tasks
+                      
+                        <span className= {  Selected === 1 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
+                      </button>
+                  
+                     <button onClick={() => HandleSelected(2)} className={NavSelection(2)}>
+                      Chat
+                      
+                        <span  className= {  Selected === 2 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } 
+                       x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">6</span>
+                      </button>
+                  
+                  
+                </nav>
+
+              </div>
+            </div>
+          </div>
+
+
+
+          <ul role="list" className="mt-5 divide-y divide-gray-200 border-t border-gray-200 sm:mt-0 sm:border-t-0">
+              {Selected === 0 ? <Freelancers freelancers={freelancers} start={startIndex} end={endIndex}/> : Selected === 1 ? <Todo tasks={tasks} start={startIndex} end={endIndex}/>  : console.log("page non disponible")}
+
+          </ul>
+          <div className="flex items-center justify-center mb-5 mt-5">
+          <button onClick={()=>{handleClick()}}
+                className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                type="button"
+              >
+                Add
+        </button>
+        <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
+        <FormulaireTask open={openModalTask} onClose={() => setOpenModalTask(false)} projectid={projectId}/>
+      </div>
+        
+          </div>
+        
+
+          {/** menu de la navigation  */}
+
+
+          <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0" aria-label="Pagination">
+            <div className="-mt-px flex w-0 flex-1">
+              <button  onClick={()=> {(1 < currentPage  ? handlePageChange(currentPage -1) : null )}} className="inline-flex items-center border-t-2 border-transparent pt-4 pr-1 text-sm font-medium text-gray-500 hover:border-gray-200 hover:text-gray-700">
+                <svg className="mr-3 h-5 w-5 text-gray-400" x-description="Heroicon name: mini/arrow-long-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M18 10a.75.75 0 01-.75.75H4.66l2.1 1.95a.75.75 0 11-1.02 1.1l-3.5-3.25a.75.75 0 010-1.1l3.5-3.25a.75.75 0 111.02 1.1l-2.1 1.95h12.59A.75.75 0 0118 10z" clip-rule="evenodd"></path>
+  </svg>
+                Previous
+              </button>
+            </div>
+         
+            {num.map((number, index) => (
+                      <div className="hidden md:-mt-px md:flex" key={index}>
+                                      <button  onClick={()=>handlePageChange(number)} className={currentPage === number  ? "inline-flex items-center border-t-2 border-purple-500 px-4 pt-4 text-sm font-medium text-purple-600" : "inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-200 hover:text-gray-700" } aria-current="page">
+                                        {number}
+                                      </button>
+                                     
+                       </div>
+    ))}
+       
+       
+            <div className="-mt-px flex w-0 flex-1 justify-end">
+              <button onClick={()=> {(totalPages > currentPage  ? handlePageChange(currentPage +1) : null )}} className="inline-flex items-center border-t-2 border-transparent pt-4 pl-1 text-sm font-medium text-gray-500 hover:border-gray-200 hover:text-gray-700">
+                Next
+                <svg className="ml-3 h-5 w-5 text-gray-400" x-description="Heroicon name: mini/arrow-long-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z" clip-rule="evenodd"></path>
+  </svg>
+              </button>
+            </div>
+         
+
+
+           
+          </nav>
+        
+        
+
+        </div>
+      
+    )
+}
+
+function Todo(props){
+  const tasks = props.tasks;
+  const start=props.start;
+  const end=props.end;
+
+   // Extraire les éléments à afficher sur la page actuelle
+   const currentItems = tasks.slice(start, end);
+    return (
+ 
+      currentItems.map((task , index )=>(
+
+      <li key={index}>
+      <div className="px-4 py-5 sm:px-6">
+        <div className="flex items-center justify-between">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">{task.name}</h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500">{task.description}</p>
+        </div>
+        <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">Status: <span className="text-green-600">Active</span></p>
+            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
+        </div>
+      </div>
+      </li>
+
+    )  ) )
+  }
+
+  function Freelancers(props)
+  {
+    const freelancers = Array.isArray(props.freelancers) ? props.freelancers : [];
+    const start = props.start;
+    const end = props.end;
+    const [users, setUsers] = useState({});
+    const getFreelancer = (id) => { 
+      authenticationService.getUserById(id)
+              .then(userData => {
+                setUsers(prevUsers => ({
+                  ...prevUsers,
+                  [id]: userData
+                }));
+              })
+              .catch(console.error);
+
+    }
+   
+
+      // Extraire les éléments à afficher sur la page actuelle
+      const currentItems =freelancers.slice(start,end);
+    return (
+      currentItems.map((freelancer, index)=>(
+        <li key={index}>
+        <a href="#" className="group block">
+          <div className="flex items-center py-5 px-4 sm:py-6 sm:px-0">
+            <div className="flex min-w-0 flex-1 items-center">
+              <div className="flex-shrink-0">
+                <img className="h-12 w-12 rounded-full group-hover:opacity-75" src={`https://colabhub.onrender.com/images/${freelancer?.picture}`} alt=""/>
+              </div>
+             
+
+              <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+                <div>
+                  <p className="truncate text-sm font-medium text-purple-600">{freelancer.name}</p>
+                  <p className="mt-2 flex items-center text-sm text-gray-500">
+                    <svg className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" x-description="Heroicon name: mini/envelope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"></path>
+<path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"></path>
+</svg>
+                    <span className="truncate">{freelancer.email}</span>
+                  </p>
+                </div>
+                <div className="hidden md:block">
+                  <div>
+                    <p className="text-sm text-gray-900">
+                      Type
+              
+                      <p className="text-sm text-gray-500">{freelancer.type}</p> 
+                    </p>
+                    <p className="mt-2 flex items-center text-sm text-gray-500">
+                      <svg className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400" x-description="Heroicon name: mini/check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"></path>
+</svg>
+                      {freelancer.telephone}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <svg className="h-5 w-5 text-gray-400 group-hover:text-gray-700" x-description="Heroicon name: mini/chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"></path>
+</svg>
+            </div>
+          </div>
+        </a>
+      </li>  
+
+      ))
+    
+
+    )  
+
+  }
+
+
+
+
+{/* 
+
+function Pagination({ items, itemsPerPage }) {
+
+
+  // Fonction pour changer de page
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  return (
+    <div>
+      
+      <ul>
+        {currentItems.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+
+   
+      <div>
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+          Précédent
+        </button>
+        <span> Page {currentPage} sur {totalPages} </span>
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+          Suivant
+        </button>
+      </div>
+    </div>
+  );
+};
+
+*/}
+
+
+const navigationNumbers = (totalPages) =>{
+  let navigationElements = []; 
+  for(let i=1 ; i<=totalPages ; i ++ ){
+    navigationElements.push(i);
+
+
+  }
+  
+  return navigationElements;
+}
+
 
 export default FreelancerCollab;
 

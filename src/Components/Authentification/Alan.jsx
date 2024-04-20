@@ -190,6 +190,8 @@ export default function Alan() {
   }, [transcript, speech, navigate]);
 
   useEffect(() => {
+
+
     if (speech && transcript.includes("STOP")) {
       setSpeech(null);
       setScroll(0);
@@ -205,7 +207,9 @@ export default function Alan() {
           voiceIndex: actor
         });
         setNewsPromptSpoken(false);
+
       } else if (logoutSure && transcript.includes("YES")) {
+
         setSpeech({
           text: "You've been disconnected, see you later",
           language: "en-US",

@@ -19,6 +19,7 @@ const authuser= new AuthenticationService();
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
+    autoSubscribe: false
 });
 const MAX_CHARACTERS_DISPLAYED = 200;
 

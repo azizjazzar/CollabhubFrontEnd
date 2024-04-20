@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
+import { ThemeProvider } from "@material-tailwind/react";
 import "../public/css/tailwind.css";
 import {
   Collaboration,
@@ -30,6 +31,10 @@ import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
 import Dashboard from "./BackOffice/src/pages/Dashboard";
 import Layout from "./BackOffice/src/components/shared/Layout";
 import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
+import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
+import Video from "./Components/Collaboration/video";
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -122,37 +127,21 @@ const router = createBrowserRouter([
         element: <ProjectDetail />
       },
       {
-        path: "/addproject",
-        element: <UploadJob />
+        path:"/suggestion/:subject/:meetingId",
+        element: <SuggestionComponent/>
       },
       {
-        path: "/chat",
-        element: <ChatApplication />
+        path:"/video",
+        element: <Video/>
       },
-      {
-        path: "/welcome",
-        element: <WelcomePage />
-      },
-      {
-        path: "/alan",
-        element: <Alan />
-      },
-      {
-        path: "/meeting",
-        element: <VideoRoom />
-      },
-      {
-        path: "/chatgpt",
-        element: <ChatGPT />
-      },
-      {
-        path: "/payment-success",
-        element: <PaymentSuccess />
-      }
-    ]
-  }
+ 
+      
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+
+    <RouterProvider router={router} />
+    
 );
