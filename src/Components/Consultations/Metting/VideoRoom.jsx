@@ -3,8 +3,8 @@ import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa';
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '@/pages/authContext';
-import SendIcon from "@material-ui/icons/Send";
-import { IconButton } from '@material-ui/core';
+import SendIcon from "@mui/icons-material/Send";  // Updated import path
+import { IconButton } from '@mui/material';  // Updated import path
 import iconTwo from '/img/iconmessage.jpg';
 import { FaVolumeUp } from 'react-icons/fa';
 import Statistiques from '@/Services/statistiques/Statistiques';
@@ -19,7 +19,6 @@ const authuser= new AuthenticationService();
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
-    autoSubscribe: false
 });
 const MAX_CHARACTERS_DISPLAYED = 200;
 
