@@ -2,161 +2,180 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProjectCards from './ProjectCards';
 import Pagination from './Pagination';
-import { Footer } from '@/index'; // Ensure the Footer is correctly imported
-import { useNavigate, 	} from 'react-router-dom';
+import { Footer } from '@/index';
+import { useNavigate } from 'react-router-dom';
+import { Transition } from '@headlessui/react'; 
 
 const ProjectPage = () => {
- let navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 12; // Adjusted pageSize for demonstration
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [uniqueTechnologies, setUniqueTechnologies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortCriteria, setSortCriteria] = useState('');
-  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+    let navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 12;
+    const [projects, setProjects] = useState([]);
+    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [uniqueTechnologies, setUniqueTechnologies] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('All'); 
+    const [cvData, setCvData] = useState({ skills: [], experienceLevel: '' });
+    const [uploadError, setUploadError] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    async function fetchProjects() {
-      const url = `http://localhost:3000/jobs/get`;
-      try {
-        const response = await axios.get(url);
-        const fetchedProjects = response.data;
-        setProjects(fetchedProjects);
+        const [isLoading, setIsLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
-        const technologiesSet = new Set();
-        fetchedProjects.forEach(project => project.technologies.forEach(tech => technologiesSet.add(tech)));
-        setUniqueTechnologies(['All', ...Array.from(technologiesSet)]);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    }
-    fetchProjects();
-  }, []);
 
-  useEffect(() => {
-    let filtered = projects;
+    useEffect(() => {
+        fetchProjects();
+    }, []); // Dependency array is empty to run only on mount
 
-    if (selectedCategory && selectedCategory !== 'All') {
-      filtered = filtered.filter(project => project.technologies.includes(selectedCategory));
-    }
+    useEffect(() => {
+        filterProjects(); // This will re-run filtering whenever cvData or selectedCategory changes
+    }, [cvData, selectedCategory]); // Added selectedCategory to dependency array
 
-    if (searchQuery) {
-      filtered = filtered.filter(project => project.title.toLowerCase().includes(searchQuery.toLowerCase()));
-    }
+    const fetchProjects = async () => {
+        const url = `http://localhost:3000/jobs/get`;
+        try {
+            const { data } = await axios.get(url);
+            setProjects(data);
+            setFilteredProjects(data); // Initialize filteredProjects
+                        setIsLoading(false); // Stop loading once data is fetched
+            const technologiesSet = new Set(data.map(project => project.technologies).flat());
+            setUniqueTechnologies(['All', ...technologiesSet]);
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+        }
+    };
 
-    filtered = sortProjects(filtered, sortCriteria);
-    setFilteredProjects(filtered);
+     const filterProjects = () => {
+        let filtered = projects.filter(project =>
+            (selectedCategory === 'All' || project.technologies.includes(selectedCategory)) &&
+            (cvData.skills.length === 0 || project.technologies.some(tech => cvData.skills.includes(tech.toLowerCase()))) &&
+            (!cvData.experienceLevel || project.expertiseLevel.toLowerCase() === cvData.experienceLevel)
+        );
+        if (filtered.length === 0) { // Fallback to all projects if no matches found
+            filtered = projects;
+        }
+        setFilteredProjects(filtered);
+    };
 
-    const totalFilteredPages = Math.ceil(filtered.length / pageSize);
-    if (currentPage > totalFilteredPages) {
-      setCurrentPage(totalFilteredPages || 1);
-    }
+     const handleCVUpload = async (event) => {
+        setIsLoading(true);
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
 
-    window.scrollTo(0, 0);
-  }, [selectedCategory, projects, searchQuery, sortCriteria, currentPage, pageSize]);
+        try {
+            const { data } = await axios.post('http://localhost:5000/upload_cv', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            const skills = data.skills ? data.skills.split(',').map(skill => skill.trim().toLowerCase()) : [];
+            const experienceLevel = data.experience_level ? data.experience_level.toLowerCase() : '';
+            setCvData({ skills, experienceLevel });
+            setShowModal(true);
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 9000); // Success message disappears after 3 seconds
+            setIsLoading(false);
+            filterProjects(); // Re-run filter to apply new CV data
+        } catch (error) {
+            console.error('Error uploading CV:', error);
+            setUploadError('Failed to upload CV. Please try again.');
+            setIsLoading(false);
+        }
+    };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
+      const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        filterProjects(); // Re-run filter with the new category
+        setCurrentPage(1);
+    };
+
+        const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo(0, 0);
+    };
+
+        const redirectToUpload = () => {
+        navigate('/addproject');
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo(0, 0);
-  };
+   const startIndex = (currentPage - 1) * pageSize;
+    const currentProjects = filteredProjects.slice(startIndex, startIndex + pageSize);
 
-  const sortProjects = (projects, criteria) => {
-    switch (criteria) {
-      case 'budget':
-        return [...projects].sort((b, a) => a.budget - b.budget);
-      case 'postedDate':
-        return [...projects].sort((b, a) => new Date(a.posted) - new Date(b.posted));
-      case 'expertiseLevel':
-        const expertiseOrder = ['Junior', 'Intermediate', 'Senior', 'Expert'];
-        return [...projects].sort((b, a) => expertiseOrder.indexOf(a.expertiseLevel) - expertiseOrder.indexOf(b.expertiseLevel));
-      default:
-        return projects;
-    }
-  };
 
-  const toggleAddProjectModal = () => setShowAddProjectModal(!showAddProjectModal);
-
-  // Calculate current projects for the page
-  const startIndex = (currentPage - 1) * pageSize;
-  const currentProjects = filteredProjects.slice(startIndex, startIndex + pageSize);
-    const redirectToUpload = () => {
-    navigate('/addproject');
-  };
-  return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-grow">
-        <div className="grid grid-cols-4 gap-8 p-20">
-          <div className="col-span-1 p-6 bg-white rounded-lg shadow-sm">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Technologies</h2>
-              <ul className="space-y-2">
-                {uniqueTechnologies.map((technology, index) => (
-                  <li
-                    key={index}
-                    className={`cursor-pointer text-gray-700 hover:text-blue-500 ${selectedCategory === technology ? 'text-blue-600 font-semibold bg-blue-100' : 'font-normal'} rounded-md p-2 hover:bg-blue-50`}
-                    onClick={() => handleCategoryChange(technology)}
-                  >
-                    {technology}
-                  </li>
-                ))}
-              </ul>
+    return (
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+                <div className="grid grid-cols-4 gap-8 p-20">
+                    <div className="col-span-1 p-6 bg-white rounded-lg shadow-sm">
+                        <div>
+                            <h2 className="text-xl font-semibold mb-4">Technologies</h2>
+                            <ul className="space-y-2">
+                                {uniqueTechnologies.map((technology, index) => (
+                                    <li key={index}
+                                        className={`cursor-pointer text-gray-700 hover:text-blue-500 ${selectedCategory === technology ? 'text-blue-600 font-semibold bg-blue-100' : 'font-normal'} rounded-md p-2 hover:bg-blue-50`}
+                                        onClick={() => handleCategoryChange(technology)}
+                                    >
+                                        {technology}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                  <div className="col-span-3 p-10 bg-white rounded-lg shadow-md relative">
+                        <button
+                            className="absolute right-0 top-0 mr-4 mt-11 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
+                            onClick={redirectToUpload}
+                        >
+                            Add Project
+                        </button>
+                        
+                         <button onClick={() => document.getElementById('cv-upload').click()} className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+                            Upload CV
+                        </button>
+                   <input id="cv-upload" type="file" onChange={handleCVUpload} accept=".pdf" style={{ display: 'none' }} />
+                        {isLoading && <div className="text-center">Loading...</div>}
+                        {showSuccess && <div className="text-green-500 text-center">CV processed successfully!</div>}
+                        {uploadError && <div className="text-red-500 text-center">{uploadError}</div>}
+                        {showModal && <CVDataModal data={cvData} onClose={() => setShowModal(false)} />}
+                              <Transition
+                            show={true}
+                            enter="transition-opacity duration-500"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="transition-opacity duration-500"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <ProjectCards projects={filteredProjects} />
+                        </Transition>
+                        {filteredProjects.length > 0 && (
+                            <Pagination
+                                onPageChange={handlePageChange}
+                                currentPage={currentPage}
+                                projects={filteredProjects}
+                                pageSize={pageSize}
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
-          </div>
-          <div className="col-span-3 p-10 bg-white rounded-lg shadow-md relative">
-            <button
-              className="absolute right-0 top-0 mr-4 mt-11 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
-              onClick={redirectToUpload}
-            >
-              Add Project
-            </button>
-            <div className="sort-dropdown mb-4">
-              <label htmlFor="sortCriteria">Sort By: </label>
-              <select
-                id="sortCriteria"
-                value={sortCriteria}
-                onChange={(e) => setSortCriteria(e.target.value)}
-                className="border p-2 rounded"
-              >
-                <option value="">All</option>
-                <option value="budget">Budget</option>
-                <option value="postedDate">Posted Date</option>
-                <option value="expertiseLevel">Expertise Level</option>
-              </select>
-            </div>
-            {/* Search Bar */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                placeholder="Search projects..."
-                className="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {/* Search icon SVG here */}
-            </div>
-              <ProjectCards projects={filteredProjects.slice((currentPage-1)*pageSize, currentPage*pageSize)} currentPage={currentPage} pageSize={pageSize} />
-        {filteredProjects.length > 0 && (
-          <Pagination
-            onPageChange={handlePageChange}
-            currentPage={currentPage}
-            projects={filteredProjects}
-            pageSize={pageSize}
-          />
-        )}
-          
-          </div>
+            <Footer />
         </div>
-      </div>
-      <Footer />
-    </div>
-  );
+    );
 };
+
+    const CVDataModal = ({ data, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center" onClick={onClose}>
+            <div className="bg-white p-5 rounded-lg max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto text-center z-50" onClick={e => e.stopPropagation()}>
+                <h2 className="text-xl font-semibold mb-4">Extracted CV Information</h2>
+                <p><strong>Skills:</strong> {data.skills.length > 0 ? data.skills.join(', ') : 'No skills extracted'}</p>
+                <p><strong>Experience Level:</strong> {data.experienceLevel || 'No experience level extracted'}</p>
+                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={onClose}>
+                    Close
+                </button>
+            </div>
+        </div>
+    );
+} ;
+
 
 export default ProjectPage;

@@ -5,6 +5,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import { AuthProvider } from "./pages/authContext";
 import Alan from "./Components/Authentification/Alan";
 import Chatbot from "./Components/Blog/ChatBot";
+import ChatProvider from "./Context/ChatProvider";
 function App() {
   const routes = [
     { name: 'Home', path: '/' },
@@ -24,6 +25,7 @@ function App() {
   
   return (
     <>
+      <ChatProvider>
       <AuthProvider>
         {!isDashboard && <Navbar routes={routes} />}
      
@@ -34,7 +36,8 @@ function App() {
         <div className="fixed  bottom-5 right-5">
         <Chatbot ></Chatbot>
         </div>
-      </AuthProvider>
+        </AuthProvider>
+        </ChatProvider>
     </>
   );
 }

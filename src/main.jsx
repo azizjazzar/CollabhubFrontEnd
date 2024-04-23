@@ -21,7 +21,6 @@ import BlogDetails from "./Components/Blog/BlogDetails";
 import ProjectPage from "./Components/Projet/ProjectPage";
 import ProjectDetail from "./Components/Projet/ProjectDetail";
 import UploadJob from "./Components/Projet/UploadJob";
-import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
 import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
@@ -33,6 +32,7 @@ import Layout from "./BackOffice/src/components/shared/Layout";
 import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
 import Video from "./Components/Collaboration/video";
+import ChatPages from "./Components/Chat/Chat/ChatPages";
 
 
 const router = createBrowserRouter([
@@ -133,6 +133,16 @@ const router = createBrowserRouter([
       {
         path:"/video",
         element: <Video/>
+      },
+
+         {
+        path:"/messagerie",
+        element: <ChatPages/>
+      },
+         
+      {
+        path:"/addproject",
+        element: <UploadJob/>
       },
  
       

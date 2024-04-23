@@ -48,7 +48,7 @@ const ProjectDetail = () => {
     };
 
     const redirectToChat = () => {
-        navigate("/chat");
+        navigate("/messagerie");
     };
 
     return (
