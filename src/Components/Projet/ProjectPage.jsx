@@ -47,8 +47,7 @@ const ProjectPage = () => {
      const filterProjects = () => {
         let filtered = projects.filter(project =>
             (selectedCategory === 'All' || project.technologies.includes(selectedCategory)) &&
-            (cvData.skills.length === 0 || project.technologies.some(tech => cvData.skills.includes(tech.toLowerCase()))) &&
-            (!cvData.experienceLevel || project.expertiseLevel.toLowerCase() === cvData.experienceLevel)
+            (cvData.skills.length === 0 || project.technologies.some(tech => cvData.skills.includes(tech.toLowerCase()))) 
         );
         if (filtered.length === 0) { // Fallback to all projects if no matches found
             filtered = projects;
@@ -68,7 +67,9 @@ const ProjectPage = () => {
             });
             const skills = data.skills ? data.skills.split(',').map(skill => skill.trim().toLowerCase()) : [];
             const experienceLevel = data.experience_level ? data.experience_level.toLowerCase() : '';
-            setCvData({ skills, experienceLevel });
+            const jobTitle = data.job_title ? data.job_title.toLowerCase() : '';
+
+            setCvData({ skills, experienceLevel,jobTitle });
             setShowModal(true);
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 9000); // Success message disappears after 3 seconds
@@ -169,6 +170,8 @@ const ProjectPage = () => {
                 <h2 className="text-xl font-semibold mb-4">Extracted CV Information</h2>
                 <p><strong>Skills:</strong> {data.skills.length > 0 ? data.skills.join(', ') : 'No skills extracted'}</p>
                 <p><strong>Experience Level:</strong> {data.experienceLevel || 'No experience level extracted'}</p>
+                <p><strong>Job title</strong> {data.jobTitle || 'No job title extracted'}</p>
+
                 <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={onClose}>
                     Close
                 </button>
