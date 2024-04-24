@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
-
-
-
-
+import jsPDF from 'jspdf';
 
 export function SuggestionComponent() {
-  const { subject ,meetingId } = useParams();
-  const [suggestion, setsuggestion] = useState('');
-
-
-  
-
-
-
+  const { subject, meetingId } = useParams();
+  const [suggestion, setSuggestion] = useState('');
 
   useEffect(() => {
     const fetchSuggestion = async () => {
@@ -27,9 +17,9 @@ export function SuggestionComponent() {
           const geminiResponse = await axios.post('https://colabhub.onrender.com/api/auth/geminiAnalyseWithText', {
             text: "give me suggestion to ask on a meet about " + subject + "do not give me titles ",
           });
-          setsuggestion(geminiResponse.data.answer);
+          setSuggestion(geminiResponse.data.answer);
         } else {
-          setsuggestion(data.suggestion);
+          setSuggestion(data.suggestion);
         }
       } catch (error) {
         console.error('Error fetching or processing suggestion:', error.message);
@@ -47,51 +37,54 @@ export function SuggestionComponent() {
       console.error('Error filling suggestion:', error);
     }
   };
+
+  const handleGeneratePDF = () => {
+    const doc = new jsPDF();
+    doc.text(suggestion, 10, 10, { align: 'justify', maxWidth: 190 });
+    doc.save('meeting_suggestion.pdf');
+  };
+
+
+
   let phrases = suggestion.split('*');
-
-// Supprimez les éléments vides résultant de la séparation
-phrases = phrases.filter(phrase => phrase.trim() !== "");
-
-
+  phrases = phrases.filter(phrase => phrase.trim() !== "");
 
   return (
-    
     <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-gray-200 p-20 mt-10">
       <div className="container mx-auto">
-     
-      <section>
-            <div className="py-16">
-                <div className="mx-auto px-6 max-w-6xl text-gray-500">
-                    <div className="text-center">
-                        <h2 className="text-3xl text-gray-950 dark:text-white font-semibold">Suggestions for your meeting </h2>
-                        <p className="mt-6 text-gray-700 dark:text-gray-300">Take notes ! </p>
+        <section>
+          <div className="py-16">
+            <div className="mx-auto px-6 max-w-6xl text-gray-500">
+              <div className="text-center">
+                <h2 className="text-3xl text-gray-950 dark:text-white font-semibold">Suggestions for your meeting </h2>
+                <p className="mt-6 text-gray-700 dark:text-gray-300">Take notes ! </p>
+              </div>
+              <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {phrases.map((phrase, index) => (
+                  <div key={index} className={`relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 dark:border-red-800 dark:bg-gray-900`}>
+                    <div aria-hidden="true" className="inset-0 absolute aspect-video border rounded-full -translate-y-1/2 group-hover:-translate-y-1/4 duration-300 bg-gradient-to-b from-${phrase.color}-500 to-white dark:from-white dark:to-white blur-2xl opacity-25 dark:opacity-5 dark:group-hover:opacity-10"></div>
+                    <div className="relative">
+                      <div className="mt-6 pb-6 rounded-b-[--card-border-radius]">
+                        <p className="text-gray-700 dark:text-gray-300">{phrase}</p>
+                      </div>
                     </div>
-                    <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {phrases.map((phrase, index) => (
-                            <div key={index} className={`relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 dark:border-red-800 dark:bg-gray-900`}>
-                                <div aria-hidden="true" className="inset-0 absolute aspect-video border rounded-full -translate-y-1/2 group-hover:-translate-y-1/4 duration-300 bg-gradient-to-b from-${phrase.color}-500 to-white dark:from-white dark:to-white blur-2xl opacity-25 dark:opacity-5 dark:group-hover:opacity-10"></div>
-                                <div className="relative">
-                                  
-
-                                    <div className="mt-6 pb-6 rounded-b-[--card-border-radius]">
-                                        <p className="text-gray-700 dark:text-gray-300">{phrase}</p>
-                                    </div>
-
-                                
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
         </section>
-   
-    
-      <button onClick={handleAddSuggestion}>Save Suggestion</button>
-
-
       </div>
+      <section className="relative bg-gray-200 py-16">
+        <div className="flex justify-center items-center">
+          <button onClick={handleAddSuggestion} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full focus:outline-none focus:shadow-outline mr-2">
+            Save Suggestion
+          </button>
+          <button onClick={handleGeneratePDF} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full focus:outline-none focus:shadow-outline">
+            Generate PDF
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
