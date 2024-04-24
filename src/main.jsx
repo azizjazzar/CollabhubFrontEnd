@@ -1,17 +1,11 @@
+
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { ThemeProvider } from "@material-tailwind/react";
 import "../public/css/tailwind.css";
-import {
-  Collaboration,
-  FreelancerCollab,
-  Home,
-  Profile,
-  SignIn,
-  SignUp
-} from "./pages";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Collaboration, FreelancerCollab, Home, Profile, SignIn, SignUp } from "./pages";
 import BuyProject from "./Components/GServices/buyProject";
 import QuickConsultationPage from "./Components/Consultations/QuickConsultationPage";
 import BlogList from "./Components/Blog/BlogList";
@@ -23,13 +17,7 @@ import ProjectDetail from "./Components/Projet/ProjectDetail";
 import UploadJob from "./Components/Projet/UploadJob";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
-import { VideoRoom } from "./Components/Consultations/Metting/VideoRoom";
-import ChatGPT from "./Components/Consultations/Metting/IA/Chatgpt";
-import Gemini from "./Components/Consultations/Metting/IA/Gemini";
-import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
-import Dashboard from "./BackOffice/src/pages/Dashboard";
-import Layout from "./BackOffice/src/components/shared/Layout";
-import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
+import VideoRoomAi from "./Components/Collaboration/VideoRoomAi";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
 import Video from "./Components/Collaboration/video";
 import ChatPages from "./Components/Chat/Chat/ChatPages";
@@ -38,93 +26,108 @@ import ChatPages from "./Components/Chat/Chat/ChatPages";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    children: [
+    element:<App/>, 
+    children:[
       {
-        path: "/",
-        element: <Home />
+      path:"/",
+      element: <Home/>
       },
       {
         name: "Find Talent",
         path: "/consultation",
-        element: <Profile />
+        element: <Profile />,
+      
       },
+      {  
+      path: "/buyProject",
+      element: <BuyProject />,},
+    
       {
-        path: "/dashboard",
-        element: <Layout />,
-        children: [
-          {
-            path: "", 
-            element: <Dashboard />
-          },
-          {
-            path: "usersSatistique", 
-            element: <UsersSatistique />
-          }
-        ]
-      },
-      {
+        
         path: "/profile/:id",
-        element: <Profile />
+        element: <Profile />,
       },
       {
+        
         path: "/profile",
-        element: <Profile />
-      },
-      {
-        path: "/bard",
-        element: <Gemini />
+        element: <Profile />,
       },
       {
         name: "Collaboration",
         path: "/collaboration",
-        element: <Collaboration />
+        element: <Collaboration/>,
       },
       {
         name: "Freelancercollab",
-        path: "/freelancercollab/:projectId",
-        element: <FreelancerCollab />
+        path: "/freelancercollab/:projectId/:userId",
+        element: <FreelancerCollab/>,
       },
+    
       {
+        
         path: "/do-a-quick-consultation",
-        element: <QuickConsultationPage />
+        element: <QuickConsultationPage />,
       },
       {
         name: "Blog",
         path: "/blog",
-        element: <BlogList />
-      },
+        element: <BlogList />}, 
+    
+    
       {
         path: "/serviceDetails/:serviceId",
-        element: <ServiceDetails />
+        element: <ServiceDetails />,
+    
       },
       {
+      
         path: "/sign-in",
-        element: <SignIn />
+        element: <SignIn/>,
       },
       {
+       
         path: "/sign-up",
-        element: <SignUp />
+        element: <SignUp />,
+      },
+    
+      {
+        path: "/details-consultation/:id", // Ajoutez un paramètre d'ID à la route
+        element: <DetailsConsultation />,
+      },
+    
+      {
+        path: "/blog/:id",  // Ajoutez la route pour les détails du blog
+        element: <BlogDetails />,
+      },
+
+       {
+        path:"jobs",
+        element: <ProjectPage/>
       },
       {
-        path: "/details-consultation/:id",
-        element: <DetailsConsultation />
+        path:"/projects/:projectId",
+        element: <ProjectDetail/>
+      },
+
+      {
+        path:"/addproject",
+        element: <UploadJob/>
       },
       {
-        path: "/blog/:id",
-        element: <BlogDetails />
+        path:"/chat",
+        element: <ChatApplication/>
       },
       {
-        path: "/buyProject",
-        element: <BuyProject />
+        path:"/welcome",
+        element: <WelcomePage/>
       },
       {
-        path: "jobs",
-        element: <ProjectPage />
+        path:"/alan",
+        element: <Alan/>
       },
       {
-        path: "/projects/:projectId",
-        element: <ProjectDetail />
+        path:"/meeting",
+        element: <VideoRoomAi/>
       },
       {
         path:"/suggestion/:subject/:meetingId",
