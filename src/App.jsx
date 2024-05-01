@@ -22,6 +22,7 @@ function App() {
 
   // Vérifiez si l'emplacement actuel est '/dashboard' ou '/dashboard/usersSatistique'
   const isDashboard = location.pathname.startsWith('/dashboard');
+  const isMeeting = location.pathname.startsWith('/meeting');
   
   return (
     <>
@@ -30,9 +31,11 @@ function App() {
         {!isDashboard && <Navbar routes={routes} />}
      
         <Outlet />
-        <div className="fixed  bottom-5 left-5">
+       
+        {!isMeeting &&  <div className="fixed  bottom-5 left-5">
         <Alan ></Alan>
-        </div>
+        </div>}
+       
         <div className="fixed  bottom-5 right-5">
         <Chatbot ></Chatbot>
         </div>

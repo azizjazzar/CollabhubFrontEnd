@@ -1,49 +1,140 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPhone, FaHandPaper, FaEllipsisV } from 'react-icons/fa';
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '@/pages/authContext';
 import SendIcon from "@material-ui/icons/Send";
 import { IconButton } from '@material-ui/core';
 import iconTwo from '/img/iconmessage.jpg';
+import { FaVolumeUp } from 'react-icons/fa';
+import Statistiques from '@/Services/statistiques/Statistiques';
+import EndMeetingPage from "@/Components/Consultations/Metting/IA/EndMeetingPage";
+import { useNavigate } from 'react-router-dom';
 
+const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
+const urlParams = new URLSearchParams(window.location.search);
+const TOKEN = decodeURIComponent(urlParams.get('token'));
+const CHANNEL = decodeURIComponent(urlParams.get('channel'));
+const StatistiquesService = new Statistiques();
 
-const APP_ID = "67a5503c4b134d80baec1767141115d3";
-const TOKEN = "8dc9a5df4cb84e5ab9bd1961af2cacae007eJxTYCj9qx329bywLOtKJun4O23dxj++nZj59MzMuaeLLN4o3HipwGBmnmhqamCcbJJkaGySYmGQlJiabGhuZm5oYmhoaJpifNlTI60hkJFhxq7jzIwMjAwsQAziM4FJZjDJAiY5GZLzc3ISkzJKkxgYAOOdJas=";
-const CHANNEL = "collabhub";
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
-    autoSubscribe: false
 });
+const MAX_CHARACTERS_DISPLAYED = 200;
 
-export const VideoRoomAi = () => {
+export const VideoRoom = () => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [localTracks, setLocalTracks] = useState([]);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [handRaised, setHandRaised] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
     const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
+    const [transcribedText, setTranscribedText] = useState('');
+    const [listeningText, setListeningText] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedTime = `${hours}:${formattedMinutes}`;
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [timerInterval, setTimerInterval] = useState(null);
+
+    useEffect(() => {
+        const startTimer = () => {
+            setTimerInterval(setInterval(() => {
+                setElapsedTime(prevTime => prevTime + 1);
+            }, 1000));
+        };
+
+        startTimer();
+
+        return () => {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        };
+    }, []);
+
+    const hangUp = () => {
+        localTracks.forEach(track => {
+            track.stop();
+            track.close();
+        });
+
+        client.leave();
+        console.log("Meeting duration:", elapsedTime);
+        navigate('/end-meeting');
+    };
+
+    useEffect(() => {
+        let recognition = null;
+
+        const startSpeechToText = () => {
+            recognition = new window.webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript;
+                const currentTime = new Date().toLocaleTimeString();
+                const transcriptionWithDateTime = `${currentTime}: ${transcript}`;
+                setListeningText(prevText => prevText + transcript);
+                setTranscribedText(prevTranscription => prevTranscription + transcriptionWithDateTime + ' ');
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                recognition.stop();
+            };
+
+            recognition.onend = () => {
+                if (isListening && isAudioOn) {
+                    recognition.start();
+                }
+            };
+
+            recognition.start();
+        };
+
+        const stopSpeechToText = () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        };
+
+        if (isAudioOn) {
+            startSpeechToText();
+        } else {
+            stopSpeechToText();
+        }
+
+        return () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        };
+    }, [isAudioOn]);
 
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
-
-        if (newState) {
-            window.location.reload();
-        } else {
-            localTracks[1].setEnabled(false).catch(error => console.error('Error disabling the video track:', error));
-        }
     };
 
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
-        localTracks[0].setEnabled(newState);
+
+        if (localTracks[0]) {
+            localTracks[0].setEnabled(newState);
+        }
 
         const micIcon = document.getElementById('mic-icon');
         if (micIcon) {
@@ -72,25 +163,30 @@ export const VideoRoomAi = () => {
         }
     };
 
-    const toggleChat = () => {
-        setIsChatOpen(prevState => !prevState);
+    const toggleHandRaise = () => {
+        const newState = !handRaised;
+        setHandRaised(newState);
     };
 
-    const sendMessage = () => {
-        if (inputMessage.trim() !== '') {
-            setChatMessages(prevMessages => [...prevMessages, { message: inputMessage }]);
-            setInputMessage('');
-        }
+    const toggleMenu = () => {
+        setShowMenu(!showMenu);
+    };
+
+    const handleRecord = () => {
+        console.log("Recording functionality not implemented.");
+    };
+
+    const handleInfo = () => {
+        alert("Info: This is a video conferencing app using Agora.");
     };
 
     useEffect(() => {
         const joinChannel = async () => {
             if (authData.user) {
-                // Essayer de récupérer l'UID du localStorage ou générer un nouvel UID.
                 let uid = localStorage.getItem('userUID');
                 if (!uid) {
                     uid = authData.user.id || Math.floor(Math.random() * 100000).toString();
-                    localStorage.setItem('userUID', uid); // Stocker l'UID pour les futures connexions.
+                    localStorage.setItem('userUID', uid);
                 }
 
                 const handleUserJoined = async (user, mediaType) => {
@@ -107,24 +203,15 @@ export const VideoRoomAi = () => {
                 };
 
                 const handleUserLeft = user => {
-                    setUsers(previousUsers =>
-                        previousUsers.filter(u => u.uid !== user.uid)
-                    );
+                    setUsers(previousUsers => previousUsers.filter(u => u.uid !== user.uid));
                 };
 
-                // Attacher les gestionnaires d'événements.
                 client.on('user-published', handleUserJoined);
                 client.on('user-left', handleUserLeft);
 
-                // Rejoindre le canal avec l'UID spécifié.
                 await client.join(APP_ID, CHANNEL, TOKEN, uid)
-                    .then(uid =>
-                        Promise.all([
-                            AgoraRTC.createMicrophoneAndCameraTracks(),
-                            uid,
-                        ])
-                    )
-                    .then(([tracks, uid]) => {
+                    .then(uid => Promise.all([AgoraRTC.createMicrophoneAndCameraTracks(), uid]))
+                    .then(([tracks, UID]) => {
                         const [audioTrack, videoTrack] = tracks;
                         setLocalTracks(tracks);
                         setUsers(previousUsers => [
@@ -138,7 +225,6 @@ export const VideoRoomAi = () => {
                         client.publish(tracks);
                     });
 
-                // Nettoyage à la désinscription.
                 return () => {
                     localTracks.forEach(track => {
                         track.stop();
@@ -155,34 +241,29 @@ export const VideoRoomAi = () => {
         joinChannel();
     }, [authData.user]);
 
+    const formatTime = (timeInSeconds) => {
+        const hours = Math.floor(timeInSeconds / 3600);
+        const minutes = Math.floor((timeInSeconds % 3600) / 60);
+        const seconds = timeInSeconds % 60;
+        return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
     return (
-        <div className="pt-24 fixed">
+        <div className="fixed w-full h-full overflow-hidden">
             {authData.user ? (
                 <>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 700px)',
-                            gridGap: '10px',
-                            justifyItems: 'center',
-                        }}
-                    >
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 600px)',
+                        gridGap: '8px',
+                        justifyItems: 'center',
+                    }}>
                         {users.map(user => (
-                            isCameraOn ? (
-                                <VideoPlayer key={user.uid} user={user} />
-                            ) : (
-                                <div className='mt-36'>
-                                    <img
-                                        src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-                                        alt={`User ${user.uid}`}
-                                        style={{ borderRadius: '50%', width: '200px', height: '200px' }}  // Style pour rendre l'image circulaire
-                                    />
-                                </div>
-                            )
+                            <VideoPlayer key={user.uid} user={user} />
                         ))}
                     </div>
-
                     <div className="bottom-navbar">
+                        {/* Buttons for camera, microphone, etc. */}
                         <button onClick={toggleCamera}>
                             {isCameraOn ? (
                                 <>
@@ -193,15 +274,14 @@ export const VideoRoomAi = () => {
                                 <>
                                     <FaVideoSlash color="#ffff" size={21} id="camera-icon" />
                                     <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Turn on camera</div>
-                                    <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Camera is off</div>
                                 </>
                             )}
                         </button>
                         <button onClick={toggleAudio}>
                             {isAudioOn ? (
                                 <>
-                                    <FaMicrophone color="#ffff" size={22} id="mic-icon" />
-                                    <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Mute microphone</div>
+<FaMicrophone color="#ffff" size={22} id="mic-icon" />
+<div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Mute microphone</div>
                                 </>
                             ) : (
                                 <>
@@ -223,51 +303,68 @@ export const VideoRoomAi = () => {
                                 </>
                             )}
                         </button>
-                        <button onClick={toggleChat}>
-                            <FaPaperPlane color="#ffff" size={22} />
-                            <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Open/close chat</div>
+                        <button onClick={toggleHandRaise}>
+                            {handRaised ? (
+                                <>
+                                    <FaHandPaper color="#ffff" size={22} />
+                                    <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center' }}>Lower hand</div>
+                                </>
+                            ) : (
+                                <>
+                                    <FaHandPaper color="#ccc" size={22} />
+                                    <div style={{ color: '#ccc', fontSize: '13px', textAlign: 'center' }}>Raise hand</div>
+                                </>
+                            )}
                         </button>
+                        <button onClick={hangUp} className="rounded-full bg-red-500 p-2 flex items-center justify-center w-10 h-10">
+                            <FaPhone color="#ffffff" size={22} />
+                        </button>
+                        {/* Three-dot menu button */}
+                       
+<button onClick={toggleMenu} className="p-2" style={{ position: 'relative' }}>
+    <FaEllipsisV color="#ffffff" size={22} />
+    {showMenu && (
+        <div style={{
+            position: 'absolute',
+            right: 0,
+            bottom: '100%', // Position it above the button
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            padding: '10px',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+            width: '200px' // Set a fixed width or adjust as necessary
+        }}>
+            <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
+                <li><button onClick={handleRecord} style={{ display: 'block', width: '100%', padding: '8px' }}>Start/Stop Recording</button></li>
+                <li><button onClick={handleInfo} style={{ display: 'block', width: '100%', padding: '8px' }}>Meeting Info</button></li>
+            </ul>
+        </div>
+    )}
+</button>
+
+                        {showMenu && (
+                            <div style={{ position: 'absolute', backgroundColor: '#fff', borderRadius: '8px', padding: '10px', marginTop: '5px' }}>
+                                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                                    <li>
+                                        <button onClick={handleRecord} style={{ all: 'unset', cursor: 'pointer' }}>
+                                            Start/Stop Recording
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button onClick={handleInfo} style={{ all: 'unset', cursor: 'pointer' }}>
+                                            Meeting Info
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </>
             ) : (
-                <div>Veuillez vous connecter pour activer la vidéo</div>
-            )}
-            {isChatOpen && (
-                <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "auto" }}>
-                    <h5 style={{ color: "#3498DB", position: "absolute", top: "17%", left: "10%", transform: "translate(-50%, -50%)", fontSize: "1.2em", fontWeight: "bold" }}>
-                        Chat
-                    </h5>
-
-                    <div className="chat-image" style={{ marginTop: "170px" }}>
-                        <img src={iconTwo} alt="Chat Image" style={{ width: "100%", height: "auto" }} />
-                    </div>
-
-                    <div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
-                        <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                            {chatMessages.map((msg, index) => (
-                                <li key={index}>{msg.message}</li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
-                        <input
-                            type="text"
-                            placeholder="Type your message here..."
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
-                        />
-                        <IconButton
-                            onClick={sendMessage}
-                            style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
-                        >
-                            <SendIcon />
-                        </IconButton>
-                    </div>
-                </div>
+                <div>Please log in to activate the video</div>
             )}
         </div>
     );
 };
-export default VideoRoomAi ; 
+
+export default VideoRoom;

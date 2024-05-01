@@ -21,6 +21,9 @@ import VideoRoomAi from "./Components/Collaboration/VideoRoomAi";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
 import Video from "./Components/Collaboration/video";
 import ChatPages from "./Components/Chat/Chat/ChatPages";
+import EndMeetingPage from "./Components/Consultations/Metting/IA/EndMeetingPage";
+import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
+
 
 
 const router = createBrowserRouter([
@@ -113,10 +116,10 @@ const router = createBrowserRouter([
         path:"/addproject",
         element: <UploadJob/>
       },
-      {
-        path:"/chat",
-        element: <ChatApplication/>
-      },
+      // {
+      //   path:"/chat",
+      //   element: <ChatApplication/>
+      // },
       {
         path:"/welcome",
         element: <WelcomePage/>
@@ -146,6 +149,14 @@ const router = createBrowserRouter([
       {
         path:"/addproject",
         element: <UploadJob/>
+      },
+      {
+        path: "/end-meeting",
+        element: <EndMeetingPage />
+      },
+      {
+        path: "/payment-success",
+        element: <PaymentSuccess />
       },
  
       
