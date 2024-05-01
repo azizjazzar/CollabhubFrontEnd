@@ -8,7 +8,12 @@ export const VideoPlayer = ({ user }) => {
   const canvasRef = useRef();
   const { authData, setAuthUserData } = useAuth();
   const largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-  
+      // Initialisation des compteurs pour chaque expression
+      let happyCount = 0;
+      let angryCount = 0;
+      let sadCount = 0;
+      let neutralCount =0 ; 
+
   useEffect(() => {
     user.videoTrack.play(videoRef.current);
   }, [user.videoTrack]);
@@ -30,10 +35,9 @@ export const VideoPlayer = ({ user }) => {
  };
  const faceDetection = async () => {
     setInterval(async() => {
-    const detections = await faceapi.detectAllFaces
-          (videoRef.current,new faceapi.TinyFaceDetectorOptions())
-           .withFaceLandmarks()
-           .withFaceExpressions();
+      const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+          
+       
  canvasRef.current.innerHtml = faceapi.createCanvasFromMedia
                                (videoRef.current);
  faceapi.matchDimensions(canvasRef.current, {
@@ -44,7 +48,38 @@ export const VideoPlayer = ({ user }) => {
    width: 940,
    height: 650,
  });
+  //Calcul des statistiques d'expressions faciales
+    const expressionStats = detections.map(detection => detection.expressions);
 
+    
+          
+  
+
+         // Parcours des détections pour calculer les statistiques
+    expressionStats.forEach(expressions => {
+      if (expressions.happy > 0.5) {
+        happyCount++;
+      } else if (expressions.angry > 0.5) {
+        angryCount++;
+      } else if (expressions.sad > 0.5) {
+        sadCount++;
+      }
+      else if (expressions.neutral > 0.5) {
+        neutralCount++;
+      }
+      
+    });
+    const totalFaces = happyCount+sadCount+neutralCount+angryCount;
+    const happyPercentage = (happyCount / totalFaces) * 100;
+    const angryPercentage = (angryCount / totalFaces) * 100;
+    const sadPercentage = (sadCount / totalFaces) * 100;
+    const neutralPercentage= (neutralCount / totalFaces) * 100;
+    
+      // Utilisez les pourcentages comme vous le souhaitez, par exemple, les imprimer dans la console
+      console.log('Pourcentage de visages heureux:', happyPercentage);
+      console.log('Pourcentage de visages en colère:', angryPercentage);
+      console.log('Pourcentage de visages tristes:', sadPercentage);
+      console.log('Pourcentage de visages neutral:', neutralPercentage);
  // to draw the detection onto the detected face i.e the box
  faceapi.draw.drawDetections(canvasRef.current, resized);
  //to draw the the points onto the detected face
