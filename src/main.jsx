@@ -23,6 +23,10 @@ import Video from "./Components/Collaboration/video";
 import ChatPages from "./Components/Chat/Chat/ChatPages";
 import EndMeetingPage from "./Components/Consultations/Metting/IA/EndMeetingPage";
 import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
+import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
+import Layout from "./BackOffice/src/components/shared/Layout";
+import Dashboard from "./BackOffice/src/pages/Dashboard";
+import { VideoRoom } from "./Components/Consultations/VideoRoom";
 
 
 
@@ -34,6 +38,20 @@ const router = createBrowserRouter([
       {
       path:"/",
       element: <Home/>
+      },
+      {
+        path: "/dashboard",
+        element: <Layout />,
+        children: [
+          {
+            path: "", 
+            element: <Dashboard />
+          },
+          {
+            path: "usersSatistique", 
+            element: <UsersSatistique />
+          }
+        ]
       },
       {
         name: "Find Talent",
@@ -128,10 +146,14 @@ const router = createBrowserRouter([
         path:"/alan",
         element: <Alan/>
       },
+    
+
       {
         path:"/meeting",
-        element: <VideoRoomAi/>
+        element: <VideoRoom/>
       },
+
+
       {
         path:"/suggestion/:subject/:meetingId",
         element: <SuggestionComponent/>

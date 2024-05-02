@@ -27,22 +27,28 @@ function App() {
   return (
     <>
       <ChatProvider>
-      <AuthProvider>
-        {!isDashboard && <Navbar routes={routes} />}
-     
-        <Outlet />
+        <AuthProvider>
+          {!isDashboard && <Navbar routes={routes} />}
        
-        {!isMeeting &&  <div className="fixed  bottom-5 left-5">
-        <Alan ></Alan>
-        </div>}
-       
-        <div className="fixed  bottom-5 right-5">
-        <Chatbot ></Chatbot>
-        </div>
+          <Outlet />
+         
+          {!isMeeting && (
+            <div className="fixed bottom-5 right-5">
+              <Chatbot />
+            </div>
+          )}
+  
+          {!isMeeting && (
+            <div className="fixed bottom-5 left-5">
+              <Alan />
+            </div>
+          )}
+          
         </AuthProvider>
-        </ChatProvider>
+      </ChatProvider>
     </>
   );
+  
 }
 
 export default App;

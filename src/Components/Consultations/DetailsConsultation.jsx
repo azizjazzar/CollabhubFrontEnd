@@ -199,9 +199,6 @@ function DetailsConsultation() {
               Continue (${selectedPrice})
             </button>
 
-            <button type="button" className="mt-4 text-orange-500 border border-gray-400 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-900 font-semibold rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
-              Message User
-            </button>
             <br />
             <br />
             <br />

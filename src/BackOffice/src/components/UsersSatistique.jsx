@@ -52,34 +52,73 @@ export function UsersSatistique() {
     // Utiliser les données utilisateur comme nécessaire
     return (
         <div className='flex pt-[50px]'>
-            <div className='w-1/2 flex flex-col items-center'>
-                <img
-                    src={`https://colabhub.onrender.com/images/${userA?.picture || 'team-1.jpg'}`}
-                    alt="User"
-                    className="w-[200px] h-[200px] rounded-full mb-2"
-                />
-                <span className='text-center'>{userA.nom} {userA.prenom}</span>
-                <StatsComponent></StatsComponent>
-                <div className='pl-8'>
-                    <RadarChartComponent moodStatistics={ClientAStats} />
+            <div className='w-1/2 flex flex-col items-center mr-2'>
+                <div className="user-card bg-gray-200 rounded-lg shadow-2xl p-4 mb-8 relative">
+                    <div className="flex items-center mb-2">
+                        <img
+                            src={`https://colabhub.onrender.com/images/${userA?.picture || 'team-1.jpg'}`}
+                            alt="User A"
+                            className="w-16 h-16 rounded-full mr-4"
+                        />
+                        <div>
+                            <span>{userA.nom} </span>
+                            <span className="inline-block"> </span>
+                            <span>{userA.prenom}</span>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-2 bg-orange-500"></div>
+                    <StatsComponent></StatsComponent>
+                    <div className='pl-4'>
+                        <RadarChartComponent moodStatistics={ClientAStats} />
+                    </div>
+                    <div className='mt-4'>
+                        <PieChartComponent moodStatistics={ClientAStats} />
+                    </div>
+                    <div className='mt-4'>
+                        <LineChartComponent moodStatistics={ClientAStats} />
+                    </div>
                 </div>
-                <PieChartComponent moodStatistics={ClientAStats} />
-                <LineChartComponent moodStatistics={ClientAStats} />
             </div>
-            {/* Div pour la deuxième moitié de l'écran */}
-            <div className='w-1/2 flex flex-col items-center'>
-                <img
-                    src={`https://colabhub.onrender.com/images/${userB?.picture || 'team-1.jpg'}`}
-                    alt="User"
-                    className="w-[200px] h-[200px] rounded-full mb-2"
-                />
-                <span className='text-center'>{userB.nom} {userB.prenom}</span>
-                <StatsComponent></StatsComponent>
-                <div className='pl-8'>
-                    <RadarChartComponent moodStatistics={ClientBStats} />
+            {/* Div pour l'espace entre les deux cartes */}
+            <div className="w-1/12"></div>
+            <div className='w-1/2 flex flex-col items-center ml-2'>
+                <div className="user-card bg-gray-200 rounded-lg shadow-2xl p-4 mb-8 relative">
+                    <div className="flex items-center mb-2">
+                        <img
+                            src={`https://colabhub.onrender.com/images/${userB?.picture || 'team-1.jpg'}`}
+                            alt="User B"
+                            className="w-16 h-16 rounded-full mr-4"
+                        />
+                        <div>
+                            <span>{userB.nom} </span>
+                            <span className="inline-block"> </span>
+                            <span>{userB.prenom}</span>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-2 bg-orange-500"></div>
+                    <StatsComponent></StatsComponent>
+                    <div className='pl-4'>
+                        <RadarChartComponent moodStatistics={ClientBStats} />
+                    </div>
+                    <div className='mt-4'>
+                        <PieChartComponent moodStatistics={ClientBStats} />
+                    </div>
+                    <div className='mt-4'>
+                        <LineChartComponent moodStatistics={ClientBStats} />
+                    </div>
                 </div>
-                <PieChartComponent moodStatistics={ClientBStats} />
-                <LineChartComponent moodStatistics={ClientBStats} />            </div>
+            </div>
         </div>
     );
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
 }
