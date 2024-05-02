@@ -182,14 +182,14 @@ function Collabolaratuers(props){
                       
                         <span className= {  Selected === 1 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
                       </button>
-                  
+                 {/*
                      <button onClick={() => HandleSelected(2)} className={NavSelection(2)}>
                       Chat
                       
                         <span  className= {  Selected === 2 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } 
                        x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">6</span>
                       </button>
-                  
+                  */ } 
                   
                 </nav>
 

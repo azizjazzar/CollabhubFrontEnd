@@ -6,6 +6,7 @@ import { FormulaireMeet} from "@/widgets/layout/formulaireMeet";
 import { useAuth } from '@/pages/authContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 import {  Link } from 'react-router-dom';
 import {
   add,
@@ -207,7 +208,7 @@ export function ProjectOwnerCollab(props) {
           </section>
        
           <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
-          <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)} userId={userId} freelancers={freelancers}/>
+          <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)}  userId={userId} freelancers={freelancers}/>
         </div>
         
          
@@ -223,13 +224,32 @@ export function ProjectOwnerCollab(props) {
 }
 
 function Meeting({ meeting}) {
+
+  async function supprimerRessource(id) {
+    try {
+      const response = await axios.delete( `https://colabhub.onrender.com/meet/delete/${id}`);
+     
+  
+      if (response.status !== 200) {
+        throw new Error('La requête de suppression a échoué.');
+      }
+  
+      const data = response.data;
+      console.log('Ressource supprimée avec succès :', data);
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la ressource :', error);
+      throw error;
+    }
+  }
+
   let startDateTime = parseISO(meeting.dateStart)
   let endDateTime = parseISO(meeting.dateEnd)
 
 
   const { authData, setAuthUserData } = useAuth();
   return (
-<Link to={`/meeting`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+<Link to={`/meeting/${meeting._id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
               
              
              
@@ -290,17 +310,22 @@ function Meeting({ meeting}) {
                 )}
                
               </Menu.Item>
+            
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
+                  <button
+                  onClick={(e) => {
+                    e.preventDefault(); // Empêche le comportement par défaut du lien
+                    supprimerRessource(meeting._id); // Appelle la fonction de suppression
+                  }}
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm'
                     )}
+                   
                   >
-                    Cancel
-                  </a>
+                    Delete
+                  </button>
                 )}
               </Menu.Item>
             </div>

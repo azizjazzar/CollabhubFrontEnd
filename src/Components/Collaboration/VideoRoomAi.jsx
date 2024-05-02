@@ -1,35 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC from 'agora-rtc-sdk-ng';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop } from 'react-icons/fa';
-import { VideoPlayer } from './VideoPlayer';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPaperPlane, FaDesktop, FaPhone, FaHandPaper } from 'react-icons/fa';
+import { VideoPlayer } from '../Collaboration/VideoPlayer';
 import { useAuth } from '@/pages/authContext';
 import SendIcon from "@mui/icons-material/Send";  // Updated import path
 import { IconButton } from '@mui/material';  // Updated import path
 import iconTwo from '/img/iconmessage.jpg';
 import { FaVolumeUp } from 'react-icons/fa';
 import Statistiques from '@/Services/statistiques/Statistiques';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FaSmile } from 'react-icons/fa';
 import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
-const APP_ID = "67a5503c4b134d80baec1767141115d3";
-const TOKEN = "007eJxTYPjCY3jk5Bk9zaN7trwvVt5pnW7n/fCmavq3UJbWbVduCispMJiZJ5qaGhgnmyQZGpukWBgkJaYmG5qbmRuaGBoamqYYn+bQSmsIZGSYOUWCkZGBkYEFiEF8JjDJDCZZoOzk/BwGBgBk0CCi";
-const CHANNEL = "col";
-const StatistiquesService = new Statistiques();
-const authuser= new AuthenticationService();
-const client = AgoraRTC.createClient({
-    mode: 'rtc',
-    codec: 'vp8',
-});
-const MAX_CHARACTERS_DISPLAYED = 200;
+
+
 
 export const VideoRoomAi = () => {
+
+    const {meeting} = useParams();
+    const [meet ,setmeet] = useState("");
+    useEffect(() => {
+        fetch(`https://colabhub.onrender.com/meet/get/${meeting}`)
+          .then(response => response.json())
+          .then(data => setmeet(data))
+          .catch(error => console.error("Error fetching meets:", error));
+      }, []);
+    const TOKEN = meet.token;
+    const APP_ID = "36067b6e79984e48828b420ceeea0b5c";
+    const CHANNEL = ("collabhub");
+    const StatistiquesService = new Statistiques();
+    const authuser= new AuthenticationService();
+    const client = AgoraRTC.createClient({
+        mode: 'rtc',
+        codec: 'vp8',
+    });
+    const MAX_CHARACTERS_DISPLAYED = 200;
+
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [showMore, setShowMore] = useState(false);
     const [localTracks, setLocalTracks] = useState([]);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [handRaised, setHandRaised] = useState(false);
     const { authData, setAuthUserData } = useAuth();
     const [chatMessages, setChatMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
@@ -42,35 +56,65 @@ export const VideoRoomAi = () => {
     const minutes = currentTime.getMinutes();
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedTime = `${hours}:${formattedMinutes}`;
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [timerInterval, setTimerInterval] = useState(null);
+    const [isFaceOpen, setIsFaceOpen] = useState(false);
+  
 
+    useEffect(() => {
+        const startTimer = () => {
+            setTimerInterval(setInterval(() => {
+                setElapsedTime(prevTime => prevTime + 1);
+            }, 1000));
+        };
+
+        startTimer();
+
+        return () => {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        };
+    }, []);
+
+    const hangUp = () => {
+        localTracks.forEach(track => {
+            track.stop();
+            track.close();
+        });
+
+        client.leave();
+        console.log("Meeting duration:", elapsedTime);
+        navigate('/end-meeting');
+    };
 
     useEffect(() => {
         let recognition = null;
-        
+
         const startSpeechToText = () => {
             recognition = new window.webkitSpeechRecognition();
             recognition.lang = 'en-US';
             recognition.continuous = true;
-        
+
             recognition.onresult = (event) => {
                 const transcript = event.results[event.results.length - 1][0].transcript;
                 const currentTime = new Date().toLocaleTimeString();
                 const transcriptionWithDateTime = `${currentTime}: ${transcript}`;
                 setListeningText(prevText => prevText + transcript);
-                setTranscribedText(prevTranscription => prevTranscription + transcriptionWithDateTime + ' '); 
+                setTranscribedText(prevTranscription => prevTranscription + transcriptionWithDateTime + ' ');
             };
-        
+
             recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
                 recognition.stop();
             };
-        
+
             recognition.onend = () => {
-                if (isListening && isAudioOn) { 
-                    recognition.start(); 
+                if (isListening && isAudioOn) {
+                    recognition.start();
                 }
             };
-        
+
             recognition.start();
         };
 
@@ -129,27 +173,27 @@ export const VideoRoomAi = () => {
         };
     }, [isAudioOn]);
 
-
-
     const toggleCamera = () => {
         const newState = !isCameraOn;
         setIsCameraOn(newState);
     };
 
+    const toggleFace = () => {
+        setIsFaceOpen(prevState => !prevState);
+    };
     const toggleAudio = () => {
         const newState = !isAudioOn;
         setIsAudioOn(newState);
-    
+
         if (localTracks[0]) {
             localTracks[0].setEnabled(newState);
         }
-    
+
         const micIcon = document.getElementById('mic-icon');
         if (micIcon) {
             micIcon.style.color = newState ? '#ff8316' : '#ccc';
         }
     };
-    
 
     const toggleScreenSharing = async () => {
         if (!isScreenSharing) {
@@ -172,40 +216,24 @@ export const VideoRoomAi = () => {
         }
     };
 
-    const toggleChat = () => {
-        setIsChatOpen(prevState => !prevState);
+    const toggleHandRaise = () => {
+        const newState = !handRaised;
+        setHandRaised(newState);
     };
-
-    const sendMessage = () => {
-        if (inputMessage.trim() !== '') {
-            setChatMessages(prevMessages => [...prevMessages, { message: inputMessage }]);
-            setInputMessage('');
-        }
-    };
-
-    const handleShowMore = () => {
-        setShowMore(true);
-    };
-
-    const handleShowLess = () => {
-        setShowMore(false);
-    };
-
 
     useEffect(() => {
         const joinChannel = async () => {
             if (authData.user) {
-                let uid = localStorage.getItem('userUID');
-                if (!uid) {
-                    uid = authData.user.id || Math.floor(Math.random() * 100000).toString();
-                    localStorage.setItem('userUID', uid); 
-                }
+              
+               
 
                 const handleUserJoined = async (user, mediaType) => {
                     await client.subscribe(user, mediaType);
 
                     if (mediaType === 'video') {
                         setUsers(previousUsers => [...previousUsers, user]);
+                   
+
                         setAuthUserData({ ...authData, userMeeting: user });
                     }
 
@@ -215,28 +243,20 @@ export const VideoRoomAi = () => {
                 };
 
                 const handleUserLeft = user => {
-                    setUsers(previousUsers =>
-                        previousUsers.filter(u => u.uid !== user.uid)
-                    );
+                    setUsers(previousUsers => previousUsers.filter(u => u.uid !== user.uid));
                 };
 
                 client.on('user-published', handleUserJoined);
                 client.on('user-left', handleUserLeft);
 
-                await client.join(APP_ID, CHANNEL, TOKEN, uid)
-                    .then(uid =>
-                        Promise.all([
-                            AgoraRTC.createMicrophoneAndCameraTracks(),
-                            uid,
-                        ])
-                    )
+                await client.join(APP_ID, CHANNEL, TOKEN)
+                    .then(uid => Promise.all([AgoraRTC.createMicrophoneAndCameraTracks(), uid]))
                     .then(([tracks, UID]) => {
                         const [audioTrack, videoTrack] = tracks;
                         setLocalTracks(tracks);
                         setUsers(previousUsers => [
                             ...previousUsers,
                             {
-                                uid,
                                 videoTrack,
                                 audioTrack,
                             },
@@ -260,33 +280,29 @@ export const VideoRoomAi = () => {
         joinChannel();
     }, [authData.user]);
 
+    const formatTime = (timeInSeconds) => {
+        const hours = Math.floor(timeInSeconds / 3600);
+        const minutes = Math.floor((timeInSeconds % 3600) / 60);
+        const seconds = timeInSeconds % 60;
+        return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
     return (
         <div className="fixed w-full h-full overflow-hidden">
             {authData.user ? (
                 <>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 600px)',
-                            gridGap: '8px',
-                            justifyItems: 'center',
-                        }}
-                    >
+
+              
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 600px)',
+                        gridGap: '8px',
+                        justifyItems: 'center',
+                    }}>
                         {users.map(user => (
-                                isCameraOn ? (
-                                    <VideoPlayer key={user.uid} user={user} />
-                                ) : (
-                                    <div className='mt-52 mr-20'>
-                                        <img
-                                            src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-                                            alt={`User ${user.uid}`}
-                                            style={{ borderRadius: '50%', width: '200px', height: '200px' }}  
-                                        />
-                                    </div>
-                                )
+                            <VideoPlayer key={user.uid} user={user} emotions={isFaceOpen}/>
                         ))}
                     </div>
-
                     <div className="bottom-navbar">
                         <button onClick={toggleCamera}>
                             {isCameraOn ? (
@@ -298,7 +314,6 @@ export const VideoRoomAi = () => {
                                 <>
                                     <FaVideoSlash color="#ffff" size={21} id="camera-icon" />
                                     <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Turn on camera</div>
-                                    <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Camera is off</div>
                                 </>
                             )}
                         </button>
@@ -328,25 +343,44 @@ export const VideoRoomAi = () => {
                                 </>
                             )}
                         </button>
-                        <button onClick={toggleChat}>
-                            <FaPaperPlane color="#ffff" size={22} />
+                        <button onClick={toggleFace}>
+                        <FaSmile color="#ffff" size={22} />
                             <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>emotions</div>
                         </button>
-
-                        <button onClick={toggleChat}>
-                            <FaPaperPlane color="#ffff" size={22} />
-                            <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center', paddingRight: '5px' }}>Open/close chat</div>
+                        <button onClick={toggleHandRaise}>
+                            {handRaised ? (
+                                <>
+                                    <FaHandPaper color="#ffff" size={22} />
+                                    <div style={{ color: '#fff', fontSize: '13px', textAlign: 'center' }}>Lower hand</div>
+                                </>
+                            ) : (
+                                <>
+                                    <FaHandPaper color="#ccc" size={22} />
+                                    <div style={{ color: '#ccc', fontSize: '13px', textAlign: 'center' }}>Raise hand</div>
+                                </>
+                            )}
+                        </button>
+                        <button onClick={hangUp} className="rounded-full bg-red-500 p-2 flex items-center justify-center w-10 h-10">
+                            <FaPhone color="#ffffff" size={22} />
                         </button>
                     </div>
                 </>
             ) : (
-                <div>Veuillez vous connecter pour activer la vidéo</div>
+                <div>Please log in to activate the video</div>
             )}
-{isChatOpen && (
+
     <div className="sidebar" style={{ position: "fixed", top: 0, right: 0, bottom: 0, padding: "20px", paddingBottom: "100px", overflowY: "hidden" }}>
-        <div className="chat-image" style={{ marginTop: "7rem" }}>
-            <img src={iconTwo} alt="Chat Image" style={{ width: "70%", height: "auto" }} />
-        </div>
+        
+<div className="chat-image" style={{ marginTop: "7rem", backgroundColor: "#F1F6F9", padding: "10px", borderRadius: "8px" }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ backgroundColor: 'red', width: '12px', height: '12px', borderRadius: '60%', marginRight: '5px' }}></div>
+        {/* Remplacer le texte par l'icône */}
+        <p style={{ color: 'black', fontFamily: 'VotrePoliceProfessionnelle' }}>{formatTime(elapsedTime)}</p>
+    </div>
+</div>
+
+
+
         <div className="transcribed-text" style={{ marginTop: "1rem", marginBottom: "0.1rem", maxHeight: "300px", overflowY: "auto" }}>
             {transcribedText && (
                 <div className="flex items-start gap-2.5">
@@ -367,13 +401,10 @@ export const VideoRoomAi = () => {
                 </div>
             )}
         </div>
-        <div className="chat-window" style={{ maxHeight: "100px", overflowY: "auto", paddingBottom: "10px" }}>
-            <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                {chatMessages.map((msg, index) => (
-                    <li key={index}>{msg.message}</li>
-                ))}
-            </ul>
-        </div>
+
+
+        {console.log("le token est "+ meeting)}
+       
         <div className="message-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", alignItems: "center", paddingBottom: "10px" }}>
             <input
                 type="text"
@@ -383,14 +414,14 @@ export const VideoRoomAi = () => {
                 style={{ flexGrow: 1, padding: "10px", marginRight: "10px", borderRadius: "20px", border: "none", backgroundColor: "#f0f0f0", outline: "none" }}
             />
             <IconButton
-                onClick={sendMessage}
+               
                 style={{ padding: "8px", backgroundColor: "#3498DB", color: "#fff", borderRadius: "50%", height: "32px", width: "32px", marginRight: "20px" }}
             >
                 <SendIcon />
             </IconButton>
         </div>
     </div>
-)}
+
 
 
 

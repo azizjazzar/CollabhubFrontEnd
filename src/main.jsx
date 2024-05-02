@@ -126,7 +126,7 @@ const router = createBrowserRouter([
         element: <Alan/>
       },
       {
-        path:"/meeting",
+        path:"/meeting/:meeting",
         element: <VideoRoomAi/>
       },
       {

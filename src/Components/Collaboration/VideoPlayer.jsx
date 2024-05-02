@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import '@/widgets/assets/meeting.css'; // Import du fichier CSS
 import { useAuth } from '@/pages/authContext';
 import * as faceapi from "face-api.js";
-export const VideoPlayer = ({ user }) => {
+export const VideoPlayer = ({ user , emotions}) => {
  
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -21,8 +21,15 @@ export const VideoPlayer = ({ user }) => {
 
   useEffect(() => {
 
-    videoRef && loadModels();
+    videoRef
  }, []);
+
+ useEffect(() => {
+if(emotions)
+    loadModels();
+  
+}, []);
+
  const loadModels = () => {
     Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
@@ -33,6 +40,7 @@ export const VideoPlayer = ({ user }) => {
      faceDetection();
     })
  };
+
  const faceDetection = async () => {
     setInterval(async() => {
       const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
@@ -75,18 +83,15 @@ export const VideoPlayer = ({ user }) => {
     const sadPercentage = (sadCount / totalFaces) * 100;
     const neutralPercentage= (neutralCount / totalFaces) * 100;
     
-      // Utilisez les pourcentages comme vous le souhaitez, par exemple, les imprimer dans la console
-      console.log('Pourcentage de visages heureux:', happyPercentage);
-      console.log('Pourcentage de visages en colère:', angryPercentage);
-      console.log('Pourcentage de visages tristes:', sadPercentage);
-      console.log('Pourcentage de visages neutral:', neutralPercentage);
- // to draw the detection onto the detected face i.e the box
- faceapi.draw.drawDetections(canvasRef.current, resized);
- //to draw the the points onto the detected face
- faceapi.draw.drawFaceLandmarks(canvasRef.current, resized);
-     // Enregistrer les détections dans un fichier texte
+     
+  
+         // to draw the detection onto the detected face i.e the box
+          faceapi.draw.drawDetections(canvasRef.current, resized);
+          //to draw the the points onto the detected face
+          faceapi.draw.drawFaceLandmarks(canvasRef.current, resized);
+          faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
+      
 
- faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
  }, 1000);
 
   
@@ -100,8 +105,11 @@ export const VideoPlayer = ({ user }) => {
 
    
     <div className='flex pb-[2%] w-full' style={{ width: '100%', height: '95vh' }}>
+    
        <video className={`border  mb-12 ${largeurEcran > 1320 ? 'w-[600px]' : 'sm:w-1/2 md:w-[200px] lg:w-[300px] 2xl:w-[500px]'}`} ref={videoRef} style={{ height: '100%' }}>   </video>
        <canvas className='absolute top-20' ref={canvasRef} width="940" height="650" />
+      
      </div>
+     
   );
 };
