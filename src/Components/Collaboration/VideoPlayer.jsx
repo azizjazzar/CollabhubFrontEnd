@@ -15,8 +15,11 @@ export const VideoPlayer = ({ user }) => {
 
 
   useEffect(() => {
+    alert(emotions)
+   
+      videoRef && loadModels();
 
-    videoRef && loadModels();
+    
  }, []);
  const loadModels = () => {
     Promise.all([

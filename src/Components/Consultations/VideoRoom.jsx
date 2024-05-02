@@ -283,7 +283,7 @@ export const VideoRoom = () => {
                         justifyItems: 'center',
                     }}>
                         {users.map(user => (
-                            <VideoPlayer key={user.uid} user={user} />
+                            <VideoPlayer key={user.uid} user={user} emotions={false}  />
                         ))}
                     </div>
                     <div className="bottom-navbar">

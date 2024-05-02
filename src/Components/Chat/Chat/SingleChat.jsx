@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client";
-
-import animationData from "./animation/typing.json";
 import Lottie from "react-lottie";
+import animationData from "./animation/typing.json";
 import ProfileModal from "./ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import { ChatState } from "@/Context/ChatProvider";
+import { FaPaperPlane } from 'react-icons/fa';
+
 
 const ENDPOINT = "http://localhost:5000";
 let socket;
@@ -19,15 +20,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [istyping, setIsTyping] = useState(false);
 
-  const { selectedChat, authData } = ChatState(); // Removed unnecessary variables
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    }
-  };
+  const { selectedChat, authData } = ChatState();
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -54,7 +47,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         const config = {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authData.accessToken}`, // Added backticks
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         };
         const { data } = await axios.post(
@@ -80,7 +73,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-  }, [authData]); // Added authData as a dependency
+  }, [authData]);
 
   useEffect(() => {
     fetchMessages();
@@ -88,20 +81,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
-  socket.on("message received", (newMessageReceived) => {
-    if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-      // Not currently selected chat
-    } else {
-      setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-    }
-  });
+    socket.on("message received", (newMessageReceived) => {
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+        // Not currently selected chat
+      } else {
+        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
+      }
+    });
 
-  // Clean-up function
-  return () => {
-    socket.off("message received");
-  };
-}, [messages, selectedChatCompare]); // Though having 'messages' in dependency might cause unnecessary re-registrations
-
+    // Clean-up function
+    return () => {
+      socket.off("message received");
+    };
+  }, [messages, selectedChatCompare]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -116,56 +108,48 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.emit("stop typing", selectedChat._id);
       }
     }, timerLength);
-    };
-    console.log(selectedChat, selectedChat.users);
-
+  };
 
   return (
-    <div className={`flex flex-col ${selectedChat ? 'h-full' : 'items-center justify-center h-full'}`}>
+    <div className={`single-chat-container ${selectedChat ? 'selected-chat' : 'no-chat-selected'}`}>
       {selectedChat ? (
         <>
-          <div className="flex items-center justify-between p-2 w-full">
-            {/* Back Icon Placeholder */}
-            <span className="block md:hidden text-xl cursor-pointer">
-              {/* You can replace this span with an actual icon component */}
-              ←
-            </span>
-            <div className="text-lg md:text-xl font-semibold">
-{selectedChat.isGroupChat 
-    ? selectedChat.chatName.toUpperCase() 
-    : (selectedChat.users && selectedChat.users.length > 0
-      ? `${selectedChat.users[0].nom ?? "Unknown"} ${selectedChat.users[0].prenom ?? "User"}`
-      : "Unknown User")
-  }       </div>
-{selectedChat?.users && selectedChat.users.length > 0 && <ProfileModal user={selectedChat.users[0]} />}
+          <div className="chat-header">
+            {/* Affichage du nom de l'utilisateur/group et bouton pour voir le profil */}
+            <h2>{selectedChat.isGroupChat ? selectedChat.chatName.toUpperCase() :
+              (selectedChat.users && selectedChat.users.length > 0 ?
+                `${selectedChat.users[0].nom ?? "Unknown"} ${selectedChat.users[0].prenom ?? "User"}` : "Unknown User")}</h2>
+            {selectedChat?.users && selectedChat.users.length > 0 && <ProfileModal user={selectedChat.users[0]} />}
           </div>
-          <div className="flex-grow p-3 bg-gray-200 w-full overflow-y-auto">
+          <div className="chat-messages">
             {loading ? (
-              <div className="flex justify-center items-center h-full">
-                {/* Spinner Placeholder */}
-                Loading...
-              </div>
+              <div className="loading-indicator">Loading...</div>
             ) : (
               <ScrollableChat messages={messages} />
             )}
           </div>
-          <div className="p-3 w-full">
+          <div className="chat-input">
             {istyping && (
-              <Lottie options={defaultOptions} width={70} />
+              <div className="typing-animation">
+                <Lottie options={defaultOptions} height={50} width={50} />
+              </div>
             )}
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              placeholder="Enter a message.."
-              value={newMessage}
-              onChange={typingHandler}
-              onKeyDown={sendMessage}
-            />
+            <div className="message-input-container ">
+              <input
+                type="text"
+                className="message-input w-[720px]"
+                placeholder="Enter a message.."
+                value={newMessage}
+                onChange={typingHandler}
+                onKeyDown={sendMessage}
+              />
+              <button className="send-button" onClick={sendMessage}><FaPaperPlane /></button>
+            </div>
           </div>
         </>
       ) : (
-        <div className="text-2xl">
-          Click on a authData to start chatting
+        <div className="no-chat-text">
+          Click on a chat to start chatting
         </div>
       )}
     </div>
