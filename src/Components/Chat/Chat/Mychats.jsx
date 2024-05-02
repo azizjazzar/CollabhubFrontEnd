@@ -21,7 +21,7 @@ function MyChats() {
                         Authorization: `Bearer ${authData.accessToken}`,
                     },
                 };
-                const { data } = await axios.get('http://localhost:3000/chat/fetchchat', config);
+                const { data } = await axios.get('https://colabhub.onrender.com/chat/fetchchat', config);
                 setChats(data); // Update chats in context
             } catch (error) {
                 console.error('Failed to fetch chats:', error);

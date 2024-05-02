@@ -31,7 +31,7 @@ const ProjectPage = () => {
     }, [cvData, selectedCategory]); // Added selectedCategory to dependency array
 
     const fetchProjects = async () => {
-        const url = `http://localhost:3000/jobs/get`;
+        const url = `https://colabhub.onrender.com/jobs/get`;
         try {
             const { data } = await axios.get(url);
             setProjects(data);

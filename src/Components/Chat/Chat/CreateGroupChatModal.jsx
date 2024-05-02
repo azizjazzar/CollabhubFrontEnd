@@ -38,7 +38,7 @@ const GroupChatModal = ({ isOpen, onClose, children }) => {
           Authorization: `Bearer ${authData.accessToken}`,
         },
       };
-      const { data } = await axios.get(`http://localhost:3000/chat/searchUser?search=${search}`, config);
+      const { data } = await axios.get(`https://colabhub.onrender.com/chat/searchUser?search=${search}`, config);
       console.log("Search Results:", data);
       setLoading(false);
       setSearchResult(data);

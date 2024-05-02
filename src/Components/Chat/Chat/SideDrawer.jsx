@@ -31,7 +31,7 @@ const { authData, setSelectedChat, addOrUpdateChat, chats } = useContext(ChatCon
                     Authorization: `Bearer ${authData.accessToken}`,
                 },
             };
-            const { data } = await axios.get(`http://localhost:3000/chat/searchUser?search=${search}`, config);
+            const { data } = await axios.get(`https://colabhub.onrender.com/chat/searchUser?search=${search}`, config);
             setSearchResult(data);
         } catch (error) {
             console.error("Error during search:", error);
