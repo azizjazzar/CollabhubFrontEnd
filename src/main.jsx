@@ -15,12 +15,19 @@ import BlogDetails from "./Components/Blog/BlogDetails";
 import ProjectPage from "./Components/Projet/ProjectPage";
 import ProjectDetail from "./Components/Projet/ProjectDetail";
 import UploadJob from "./Components/Projet/UploadJob";
-import ChatApplication from "./Components/Chat/Chatbox";
 import WelcomePage from "./Components/Authentification/WelcomePage";
 import Alan from "./Components/Authentification/Alan";
 import VideoRoomAi from "./Components/Collaboration/VideoRoomAi";
 import { SuggestionComponent} from "./widgets/layout/SuggestionComponent";
 import Video from "./Components/Collaboration/video";
+import ChatPages from "./Components/Chat/Chat/ChatPages";
+import EndMeetingPage from "./Components/Consultations/Metting/IA/EndMeetingPage";
+import PaymentSuccess from "./Components/Consultations/Metting/PaymentSucces";
+import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
+import Layout from "./BackOffice/src/components/shared/Layout";
+import Dashboard from "./BackOffice/src/pages/Dashboard";
+import { VideoRoom } from "./Components/Consultations/VideoRoom";
+
 
 
 const router = createBrowserRouter([
@@ -31,6 +38,20 @@ const router = createBrowserRouter([
       {
       path:"/",
       element: <Home/>
+      },
+      {
+        path: "/dashboard",
+        element: <Layout />,
+        children: [
+          {
+            path: "", 
+            element: <Dashboard />
+          },
+          {
+            path: "usersSatistique", 
+            element: <UsersSatistique />
+          }
+        ]
       },
       {
         name: "Find Talent",
@@ -113,10 +134,10 @@ const router = createBrowserRouter([
         path:"/addproject",
         element: <UploadJob/>
       },
-      {
-        path:"/chat",
-        element: <ChatApplication/>
-      },
+      // {
+      //   path:"/chat",
+      //   element: <ChatApplication/>
+      // },
       {
         path:"/welcome",
         element: <WelcomePage/>
@@ -125,10 +146,21 @@ const router = createBrowserRouter([
         path:"/alan",
         element: <Alan/>
       },
+    
+
       {
+
         path:"/meeting/:meeting",
         element: <VideoRoomAi/>
       },
+      
+      {
+        path:"/meeting",
+        element: <VideoRoom/>
+
+      },
+
+
       {
         path:"/suggestion/:subject/:meetingId",
         element: <SuggestionComponent/>
@@ -136,6 +168,24 @@ const router = createBrowserRouter([
       {
         path:"/video",
         element: <Video/>
+      },
+
+         {
+        path:"/messagerie",
+        element: <ChatPages/>
+      },
+         
+      {
+        path:"/addproject",
+        element: <UploadJob/>
+      },
+      {
+        path: "/end-meeting",
+        element: <EndMeetingPage />
+      },
+      {
+        path: "/payment-success",
+        element: <PaymentSuccess />
       },
  
       

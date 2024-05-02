@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -11,25 +11,21 @@ export const AuthProvider = ({ children }) => {
       accessToken: null,
       refreshToken: null,
       userMeeting: null,
-
     };
   });
 
   const setAuthUserData = ({ user, userMeeting, accessToken, refreshToken }) => {
-    setAuthData(previousData => ({
-      ...previousData,
-      user: user,
-      userMeeting: userMeeting,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    }));
-    localStorage.setItem('authData', JSON.stringify({
-      ...previousData,
-      user: user,
-      userMeeting: userMeeting,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    }));
+    setAuthData(previousData => {
+      const newData = {
+        ...previousData,
+        user: user,
+        userMeeting: userMeeting,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+      localStorage.setItem('authData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const refreshAuthData = (updatedData) => {

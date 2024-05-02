@@ -18,10 +18,10 @@ const ProjectDetail = () => {
     useEffect(() => {
         const fetchProjectAndJobs = async () => {
             try {
-                const projectResponse = await axios.get(`http://localhost:3000/jobs/get/${projectId}`);
+                const projectResponse = await axios.get(`https://colabhub.onrender.com/jobs/get/${projectId}`);
                 setProject(projectResponse.data);
 
-                const jobsResponse = await axios.get("http://localhost:3000/jobs/get");
+                const jobsResponse = await axios.get("https://colabhub.onrender.com/jobs/get");
                 const jobs = jobsResponse.data;
 
                 const similar = jobs.filter((job) =>
@@ -48,7 +48,7 @@ const ProjectDetail = () => {
     };
 
     const redirectToChat = () => {
-        navigate("/chat");
+        navigate("/messagerie");
     };
 
     return (

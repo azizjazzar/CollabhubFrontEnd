@@ -8,7 +8,9 @@ import { useAuth } from "@/pages/authContext";
 import { Footer } from "@/widgets/layout/footer";
 import TitleBlog from '@/widgets/layout/titleBlog';
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
+import Fuse from 'fuse.js';
 import Chatbot from './ChatBot';
+
 
 const BlogList = () => {
     const { authData } = useAuth();
@@ -25,6 +27,9 @@ const BlogList = () => {
         description: '',
         content: '',
     });
+
+
+
     const postsPerPage = 3;
 
     const getUserData = (freelancerId) => {
@@ -101,6 +106,9 @@ const BlogList = () => {
     const nextPage = () => setCurrentPage((prevPage) => prevPage + 1);
 
     const prevPage = () => setCurrentPage((prevPage) => prevPage - 1);
+
+
+    
 
     const handleToggleModal = () => {
         if (authData.user) {
@@ -421,7 +429,7 @@ const BlogList = () => {
                     href="#"
                     onClick={handleToggleModal}
                     className="bg-orange-500 p-4 rounded-full text-white hover:bg-orange-600"
-                    style={{ position: 'fixed', bottom: '20px', right: '20px' }}
+                    style={{ position: 'fixed', bottom: '30px', right: '100px' }}
                 >
                     <FaCommentAlt size={24} />
                 </a>

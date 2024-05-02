@@ -5,6 +5,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import { AuthProvider } from "./pages/authContext";
 import Alan from "./Components/Authentification/Alan";
 import Chatbot from "./Components/Blog/ChatBot";
+import ChatProvider from "./Context/ChatProvider";
 function App() {
   const routes = [
     { name: 'Home', path: '/' },
@@ -21,22 +22,33 @@ function App() {
 
   // Vérifiez si l'emplacement actuel est '/dashboard' ou '/dashboard/usersSatistique'
   const isDashboard = location.pathname.startsWith('/dashboard');
+  const isMeeting = location.pathname.startsWith('/meeting');
   
   return (
     <>
-      <AuthProvider>
-        {!isDashboard && <Navbar routes={routes} />}
-     
-        <Outlet />
-        <div className="fixed  bottom-5 left-5">
-        <Alan ></Alan>
-        </div>
-        <div className="fixed  bottom-5 right-5">
-        <Chatbot ></Chatbot>
-        </div>
-      </AuthProvider>
+      <ChatProvider>
+        <AuthProvider>
+          {!isDashboard && <Navbar routes={routes} />}
+       
+          <Outlet />
+         
+          {!isMeeting && (
+            <div className="fixed bottom-5 right-5">
+              <Chatbot />
+            </div>
+          )}
+  
+          {!isMeeting && (
+            <div className="fixed bottom-5 left-5">
+              <Alan />
+            </div>
+          )}
+          
+        </AuthProvider>
+      </ChatProvider>
     </>
   );
+  
 }
 
 export default App;
