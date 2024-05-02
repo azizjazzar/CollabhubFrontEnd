@@ -58,7 +58,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
         };
         const { data } = await axios.post(
-          "http://localhost:3000/message/sendmessage",
+          "https://colabhub.onrender.com/message/sendmessage",
           {
             content: newMessage,
             chatId: selectedChat._id,

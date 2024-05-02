@@ -50,7 +50,7 @@ const { authData, setSelectedChat, addOrUpdateChat, chats } = useContext(ChatCon
                     Authorization: `Bearer ${authData.accessToken}`,
                 },
             };
-            const { data } = await axios.post(`http://localhost:3000/chat/acceschat`, { userId }, config);
+            const { data } = await axios.post(`https://colabhub.onrender.com/chat/acceschat`, { userId }, config);
 
             // Use the addOrUpdateChat method from context to handle adding or updating the chat
             addOrUpdateChat(data);
@@ -98,7 +98,7 @@ const { authData, setSelectedChat, addOrUpdateChat, chats } = useContext(ChatCon
                                                         placeholder="Search..."
                                                         value={search}
                                                         onChange={(e) => { e.stopPropagation(); setSearch(e.target.value); }}
-                                                        className="search-input flex-1 rounded-md py-2 px-4 border border-gray-300 focus:outline-none focus:border-blue-500"
+                                                        className="search-input flex-1 rounded-md py-2 px-4 border border-gray-800 focus:outline-none focus:border-blue-500 text-black"
                                                     />
                                                     {search && (
                                                         <XIcon className="h-5 w-5 text-gray-500 cursor-pointer" onClick={() => setSearch('')} />

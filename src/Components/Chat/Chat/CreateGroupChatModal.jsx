@@ -70,7 +70,7 @@ const GroupChatModal = ({ isOpen, onClose, children }) => {
     };
 
     const { data } = await axios.post(
-      `http://localhost:3000/chat/addgroupe`, // Correct endpoint
+      `https://colabhub.onrender.com/chat/addgroupe`, // Correct endpoint
       payload,
       config
     );
