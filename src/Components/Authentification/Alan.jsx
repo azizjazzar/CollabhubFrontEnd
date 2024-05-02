@@ -164,7 +164,7 @@ export default function Alan() {
           });
         }
       }
-      else if (transcript.includes("E-MAIL") ) {
+      else if (transcript.includes("E-MAIL") || transcript.includes("EMAIL") ) {
         if (authData.user)
         {
           setSpeech({
