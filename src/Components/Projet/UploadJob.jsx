@@ -18,6 +18,7 @@ const UploadJob = () => {
       technologies: technologies.split(',').map(tech => tech.trim()),
       freelancersId: authData.user._id
     };
+    console.log(fullData);
 
     try {
       const response = await axios.post('https://colabhub.onrender.com/jobs/add', fullData, {
@@ -160,7 +161,7 @@ const UploadJob = () => {
           </form>
         </div>
       </div>
-      {console.log('gellllllllllllllllllllllllllo'+authData.user._id)}
+      
       <div className='w-full md:w-2/3 2xl:3/4 p-5 mt-20 md:mt-0'>
         <p className='text-gray-900 font-semibold mb-2'>Recent Job Posted</p>
         <div className='w-full flex flex-wrap gap-6'>

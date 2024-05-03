@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import '@/widgets/assets/meeting.css'; // Import du fichier CSS
 import { useAuth } from '@/pages/authContext';
 import * as faceapi from "face-api.js";
-export const VideoPlayer = ({ user , emotions}) => {
+export const VideoPlayer = ({ user }) => {
  
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -21,16 +21,12 @@ export const VideoPlayer = ({ user , emotions}) => {
 
   useEffect(() => {
   
-    videoRef
+    videoRef &&  loadModels();
 
     
  }, []);
 
- useEffect(() => {
-if(emotions)
-    loadModels();
-  
-}, []);
+
 
  const loadModels = () => {
     Promise.all([

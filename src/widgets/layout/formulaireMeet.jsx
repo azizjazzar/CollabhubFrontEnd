@@ -21,7 +21,7 @@ import nft2 from '/img/details2.jpg';
 
 
 
-export function FormulaireMeet({ open, onClose , userId,freelancers}) {
+export function FormulaireMeet({ open, onClose , userId,freelancers , pId}) {
 
     const [name, setname] = useState('');
     const [description, setDescription] = useState('');
@@ -33,6 +33,8 @@ export function FormulaireMeet({ open, onClose , userId,freelancers}) {
     const [dateEndError, setdateEndError] = useState('');
     const [currentImage, setCurrentImage] = useState(nft1);
     const [Token, setToken] = useState('');
+    
+    const [job, setjob] = useState(pId);
 
     //annimation images 
     useEffect(() => {
@@ -89,6 +91,7 @@ const frids =freelancers.map(freelancer => freelancer._id)
               ownerId:userId,
               freelancersId: frids,
               token:Token,
+              jobOffer:job,
              
             };
    
@@ -101,7 +104,7 @@ const frids =freelancers.map(freelancer => freelancer._id)
             console.log('Server response:', response.data);
       
             alert('meet created successfully');
-            setIsMeetCreated(true);
+           
           
             onClose();
           } catch (error) {
@@ -227,7 +230,7 @@ const frids =freelancers.map(freelancer => freelancer._id)
                 />
                 {/* Message d'erreur pour l'heure de début */}
                 {dateStartError && <Typography color="red">{dateStartError}</Typography>}
-                
+              
                 {/* task End */}
                 <Typography variant="h6" color="blue-gray" className="-mb-3">
                   meeting End
