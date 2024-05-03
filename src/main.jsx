@@ -10,6 +10,9 @@ import BuyProject from "./Components/GServices/buyProject";
 import QuickConsultationPage from "./Components/Consultations/QuickConsultationPage";
 import BlogList from "./Components/Blog/BlogList";
 import ServiceDetails from "./Components/GServices/serviceDetails";
+import CheckoutService from "./Components/GServices/checkoutService";
+import PostWorkPage from "./Components/GServices/postWorkPage";
+import MyRequests from "./Components/GServices/myRequests";
 import DetailsConsultation from "./Components/Consultations/DetailsConsultation";
 import BlogDetails from "./Components/Blog/BlogDetails";
 import ProjectPage from "./Components/Projet/ProjectPage";
@@ -99,6 +102,18 @@ const router = createBrowserRouter([
         path: "/serviceDetails/:serviceId",
         element: <ServiceDetails />,
     
+      },
+      {
+        path: "/checkout-service/:serviceId",
+        element: <CheckoutService />
+      },
+      {
+        path: "/postWork/:serviceId",
+        element: <PostWorkPage />
+      },
+      {
+        path: "/myRequests/:serviceId",
+        element: <MyRequests />
       },
       {
       

@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
-function ServiceCard({ title, image, deliveryTime, price, user }) {
+function ServiceCard({ title, image, deliveryTime, price, user, currentUser, serviceId }) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [totalRequests, setTotalRequests] = useState(0);
   const navigate = useNavigate();
+
+  /*useEffect(() => {
+    if (currentUser && user && user._id === currentUser._id) {
+      fetchTotalRequests();
+    }
+  }, [currentUser, user, serviceId]);*/
 
   const toggleTooltip = () => {
     setIsTooltipVisible(!isTooltipVisible);
@@ -12,10 +20,32 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
 
   const CheckProfile = (e) => {
     e.preventDefault();
-    navigate(`/profile/${user._id}`);
-  }
+    if (user && user._id) {
+      navigate(`/profile/${user._id}`);
+    }
+  };
 
+  /*const fetchTotalRequests = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/requests/total/${serviceId}`);
+      setTotalRequests(response.data.totalRequests);
+    } catch (error) {
+      console.error('Error fetching total requests:', error);
+    }
+  };*/
 
+  useEffect(() => {
+    fetchTotalRequests();
+  }, []);
+
+  const fetchTotalRequests = async () => {
+    try {
+      const response = await axios.get(`https://colabhub.onrender.com/requests/total/${serviceId}`);
+      setTotalRequests(response.data.totalRequests);
+    } catch (error) {
+      console.error('Error fetching total requests:', error);
+    }
+  };
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-6 hover:shadow-lg hover:border-orange-500 h-[480px]">
       <div className="relative h-full flex flex-col">
@@ -69,6 +99,8 @@ function ServiceCard({ title, image, deliveryTime, price, user }) {
               <div className="text-gray-600 text-sm">{user ? user.type : 'Loading'}</div>
             </div>
           </div>
+          <br></br>
+          <div className="text-gray-600 text-sm">Total Requests: {totalRequests}</div>
         </div>
       </div>
     </div>
@@ -86,6 +118,8 @@ ServiceCard.propTypes = {
     type: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
   }),
+  currentUser: PropTypes.object.isRequired,
+  serviceId: PropTypes.string.isRequired,
 };
 
 export default ServiceCard;
