@@ -149,8 +149,15 @@ const router = createBrowserRouter([
     
 
       {
+
+        path:"/meeting/:meeting",
+        element: <VideoRoomAi/>
+      },
+      
+      {
         path:"/meeting",
         element: <VideoRoom/>
+
       },
 
 
