@@ -20,8 +20,14 @@ export const VideoPlayer = ({ user , emotions}) => {
 
 
   useEffect(() => {
+    alert(emotions)
+   
+  
+
 
     videoRef
+
+    
  }, []);
 
  useEffect(() => {

@@ -37,9 +37,9 @@ function MyChats() {
 
     return (
         <div className="flex flex-col max-w-md mx-auto my-4 bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-4 bg-blue-500 text-white text-lg font-semibold flex justify-between items-center">
+            <div className="p-4 bg-gray-800 text-white text-lg font-semibold flex justify-between items-center">
                 <span>My Chats</span>
-                <button onClick={handleCreateGroupChat} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full border border-blue-500 shadow-md transition duration-300 ease-in-out">
+                <button onClick={handleCreateGroupChat} className="bg-orange-600 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-full border border-blue-500 shadow-md transition duration-300 ease-in-out">
                     Create Group Chat
                 </button>
             </div>

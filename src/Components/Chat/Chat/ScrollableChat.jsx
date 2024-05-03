@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
-import { ChatState } from "@/Context/ChatProvider"; // Ensure this import if you're using ChatState
+import { ChatState } from "@/Context/ChatProvider"; // Assurez-vous d'importer ChatState correctement
 import {
   isLastMessage,
   isSameSender,
   isSameSenderMargin,
   isSameUser,
 } from "../../../Context/ChatLogics";
+
 const ScrollableChat = ({ messages }) => {
-    const { authData } = ChatState(); // Assuming this is correctly imported and used
-    const user = authData.user; // Assuming authData contains user object with _id, adjust as per your authData structure
+    const { authData } = ChatState(); // En supposant que cela est correctement importé et utilisé
+    const user = authData.user; // En supposant que authData contient un objet utilisateur avec _id, ajustez selon la structure de votre authData
     return (
-        <div className="scrollable-chat">
+        <div className="chat-container h-full w-full">
             {messages.map((m, i) => (
                 <div key={i} className="chat-message"> {/* Corrected key to use 'i' */}
                     {(isSameSender(messages, m, i, user._id) ||
@@ -21,9 +22,10 @@ const ScrollableChat = ({ messages }) => {
                             mr={1}
                             size="sm"
                             cursor="pointer"
-                            name={m.sender.nom} // Assuming sender has a 'name' field
-                            src={m.sender.picture} // Assuming sender has a 'pic' field
+                            name={m.sender.nom} 
+                            src={m.sender.picture} 
                         />
+                        
                     )}
                     <span
                         style={{
