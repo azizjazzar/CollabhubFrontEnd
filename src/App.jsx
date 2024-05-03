@@ -44,16 +44,7 @@ function App() {
               <Alan />
             </div>
           )}
-           {!isMeeting && (
-    <div className="fixed bottom-[100px] right-8">
-    <button className="rounded-full bg-blue-500 p-2" >
-      <svg className="h-11 w-11 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15l9-5-9-5-9 5 9 5zm0 0v6m0 0l3-3m-3 3l-3-3" />
-      </svg>
-    </button>
-  </div>
-    
-          )}
+         
           
         </AuthProvider>
       </ChatProvider>
