@@ -63,7 +63,44 @@ export const VideoRoom = () => {
         };
     }, []);
 
-    const hangUp = () => {
+    const hangUp = async () => {
+        try {
+            localStorage.setItem('transcribedText', transcribedText);
+            const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
+            if (isClientAEmpty) {
+                const result = await StatistiquesService.gemini(transcribedText);
+                await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result[0], "in Progress ...", "in progress");
+            } else {
+
+                const meetingUpdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
+                const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                const userB = await authuser.getUserById(localStorage.getItem('clientB'));
+                if (localStorage.getItem('clientA') == meetingUpdate.clientAID) {
+                    meetingUpdate.clientB = transcribedText;
+                    const result2 = await StatistiquesService.gemini(transcribedText);
+                    meetingUpdate.responseClientB = result2[0];
+                    const gem = await StatistiquesService.geminiwithtext(`I will provide you with a speech about two clients. I want you to analyze the conversation and tell me if the conversation went well or not. You will return me only one word: 'confirmed', 'declined', or 'inappropriate'. (If everything is okay, return 'confirmed'; if there are insults, return 'inappropriate'; if the conversation is not correct, return 'declined'). Client A: ${userA.clientA} Client B: ${userB.clientB}`);
+                    meetingUpdate.status = gem;
+                    await StatistiquesService.updateStatistiqueById(meetingUpdate._id, meetingUpdate);
+                    if (gem === "declined") {
+                        const userA = await authuser.getUserById(localStorage.getItem('clientA'));
+                        if (userA.rate >= 0)
+                        await authuser.updatebyid(userA._id, { rate: userA.rate - 0.75 });
+                    } else if (gem === "inappropriate") {
+                        await authuser.updatebyid(userA._id, { rate: 0 });
+                    }
+                    else if (gem === "confirmed") {
+                        await authuser.updatebyid(userA._id, { rate: userA.rate+0.50 });
+                    }
+                }
+            }
+    
+            if (recognition) {
+                recognition.stop();
+            }
+        } catch (error) {
+            console.error('Error in stopSpeechToText:', error);
+        }
         localTracks.forEach(track => {
             track.stop();
             track.close();
@@ -105,43 +142,7 @@ export const VideoRoom = () => {
         };
 
         const stopSpeechToText = async () => {
-            try {
-                localStorage.setItem('transcribedText', transcribedText);
-                const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
-        
-                if (isClientAEmpty) {
-                    const result = await StatistiquesService.gemini(transcribedText);
-                    await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result[0], "in Progress ...", "in progress");
-                } else {
-                    const meetingUpdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
-                    const userA = await authuser.getUserById(localStorage.getItem('clientA'));
-                    const userB = await authuser.getUserById(localStorage.getItem('clientB'));
-                    if (localStorage.getItem('clientA') != meetingUpdate.clientAID) {
-                        meetingUpdate.clientB = transcribedText;
-                        const result2 = await StatistiquesService.gemini(transcribedText);
-                        meetingUpdate.responseClientB = result2[0];
-                        const gem = await StatistiquesService.geminiwithtext(`I will provide you with a speech about two clients. I want you to analyze the conversation and tell me if the conversation went well or not. You will return me only one word: 'confirmed', 'declined', or 'inappropriate'. (If everything is okay, return 'confirmed'; if there are insults, return 'inappropriate'; if the conversation is not correct, return 'declined'). Client A: ${userA.clientA} Client B: ${userB.clientB}`);
-                        meetingUpdate.status = gem;
-                        await StatistiquesService.updateStatistiqueById(meetingUpdate._id, meetingUpdate);
-                        if (gem === "declined") {
-                            const userA = await authuser.getUserById(localStorage.getItem('clientA'));
-                            if (userA.rate >= 0)
-                            await authuser.updatebyid(userA._id, { rate: userA.rate - 0.75 });
-                        } else if (gem === "inappropriate") {
-                            await authuser.updatebyid(userA._id, { rate: 0 });
-                        }
-                        else if (gem === "confirmed") {
-                            await authuser.updatebyid(userA._id, { rate: userA.rate+0.50 });
-                        }
-                    }
-                }
-        
-                if (recognition) {
-                    recognition.stop();
-                }
-            } catch (error) {
-                console.error('Error in stopSpeechToText:', error);
-            }
+           
         };
         
         

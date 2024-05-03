@@ -122,7 +122,7 @@ export const VideoRoomAi = () => {
             try {
                 localStorage.setItem('transcribedText', transcribedText);
                 const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
-        
+
                 if (isClientAEmpty) {
                     const result = await StatistiquesService.gemini(transcribedText);
                     await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result[0], "in Progress ...", "in progress");
@@ -131,6 +131,7 @@ export const VideoRoomAi = () => {
                     const userA = await authuser.getUserById(localStorage.getItem('clientA'));
                     const userB = await authuser.getUserById(localStorage.getItem('clientB'));
                     if (localStorage.getItem('clientA') != meetingUpdate.clientAID) {
+                       
                         meetingUpdate.clientB = transcribedText;
                         const result2 = await StatistiquesService.gemini(transcribedText);
                         meetingUpdate.responseClientB = result2[0];
