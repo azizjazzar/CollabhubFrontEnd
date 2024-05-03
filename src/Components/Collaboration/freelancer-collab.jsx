@@ -12,12 +12,14 @@ export function FreelancerCollab() {
   const { projectId ,userId } = useParams();
   const [Tasks, setTasks] = useState([]);
   const [Freelancers, setFreelancers] = useState([]);
+ 
 
   useEffect(() => {
     fetch(`https://colabhub.onrender.com/tasks/project/${projectId}`)
       .then(response => response.json())
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching tasks by project  details:", error));
+      
   }, [projectId]);
 
   useEffect(() => {
@@ -76,10 +78,11 @@ export function FreelancerCollab() {
                 <section className="relative bg-white py-16">
       
              
-              <ProjectOwnerCollab userId={userId} freelancers={Freelancers}/>
+              <ProjectOwnerCollab userId={userId} freelancers={Freelancers} projectId={projectId}/>
                 </section>
 
                 <section className="relative bg-white py-16">
+                  
                        <Collabolaratuers freelancers={Freelancers} tasks ={Tasks} projectId={projectId}/>   
                        
                     

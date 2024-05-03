@@ -1,13 +1,13 @@
-import { Menu, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react';
 import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
-import { FormulaireMeet} from "@/widgets/layout/formulaireMeet";
+import { FormulaireMeet } from "@/widgets/layout/formulaireMeet";
 import { useAuth } from '@/pages/authContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   add,
   eachDayOfInterval,
@@ -21,88 +21,75 @@ import {
   parse,
   parseISO,
   startOfToday,
-} from 'date-fns'
-import { Fragment, useState , useEffect} from 'react'
-
-
-
-
-
-
-
+} from 'date-fns';
+import { Fragment, useState , useEffect} from 'react';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 export function ProjectOwnerCollab(props) {
+  const userId = props.userId;
+  const freelancers = props.freelancers;
+  const projectId = props.projectId;
+  const [meetings, setMeetings] = useState([]);
 
-  const userId=props.userId;
-  const freelancers=props.freelancers;
-  const [ meetings, setmeetings] = useState([]);
   useEffect(() => {
-    fetch(`https://colabhub.onrender.com/meet/getmeets/${userId}`)
+    fetch(`https://colabhub.onrender.com/meet/meetings/jobOffer/${projectId}`)
       .then(response => response.json())
-      .then(data => setmeetings(data))
+      .then(data => setMeetings(data.meetings))
       .catch(error => console.error("Error fetching meets:", error));
-  }, [meetings]);
+      
+  }, [projectId]);
 
 
-  let today = startOfToday()
-  let [selectedDay, setSelectedDay] = useState(today)
-  let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-  let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+  let today = startOfToday();
+  let [selectedDay, setSelectedDay] = useState(today);
+  let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
+  let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
-  })
+  });
 
   function previousMonth() {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
+    let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
   }
 
   function nextMonth() {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
+    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
+    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
   }
 
-  let selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.dateStart), selectedDay)
-  )
+  let selectedDayMeetings = [];
+  if (Array.isArray(meetings)) {
+    selectedDayMeetings = meetings.filter((meeting) =>
+      isSameDay(parseISO(meeting.dateStart), selectedDay)
+    );
+  }
 
-  const showNotification = () => {
-    toast.success('Vous avez un meet !', {
-      position: 'top-right',
-      autoClose: 3000, // Durée d'affichage en millisecondes
-    });
+  // Fonction pour ouvrir le modal
+  const handleClick = () => {
+    setOpenModalmeet(true);
   };
 
-  function notifyMe(meetings) {
-    meetings.filter((meeting) =>
-      isSameDay(parseISO(meeting.dateStart), today)
-    ).forEach(() => showNotification());
-  }
-
-   // Fonction pour ouvrir le modal
-   const handleClick = () => {
-    setOpenModalmeet(true)
-   
- };
-
- const [OpenModalmeet, setOpenModalmeet] = useState(false);
+  const [OpenModalmeet, setOpenModalmeet] = useState(false);
 
   return (
-   
     <div className="pt-16">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
+        <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
+
+<FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)} userId={userId} freelancers={freelancers} pId={projectId} />
+{console.log(projectId)}
+</div>
           <div className="md:pr-14">
             <div className="flex items-center">
               <h2 className="flex-auto font-semibold text-gray-900">
                 {format(firstDayCurrentMonth, 'MMMM yyyy')}
-                {notifyMe(meetings)}
               </h2>
               <button
                 type="button"
@@ -110,7 +97,6 @@ export function ProjectOwnerCollab(props) {
                 className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
               >
                 <span className="sr-only">Previous month</span>
-                
                 <SlArrowLeft className="w-5 h-5" aria-hidden="true" />
               </button>
               <button
@@ -172,11 +158,12 @@ export function ProjectOwnerCollab(props) {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.dateStart), day)
-                    ) && (
-                      <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                    )}
+                  {meetings && Array.isArray(meetings) && meetings.some((meeting) =>
+                          isSameDay(parseISO(meeting.dateStart), day)
+                        ) && (
+                                <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                              )}
+
                   </div>
                 </div>
               ))}
@@ -189,51 +176,38 @@ export function ProjectOwnerCollab(props) {
                 {format(selectedDay, 'MMM dd, yyy')}
               </time>
             </h2>
-         
             <ol className="mt-4 space-y-10 text-sm leading-6 text-gray-500">
               {selectedDayMeetings.length > 0 ? (
                 selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting._id}  />
+                  <Meeting meeting={meeting} key={meeting._id} />
                 ))
               ) : (
                 <p>No meetings for today.</p>
               )}
-              <button onClick={()=>{handleClick()}}
-                              className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
-                              type="button"
-                            >
-                              Add
+
+              <button
+                onClick={handleClick}
+                className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                type="button"
+              >
+                Add
               </button>
             </ol>
           </section>
-       
-          <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
-          <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)}  userId={userId} freelancers={freelancers}/>
+
         </div>
-        
-         
-        
-        </div>
-       
       </div>
-       
-                
     </div>
-   
-  )
+  );
 }
 
-function Meeting({ meeting}) {
-
+function Meeting({ meeting }) {
   async function supprimerRessource(id) {
     try {
-      const response = await axios.delete( `https://colabhub.onrender.com/meet/delete/${id}`);
-     
-  
+      const response = await axios.delete(`https://colabhub.onrender.com/meet/delete/${id}`);
       if (response.status !== 200) {
         throw new Error('La requête de suppression a échoué.');
       }
-  
       const data = response.data;
       console.log('Ressource supprimée avec succès :', data);
       return data;
@@ -243,105 +217,87 @@ function Meeting({ meeting}) {
     }
   }
 
-  let startDateTime = parseISO(meeting.dateStart)
-  let endDateTime = parseISO(meeting.dateEnd)
-
+  let startDateTime = parseISO(meeting.dateStart);
+  let endDateTime = parseISO(meeting.dateEnd);
 
   const { authData, setAuthUserData } = useAuth();
+
   return (
-<Link to={`/meeting/${meeting._id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
-              
-             
-             
-
-    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-      <img
-         src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
-        alt=""
-        className="flex-none w-10 h-10 rounded-full"
-      />
-      <div className="flex-auto">
-        <p className="text-gray-900">{meeting.name}</p>
-        <p className="mt-0.5">
-          <time dateTime={meeting.dateStart}>
-            {format(startDateTime, 'h:mm a')}
-          </time>{' '}
-          -{' '}
-          <time dateTime={meeting.dateEnd}>
-            {format(endDateTime, 'h:mm a')}
-          </time>
-        </p>
-      </div>
-      <Menu
-        as="div"
-        className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
-      >
-        <div>
-          <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
-            <span className="sr-only">Open options</span>
-         
-            <PiDotsThreeVerticalLight className="w-6 h-6" aria-hidden="true" />
-          </Menu.Button>
+    <Link to={`/meeting/${meeting._id}`} className="group border p-1 rounded-lg cursor-pointer -mb-6 hover:bg-gray-200 hover:text-gray">
+      <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+        <img
+          src={`https://colabhub.onrender.com/images/${authData.user?.picture}`}
+          alt=""
+          className="flex-none w-10 h-10 rounded-full"
+        />
+        <div className="flex-auto">
+          <p className="text-gray-900">{meeting.name}</p>
+          <p className="mt-0.5">
+            <time dateTime={meeting.dateStart}>
+              {format(startDateTime, 'h:mm a')}
+            </time>{' '}
+            -{' '}
+            <time dateTime={meeting.dateEnd}>
+              {format(endDateTime, 'h:mm a')}
+            </time>
+          </p>
         </div>
-
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
+        <Menu
+          as="div"
+          className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="py-1">
-              <Menu.Item>
-                {({ active }) => (
-                  <Link to={`/suggestion/${meeting.name}/${meeting._id}`}
-                
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm'
-                    )}
-                  >
-                  
-                    Suggestions 
-                  </Link>
-                )}
-               
-              </Menu.Item>
-            
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                  onClick={(e) => {
-                    e.preventDefault(); // Empêche le comportement par défaut du lien
-                    supprimerRessource(meeting._id); // Appelle la fonction de suppression
-                  }}
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm'
-                    )}
-                   
-                  >
-                    Delete
-                  </button>
-                )}
-              </Menu.Item>
-            </div>
-         
-          </Menu.Items>
-        </Transition>
-      </Menu>
-    </li>
-    
-     
+          <div>
+            <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
+              <span className="sr-only">Open options</span>
+              <PiDotsThreeVerticalLight className="w-6 h-6" aria-hidden="true" />
+            </Menu.Button>
+          </div>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <Menu.Item>
+                  {({ active }) => (
+                    <Link to={`/suggestion/${meeting.name}/${meeting._id}`}
+                      className={classNames(
+                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                        'block px-4 py-2 text-sm'
+                      )}
+                    >
+                      Suggestions
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault(); // Empêche le comportement par défaut du lien
+                        supprimerRessource(meeting._id); // Appelle la fonction de suppression
+                      }}
+                      className={classNames(
+                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                        'block px-4 py-2 text-sm'
+                      )}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </Menu.Item>
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      </li>
     </Link>
-
-
-   
-
-  ) 
+  );
 }
 
 let colStartClasses = [
@@ -352,5 +308,6 @@ let colStartClasses = [
   'col-start-5',
   'col-start-6',
   'col-start-7',
-]
-export  default ProjectOwnerCollab;
+];
+
+export default ProjectOwnerCollab;
