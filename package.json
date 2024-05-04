@@ -60,6 +60,7 @@
     "react-select-country-list": "^2.2.3",
     "react-simple-chatbot": "^0.6.1",
     "react-speech-recognition": "^3.10.0",
+    "react-spring": "^9.7.3",
     "react-toastify": "^10.0.4",
     "react-typed": "^2.0.12",
     "react-webcam": "^7.2.0",

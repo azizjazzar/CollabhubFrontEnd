@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { FaUser, FaPlus, FaSearch, FaMoon, FaSun, FaTrash, FaRegSmile } from 'react-icons/fa';
+import React, { useState, useContext } from 'react';
 import { IoMdSend } from 'react-icons/io';
 import SideDrawer from './SideDrawer';
 import MyChats from './MyChats';
@@ -7,50 +6,37 @@ import { formatRelative } from 'date-fns'; // For formatting message timestamps
 import ChatBox from './ChatBox';
 import { ChatState } from '@/Context/ChatProvider';
 
+// Custom hook for managing theme
+
+
 const ChatPages = () => {
-  const { authData } = ChatState();
-  const user = authData?.user;
-  const [theme, setTheme] = useState('light'); // Manage theme state
-  const [message, setMessage] = useState(''); // Mock message input state
+    const { authData } = ChatState();
+    const user = authData?.user;
 
-  // Dummy messages for demonstration
-  const dummyMessages = [
-    { id: 1, text: 'Hello there!', sender: 'user', timestamp: new Date() },
-    { id: 2, text: 'Hi! How can I help you today?', sender: 'other', timestamp: new Date() },
-  ];
+  return user ? (
+        <div className="flex flex-col h-screen overflow-hidden">
+            <header className="flex items-center justify-between p-4 md:p-6 bg-gray-800 text-white">
+                {user && <SideDrawer />}
+                {/* Additional header content can be placed here */}
+            </header>
 
-  // Toggle theme between light and dark
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+            <div className="flex flex-1 overflow-hidden">
+                <aside className="hidden md:block md:w-1/3 lg:w-1/4 bg-gray-200 overflow-y-auto">
+                    {user && <MyChats />}
+                </aside>
 
-
-
-  return (
-    <div className={`flex flex-col h-screen overflow-hidden mt-10 ${theme}`}>
-      <header className="flex items-center justify-between p-4 md:p-6 bg-gray-800 text-white mt-10">
-        {user && <SideDrawer />}
-        <div className="flex items-center space-x-4">
-          <FaSearch className="cursor-pointer hover:text-gray-300" />
-          <button onClick={toggleTheme}>
-            {theme === 'light' ? <FaMoon className="cursor-pointer hover:text-gray-300" /> : <FaSun className="cursor-pointer hover:text-gray-300" />}
-          </button>
-          <FaTrash className="cursor-pointer hover:text-gray-300" />
-          <FaUser className="cursor-pointer hover:text-gray-300" />
+                <main className="flex-1 flex flex-col overflow-hidden">
+                    <div className="flex-grow overflow-auto">
+                        {user && <ChatBox />}
+                    </div>
+                </main>
+            </div>
         </div>
-      </header>
-
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="w-1/4 bg-gray-200 overflow-auto">
-          {user && <MyChats />}
-        </aside>
-
-        <main className="flex-1 p-4 overflow-auto">
-          <div className="flex items-center justify-between mb-4">
-            {user && <ChatBox/>}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+    ) : (
+        <div className="flex items-center justify-center h-screen">
+            <p className="text-xl">Please log in to view this page.</p>
+        </div>
+    );
 };
 
 export default ChatPages;

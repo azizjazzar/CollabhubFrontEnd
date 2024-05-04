@@ -18,7 +18,7 @@ const UploadJob = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:3000/jobs/add', fullData, {
+      const response = await axios.post('https://colabhub.onrender.com/jobs/add', fullData, {
         headers: { "Content-Type": "application/json" },
       });
       alert('Job posted successfully!');
@@ -32,7 +32,7 @@ const UploadJob = () => {
    useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/jobs/get/');
+        const response = await axios.get('https://colabhub.onrender.com/jobs/get/');
         setJobs(response.data.slice(0, 4)); // Assuming the API returns an array of jobs
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
