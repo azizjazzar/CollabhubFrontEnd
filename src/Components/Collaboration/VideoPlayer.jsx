@@ -42,7 +42,9 @@ export const VideoPlayer = ({ user }) => {
  const faceDetection = async () => {
     setInterval(async() => {
       const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-          
+   
+      
+      
        
  canvasRef.current.innerHtml = faceapi.createCanvasFromMedia
                                (videoRef.current);
