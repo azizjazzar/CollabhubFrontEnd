@@ -88,12 +88,19 @@ function CardsConsultations({ handleSearchInput, consultationsPerPage, currentPa
   // Pagination
   const indexOfLastConsultation = currentPage * consultationsPerPage;
   const indexOfFirstConsultation = indexOfLastConsultation - consultationsPerPage;
-  const currentConsultations = filteredConsultations.length ? filteredConsultations.slice(indexOfFirstConsultation, indexOfLastConsultation) : consultations.slice(indexOfFirstConsultation, indexOfLastConsultation);
+  const currentConsultations = filteredConsultations.length ? filteredConsultations : consultations;
+  const filteredCons = currentConsultations.filter(consultation => {
+    const today = new Date(); 
+    const availabilityStart = new Date(consultation.availabilityStart); 
+    return availabilityStart > today; 
+  });
+
+  const paginatedConsultations = filteredCons.slice(indexOfFirstConsultation, indexOfLastConsultation);
 
   return (
     <main className="w-3/4 p-4 space-y-3">
       <Autosuggest {...autosuggestProps} />
-      {currentConsultations.map(consultation => (
+      {paginatedConsultations.map(consultation => (
         <div className="mb-4 relative" key={consultation._id}>
           <div className="bg-white rounded-lg shadow-md p-4 space-y-2 transition duration-300 ease-in-out hover:shadow-lg">
             <div className="flex items-center">

@@ -42,9 +42,18 @@ function QuickConsultationPage() {
     fetch("https://colabhub.onrender.com/consultations/Consultations")
       .then(response => response.json())
       .then(data => {
-        setConsultations(data);
-        // Calculate page numbers
-        const totalPageNumbers = Math.ceil(data.length / consultationsPerPage);
+        // Filter consultations based on availabilityStart
+        const filteredConsultations = data.filter(consultation => {
+          const today = new Date(); 
+          const availabilityStart = new Date(consultation.availabilityStart); 
+          return availabilityStart > today; 
+        });
+  
+        // Set filtered consultations
+        setConsultations(filteredConsultations);
+  
+        // Calculate page numbers based on filtered consultations
+        const totalPageNumbers = Math.ceil(filteredConsultations.length / consultationsPerPage);
         const pageNumbersArray = [];
         for (let i = 1; i <= totalPageNumbers; i++) {
           pageNumbersArray.push(i);
@@ -53,6 +62,14 @@ function QuickConsultationPage() {
       })
       .catch(error => console.error("Error fetching consultations:", error));
   }, []);
+  
+
+  // Filtrer les consultations en fonction de la date avant de les passer à CardsConsultations
+  const filteredConsultations = consultations.filter(consultation => {
+    const today = new Date(); 
+    const availabilityStart = new Date(consultation.availabilityStart); 
+    return availabilityStart > today; 
+  });
 
   return (
     <div>
@@ -80,7 +97,7 @@ function QuickConsultationPage() {
             handleSearchInput={handleSearchInput}
             consultationsPerPage={consultationsPerPage}
             currentPage={currentPage}
-            consultations={consultations}
+            consultations={filteredConsultations} // Utiliser les consultations filtrées
           />
         </div>
         <br></br>
@@ -93,7 +110,6 @@ function QuickConsultationPage() {
       {/* Footer */}
       <Footer />
       {/* Pass the setCurrentPage function as paginate prop */}
-     
     </div>
   );
 }
