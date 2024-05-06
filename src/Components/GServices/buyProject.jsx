@@ -88,9 +88,14 @@ const BuyProject = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Créer une liste de numéros de page
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(services.length / servicesPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <>
-      
       <section className="px-4 pt-20 pb-48 mt-10 p-10">
         <div className="container mx-auto">
           <section className="relative bg-white py-16">
@@ -134,8 +139,8 @@ const BuyProject = () => {
               <div key={service._id}>
                 {service.freelancerId === staticFreelancerId ? (
                   <Link to={`/myRequests/${service._id}`}>
-                  <ServiceCardWrapper service={service} authenticationService={authenticationService} serviceId={service._id} />
-                </Link>
+                    <ServiceCardWrapper service={service} authenticationService={authenticationService} serviceId={service._id} />
+                  </Link>
                 
                 ) : (
                   <Link to={`/serviceDetails/${service._id}`}>
@@ -146,8 +151,8 @@ const BuyProject = () => {
             ))}
           </div>
           <Pagination
-            servicesPerPage={servicesPerPage}
-            totalServices={services.length}
+            pageNumbers={pageNumbers}
+            currentPage={currentPage}
             paginate={paginate}
           />
         </div>
@@ -185,24 +190,22 @@ const ServiceCardWrapper = ({ service, authenticationService }) => {
   );
 };
 
-const Pagination = ({ servicesPerPage, totalServices, paginate }) => {
-  const pageNumbers = [];
-
-  for (let i = 1; i <= Math.ceil(totalServices / servicesPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
+const Pagination = ({ pageNumbers, currentPage, paginate }) => {
   return (
-    <nav className="mt-4">
-      <ul className="pagination">
-        {pageNumbers.map(number => (
-          <li key={number} className="page-item">
-            <button onClick={() => paginate(number)} className="page-link">
-              {number}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <nav className="mt-4 flex justify-center">
+      {pageNumbers.map((number) => (
+        <button
+          key={number}
+          onClick={() => paginate(number)}
+          className={
+            currentPage === number
+              ? "bg-blue-500 text-white px-4 py-2 mx-1 rounded-full focus:outline-none"
+              : "bg-white text-gray-700 px-4 py-2 mx-1 rounded-full hover:bg-gray-200 focus:outline-none"
+          }
+        >
+          {number}
+        </button>
+      ))}
     </nav>
   );
 };
