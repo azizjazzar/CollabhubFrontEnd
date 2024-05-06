@@ -109,7 +109,7 @@ const SearchResult = ({ result }) => {
           projectId: projectId,
         };
   
-        console.log('Sending request with data:', formData);
+
   
         const response = await axios.post('https://colabhub.onrender.com/tasks', formData);
   

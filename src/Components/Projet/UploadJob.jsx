@@ -14,11 +14,12 @@ const UploadJob = () => {
   const { authData, setAuthUserData } = useAuth();
   const onSubmit = async (data) => {
     const fullData = {
+      ownerId:authData.user._id,
       ...data,
       technologies: technologies.split(',').map(tech => tech.trim()),
       freelancersId: authData.user._id
     };
-    console.log(fullData);
+ 
 
     try {
       const response = await axios.post('https://colabhub.onrender.com/jobs/add', fullData, {

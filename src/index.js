@@ -13,6 +13,7 @@ export * from "@/widgets/layout/formulaireConsultation";
 export * from "@/widgets/layout/formulaireTask";
 export * from "@/widgets/layout/formulaireMeet";
 export * from "@/widgets/layout/SuggestionComponent";
+export * from "@/Components/Collaboration/addFreelancer";
 
 
 
