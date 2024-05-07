@@ -15,8 +15,11 @@ const Chatbot = () => {
                 stream: false
             });
 
-            setBotResponses([...botResponses, { type: 'user', content: userMessage }]);
-            setBotResponses([...botResponses, { type: 'bot', content: response.data.response }]);
+            setBotResponses(prevResponses => [
+                ...prevResponses,
+                { type: 'user', content: userMessage },
+                { type: 'bot', content: response.data.response }
+            ]);
             setUserMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
@@ -47,7 +50,7 @@ const Chatbot = () => {
                         <button className="close-button" onClick={toggleChatbot}>X</button>
                     </div>
                     <div className="chat-messages">
-                        {botResponses.map((message, index) => (
+                        {botResponses.slice().reverse().map((message, index) => (
                             <div key={index} className={message.type === 'user' ? 'user-message' : 'bot-message'}>
                                 {message.type === 'user' ? 'You: ' : 'Bot: '}
                                 {message.content}
@@ -67,7 +70,6 @@ const Chatbot = () => {
             )}
         </div>
     );
-    
 };
 
 export default Chatbot;
