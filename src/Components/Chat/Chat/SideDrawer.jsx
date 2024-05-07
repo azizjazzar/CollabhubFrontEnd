@@ -67,7 +67,7 @@ const { authData, setSelectedChat, addOrUpdateChat, chats } = useContext(ChatCon
 
     return (
         <div className="relative">
-            <button onClick={(e) => { e.stopPropagation(); onOpen(); }} className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onClick={(e) => { e.stopPropagation(); onOpen(); }} className="flex items-center  bg-orange-600 text-white font-semibold py-2 px-4 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-white" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3-9H7a1 1 0 000 2h6a1 1 0 000-2z" clipRule="evenodd" />
                 </svg>

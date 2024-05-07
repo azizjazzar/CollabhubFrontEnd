@@ -10,6 +10,9 @@ import BuyProject from "./Components/GServices/buyProject";
 import QuickConsultationPage from "./Components/Consultations/QuickConsultationPage";
 import BlogList from "./Components/Blog/BlogList";
 import ServiceDetails from "./Components/GServices/serviceDetails";
+import CheckoutService from "./Components/GServices/checkoutService";
+import PostWorkPage from "./Components/GServices/postWorkPage";
+import MyRequests from "./Components/GServices/myRequests";
 import DetailsConsultation from "./Components/Consultations/DetailsConsultation";
 import BlogDetails from "./Components/Blog/BlogDetails";
 import ProjectPage from "./Components/Projet/ProjectPage";
@@ -27,6 +30,8 @@ import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
 import Layout from "./BackOffice/src/components/shared/Layout";
 import Dashboard from "./BackOffice/src/pages/Dashboard";
 import { VideoRoom } from "./Components/Consultations/VideoRoom";
+import JobApllicationsOffers from "./Components/Projet/JobApllicationsOffers";
+import JobsBackOffice from "./BackOffice/src/pages/JobsBackOffice";
 
 
 
@@ -50,7 +55,13 @@ const router = createBrowserRouter([
           {
             path: "usersSatistique", 
             element: <UsersSatistique />
+          },
+
+           {
+            path: "jobsBackOffice", 
+            element: <JobsBackOffice />
           }
+          
         ]
       },
       {
@@ -101,6 +112,18 @@ const router = createBrowserRouter([
     
       },
       {
+        path: "/checkout-service/:serviceId",
+        element: <CheckoutService />
+      },
+      {
+        path: "/postWork/:serviceId",
+        element: <PostWorkPage />
+      },
+      {
+        path: "/myRequests/:serviceId",
+        element: <MyRequests />
+      },
+      {
       
         path: "/sign-in",
         element: <SignIn/>,
@@ -149,8 +172,15 @@ const router = createBrowserRouter([
     
 
       {
+
+        path:"/meeting/:meeting",
+        element: <VideoRoomAi/>
+      },
+      
+      {
         path:"/meeting",
         element: <VideoRoom/>
+
       },
 
 
@@ -180,6 +210,12 @@ const router = createBrowserRouter([
         path: "/payment-success",
         element: <PaymentSuccess />
       },
+
+      {
+        path: "/apllication",
+        element: <JobApllicationsOffers />
+      },
+      
  
       
     ],

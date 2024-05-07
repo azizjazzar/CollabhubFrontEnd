@@ -13,9 +13,11 @@ const BuyProject = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [servicesPerPage] = useState(8); // Nombre de services par page
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // Ajout de l'état loading
   const { authData } = useAuth();
   const authenticationService = new AuthenticationService();
-
+  const staticFreelancerId = authData?.user?._id;
+  
   useEffect(() => {
     fetchServices();
   }, []);
@@ -53,9 +55,17 @@ const BuyProject = () => {
     'Other'
   ];
 
-  const handleWorkWithUsClick = () => {
-    // Logique à exécuter lors du clic sur le bouton "Add Your Service"
-    // Par exemple, rediriger l'utilisateur vers une autre page ou effectuer une autre action
+  const fetchMyOwnServices = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`https://colabhub.onrender.com/services/byFreelancer/${staticFreelancerId}`);
+      setServices(response.data); // Mettre à jour les services avec les données récupérées
+      console.log('My Own Services:', response.data);
+    } catch (error) {
+      console.error('Error fetching My Own Services:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filterServicesByDomain = async (domain) => {
@@ -96,6 +106,16 @@ const BuyProject = () => {
                   </button>
                 </div>
               )}
+              {authData.user && (
+                <div className="custom-button relative mb--1">
+                  <button
+                    onClick={fetchMyOwnServices}
+                    className="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                  >
+                    My Own Services
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex justify-center mt-10 space-x-4">
               {expertiseDomains.map((domain, index) => (
@@ -112,9 +132,16 @@ const BuyProject = () => {
           <div className="mt-18 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {currentServices.map(service => (
               <div key={service._id}>
-                <Link to={`/serviceDetails/${service._id}`}>
-                  <ServiceCardWrapper service={service} authenticationService={authenticationService} />
+                {service.freelancerId === staticFreelancerId ? (
+                  <Link to={`/myRequests/${service._id}`}>
+                  <ServiceCardWrapper service={service} authenticationService={authenticationService} serviceId={service._id} />
                 </Link>
+                
+                ) : (
+                  <Link to={`/serviceDetails/${service._id}`}>
+                    <ServiceCardWrapper service={service} authenticationService={authenticationService} serviceId={service._id} />
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -153,6 +180,7 @@ const ServiceCardWrapper = ({ service, authenticationService }) => {
       deliveryTime={String(service.deliveryTime)} 
       price={String(service.pricing.starter)} 
       user={userData}
+      serviceId={service._id} // Passer serviceId comme prop à ServiceCard
     />
   );
 };

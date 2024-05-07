@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/pages/authContext";
 import axios from "axios";
+import { loadStripe } from '@stripe/stripe-js';
 
 const ServiceDetails = () => {
   const { serviceId } = useParams();
@@ -11,16 +12,47 @@ const ServiceDetails = () => {
   const [deliveryTime, setDeliveryTime] = useState("");
   const navigate = useNavigate();
   const { authData } = useAuth();
-
+  const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
+  const staticFreelancerId = authData?.user?._id;
+  
   const handleTierChange = (event) => {
     setSelectedTier(event.target.value);
   };
 
-  const makePayment = () => {
-    if (!authData.user) {
-      navigate('/sign-in');
-    } else {
-      alert(`Continue ($${tierPrices[selectedTier]})`);
+  const makePayment = async () => {
+    console.log("Service ID:", serviceId); // Assurez-vous que le serviceId est correctement récupéré
+
+    try {
+      const response = await fetch("https://colabhub.onrender.com/payment/create-checkout-service", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: tierPrices[selectedTier],
+          serviceId: serviceId, // Ajoutez le serviceId ici
+
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création de la session de paiement");
+      }
+  
+      const session = await response.json();
+  
+      const stripe = await stripePromise;
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.sessionId,
+      });
+  
+      if (result.error) {
+        console.error(result.error.message);
+      } else {
+        console.log("Redirection réussie");
+      }
+    } catch (error) {
+      console.error('Erreur lors du paiement:', error);
     }
   };
 
@@ -122,19 +154,12 @@ const ServiceDetails = () => {
                 <div className="my-2 text-sm text-gray-500">
                   <i className="fas fa-info-circle text-xs mr-1"></i> {deliveryTime} days delivery — {calculateDeliveryDate()} Revisions may occur after this date.
                 </div>
-
                 <button
                   type="button"
                   className="w-full bg-orange-500 text-white py-2 px-4 rounded mt-4 hover:bg-orange-600"
                   onClick={makePayment}
                 >
                   Continue (${tierPrices[selectedTier]})
-                </button>
-                <button
-                  type="button"
-                  className="w-full bg-transparent text-orange-500 py-2 px-4 rounded mt-2 hover:bg-orange-100"
-                >
-                  Message
                 </button>
               </div>
             )}
@@ -146,3 +171,4 @@ const ServiceDetails = () => {
 };
 
 export default ServiceDetails;
+ 

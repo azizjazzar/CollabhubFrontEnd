@@ -4,18 +4,21 @@ import axios from "axios";
 import TextInput from "./TextInput"; // Adjusted TextInput component
 import CustomButton from "./CustomButton"; // Assuming you have this component
 import ProjectCards from "./ProjectCards";
+import { useAuth } from "@/pages/authContext";
 
 const UploadJob = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [technologies, setTechnologies] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [jobs, setJobs] = useState([]); // State to store fetched jobs
-
+  const { authData, setAuthUserData } = useAuth();
   const onSubmit = async (data) => {
     const fullData = {
       ...data,
       technologies: technologies.split(',').map(tech => tech.trim()),
+      freelancersId: authData.user._id
     };
+    console.log(fullData);
 
     try {
       const response = await axios.post('https://colabhub.onrender.com/jobs/add', fullData, {
@@ -28,12 +31,14 @@ const UploadJob = () => {
     }
   };
 
-
+    
    useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await axios.get('https://colabhub.onrender.com/jobs/get/');
+
         setJobs(response.data.slice(0, 4)); // Assuming the API returns an array of jobs
+        
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
         setErrMsg("Failed to fetch jobs");
@@ -157,6 +162,7 @@ const UploadJob = () => {
           </form>
         </div>
       </div>
+      
       <div className='w-full md:w-2/3 2xl:3/4 p-5 mt-20 md:mt-0'>
         <p className='text-gray-900 font-semibold mb-2'>Recent Job Posted</p>
         <div className='w-full flex flex-wrap gap-6'>

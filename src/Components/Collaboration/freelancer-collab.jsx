@@ -12,12 +12,14 @@ export function FreelancerCollab() {
   const { projectId ,userId } = useParams();
   const [Tasks, setTasks] = useState([]);
   const [Freelancers, setFreelancers] = useState([]);
+ 
 
   useEffect(() => {
     fetch(`https://colabhub.onrender.com/tasks/project/${projectId}`)
       .then(response => response.json())
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching tasks by project  details:", error));
+      
   }, [projectId]);
 
   useEffect(() => {
@@ -76,10 +78,11 @@ export function FreelancerCollab() {
                 <section className="relative bg-white py-16">
       
              
-              <ProjectOwnerCollab userId={userId} freelancers={Freelancers}/>
+              <ProjectOwnerCollab userId={userId} freelancers={Freelancers} projectId={projectId}/>
                 </section>
 
                 <section className="relative bg-white py-16">
+                  
                        <Collabolaratuers freelancers={Freelancers} tasks ={Tasks} projectId={projectId}/>   
                        
                     
@@ -182,14 +185,14 @@ function Collabolaratuers(props){
                       
                         <span className= {  Selected === 1 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
                       </button>
-                  
+                 {/*
                      <button onClick={() => HandleSelected(2)} className={NavSelection(2)}>
                       Chat
                       
                         <span  className= {  Selected === 2 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } 
                        x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">6</span>
                       </button>
-                  
+                  */ } 
                   
                 </nav>
 

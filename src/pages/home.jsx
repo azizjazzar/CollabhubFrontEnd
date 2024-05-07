@@ -35,7 +35,7 @@ export function Home() {
 
   const handleButtonClick = (buttonNumber) => {
     if (buttonNumber === 1) {
-      navigate("/alan")
+      navigate("/jobs")
     } else if (buttonNumber === 2) {
       navigate("/buyProject");
 

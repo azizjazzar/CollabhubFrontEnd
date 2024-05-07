@@ -20,7 +20,8 @@ import nft2 from '/img/details2.jpg';
 
 
 
-export function FormulaireMeet({ open, onClose , userId,freelancers}) {
+
+export function FormulaireMeet({ open, onClose , userId,freelancers , pId}) {
 
     const [name, setname] = useState('');
     const [description, setDescription] = useState('');
@@ -31,6 +32,9 @@ export function FormulaireMeet({ open, onClose , userId,freelancers}) {
     const [dateStartError, setdateStartError] = useState('');
     const [dateEndError, setdateEndError] = useState('');
     const [currentImage, setCurrentImage] = useState(nft1);
+    const [Token, setToken] = useState('');
+    
+    const [job, setjob] = useState(pId);
 
     //annimation images 
     useEffect(() => {
@@ -40,7 +44,37 @@ export function FormulaireMeet({ open, onClose , userId,freelancers}) {
     
         return () => clearInterval(interval);
       }, []);
-         
+        
+      
+        // Helper function to generate a random channel name starting with "collabhub" followed by random digits
+  const generateRandomChannelName = () => {
+    const randomNumber = Math.floor(Math.random() * 10000);
+    return `collabhub${randomNumber}`;
+  };
+   // Function to get meeting token
+   const getToken = async (channel, expiration) => {
+    try {
+      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${expiration}`);
+      const token = response.data.token;
+      setToken(token);
+   
+    } catch (error) {
+      console.error('Error fetching meeting token:', error);
+    }
+  };
+
+
+  useEffect(() => {
+
+    const channelName = generateRandomChannelName();
+    
+    // Dynamically generate expiration date (7 days from today)
+    const expirationDays = 7; // Change this value as needed
+    const expirationTimestamp = Math.floor((new Date().getTime() / 1000) + (expirationDays * 24 * 60 * 60));
+    
+    getToken("collabhub", expirationTimestamp);
+
+  }, []);
    
 const frids =freelancers.map(freelancer => freelancer._id)
 
@@ -56,6 +90,8 @@ const frids =freelancers.map(freelancer => freelancer._id)
               dateEnd: dateEnd,
               ownerId:userId,
               freelancersId: frids,
+              token:Token,
+              jobOffer:job,
              
             };
    
@@ -68,6 +104,8 @@ const frids =freelancers.map(freelancer => freelancer._id)
             console.log('Server response:', response.data);
       
             alert('meet created successfully');
+           
+          
             onClose();
           } catch (error) {
             console.error('Error creating meet:', error);
@@ -192,7 +230,7 @@ const frids =freelancers.map(freelancer => freelancer._id)
                 />
                 {/* Message d'erreur pour l'heure de début */}
                 {dateStartError && <Typography color="red">{dateStartError}</Typography>}
-                
+              
                 {/* task End */}
                 <Typography variant="h6" color="blue-gray" className="-mb-3">
                   meeting End
