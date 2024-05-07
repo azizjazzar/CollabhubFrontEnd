@@ -8,6 +8,7 @@ import { useAuth } from "@/pages/authContext";
 import SimpleForm from './SimpleForm';  
 import Chatbot from './ChatBot';
 import './BlogDetails.css';
+import { Avatar, Typography } from "@material-tailwind/react";
 
 
 
@@ -152,11 +153,13 @@ const BlogDetails = () => {
         {comments.length > 0 ? comments.map((comment) => (
           <div key={comment._id} className="bg-white p-6 mb-6 rounded-md shadow-md">
             <div className="flex items-center mb-4">
-              <img
-                src={comment.user && comment.user.picture ? `https://colabhub.onrender.com/images/${comment.user.picture}` : '/img/team-11.JPG'}
-                alt="User" className="w-10 h-10 rounded-full mr-3"
-              />
-              <span className="text-gray-700 font-semibold">{comment.user ? `${comment.user.nom} ${comment.user.prenom}` : 'Idriss el bessi'}</span>
+            <Avatar
+                  src={`https://colabhub.onrender.com/images/${authData?.user.picture}`}
+                  alt="Profile picture"
+                  variant="circular"
+                  className="h-10 w-10 mr-2"
+                />
+              <span className="text-gray-700 font-semibold">{comment.user ? `${comment.user.nom} ${comment.user.prenom }` : authData.user.nom+" "+authData.user.prenom}</span>
             </div>
             <p className="text-gray-800">{comment.text}</p>
             <div className="flex items-center mt-4">

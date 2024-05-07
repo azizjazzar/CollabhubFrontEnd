@@ -49,7 +49,7 @@ const BlogList = () => {
        // Fonction pour exécuter la route de mise à jour dans le backend
        const handleScrape = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/scraping/scrape');
+            const response = await axios.get('https://colabhub.onrender.com/scraping/scrape');
             console.log('Scraping successful:', response.data);
             // Rafraîchir la liste des blogs après la mise à jour
             fetchBlogs();
