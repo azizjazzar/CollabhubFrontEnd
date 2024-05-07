@@ -14,7 +14,6 @@ export function UsersSatistique() {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log("lena", champ)
             // Récupérer les données utilisateur pour userA et userB
             const userDataA = await Authservice.getUserById(champ.clientAID);
             const userDataB = await Authservice.getUserById(champ.clientBID);

@@ -10,6 +10,7 @@ import Chatbot from './ChatBot';
 import './BlogDetails.css';
 
 
+
 const BlogDetails = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);

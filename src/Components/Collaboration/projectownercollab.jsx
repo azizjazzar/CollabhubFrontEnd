@@ -40,7 +40,7 @@ export function ProjectOwnerCollab(props) {
       .then(data => setMeetings(data.meetings))
       .catch(error => console.error("Error fetching meets:", error));
       
-  }, [projectId]);
+  }, [meetings]);
 
 
   let today = startOfToday();

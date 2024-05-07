@@ -4,7 +4,13 @@ import { Footer } from '../..';
 import { useParams } from 'react-router-dom';
 import ProjectOwnerCollab from './projectownercollab';
 import FormulaireTask from "@/widgets/layout/formulaireTask";
-
+import { useAuth } from "@/pages/authContext";
+import { Select } from '@mui/material';
+import AddFreelancer from './addFreelancer';
+import {
+ 
+  Typography,
+} from "@material-tailwind/react"
 
 export function FreelancerCollab() {
 
@@ -12,7 +18,6 @@ export function FreelancerCollab() {
   const { projectId ,userId } = useParams();
   const [Tasks, setTasks] = useState([]);
   const [Freelancers, setFreelancers] = useState([]);
- 
 
   useEffect(() => {
     fetch(`https://colabhub.onrender.com/tasks/project/${projectId}`)
@@ -28,6 +33,8 @@ export function FreelancerCollab() {
       .then(data => setFreelancers(data))
       .catch(error => console.error("Error fetching tasks by project  details:", error));
   }, [projectId]);
+
+
 
 
 
@@ -76,13 +83,21 @@ export function FreelancerCollab() {
 
 
                 <section className="relative bg-white py-16">
-      
+                <Typography className="mb-4 text-center text-2xl font-bold text-gray-600">
+                      Meetings
+                    </Typography>
+
              
               <ProjectOwnerCollab userId={userId} freelancers={Freelancers} projectId={projectId}/>
                 </section>
 
                 <section className="relative bg-white py-16">
-                  
+                <Typography className="mb-4 text-center text-2xl font-semibold text-gray-600">
+                  My Team
+                </Typography>
+  
+
+                            
                        <Collabolaratuers freelancers={Freelancers} tasks ={Tasks} projectId={projectId}/>   
                        
                     
@@ -123,31 +138,40 @@ export function FreelancerCollab() {
 }
 
 function Collabolaratuers(props){
-
+ const  projectId=props.projectId;
   const [openModalTask, setOpenModalTask] = useState(false);
-  const  projectId=props.projectId;
+  const [showModal, setShowModal] = useState(false);
   // Fonction pour ouvrir le modal
   const handleClick = () => {
-    Selected === 1 ? setOpenModalTask(true) : null ; 
+    Selected === 1 ? setOpenModalTask(true) : Selected === 0  ? setShowModal(true)   : null
+   
    
  };
+    
 
     const [Selected, setSelected] = useState(0);
     const freelancers = props.freelancers;
     const tasks = props.tasks;
-  
+    const [Project, setProject] = useState([]);
+  const { authData, setAuthUserData } = useAuth();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 2;
+    const itemsPerPage = 4  ;
     // Calculer le nombre total de pages
     const calculTotalPages=() => { return Selected === 0 ? Math.ceil(freelancers.length / itemsPerPage) : Selected === 1  ? Math.ceil(tasks.length / itemsPerPage) : 0};
    const totalPages = calculTotalPages();
-    console.log(totalPages);
     // Calculer l'index de début et de fin pour les éléments à afficher sur la page actuelle
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const num = navigationNumbers(totalPages); 
-  
+
+    useEffect(() => {
+      fetch(`https://colabhub.onrender.com/jobs/get/${projectId}`)
+        .then(response => response.json())
+        .then(data => setProject(data))
+        .catch(error => console.error("Error fetching  project :", error));
+    }, [projectId]);
+
     const handlePageChange = (newPage) => {
       setCurrentPage(newPage);
     };
@@ -172,6 +196,8 @@ function Collabolaratuers(props){
    
             <div className="hidden sm:block">
               <div className="border-b border-gray-200">
+              <AddFreelancer  open={showModal} handleOpen ={ () => setShowModal(!showModal)}  projectId={projectId} />
+            
               <nav className="mt-2 -mb-px flex justify-center space-x-8" aria-label="Tabs">
                   
                     <button onClick={() => HandleSelected(0)} className={NavSelection(0)} >
@@ -185,6 +211,7 @@ function Collabolaratuers(props){
                       
                         <span className= {  Selected === 1 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
                       </button>
+                    
                  {/*
                      <button onClick={() => HandleSelected(2)} className={NavSelection(2)}>
                       Chat
@@ -207,12 +234,13 @@ function Collabolaratuers(props){
 
           </ul>
           <div className="flex items-center justify-center mb-5 mt-5">
-          <button onClick={()=>{handleClick()}}
+            {Project.ownerId === authData.user._id ?  <button onClick={()=>{handleClick()}}
                 className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
                 type="button"
               >
                 Add
-        </button>
+        </button> : null}
+          
         <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
         <FormulaireTask open={openModalTask} onClose={() => setOpenModalTask(false)} projectid={projectId}/>
       </div>
