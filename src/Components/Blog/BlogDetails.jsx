@@ -156,7 +156,7 @@ const BlogDetails = () => {
                 src={comment.user && comment.user.picture ? `https://colabhub.onrender.com/images/${comment.user.picture}` : '/img/team-11.JPG'}
                 alt="User" className="w-10 h-10 rounded-full mr-3"
               />
-              <span className="text-gray-700 font-semibold">{comment.user ? `${comment.user.nom} ${comment.user.prenom}` : 'Rania hachem'}</span>
+              <span className="text-gray-700 font-semibold">{comment.user ? `${comment.user.nom} ${comment.user.prenom}` : 'Idriss el bessi'}</span>
             </div>
             <p className="text-gray-800">{comment.text}</p>
             <div className="flex items-center mt-4">
