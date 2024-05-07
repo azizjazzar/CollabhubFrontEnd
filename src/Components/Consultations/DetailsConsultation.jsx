@@ -181,7 +181,7 @@ function DetailsConsultation() {
                 <FaVideo className="mr-2" />
                 <span style={{ fontSize: '16px' }}>Meet Now</span>
               </label>
-              <span className="text-gray-500 dark:text-gray-400">the available date is {formatDate(consultationDetails.availabilityStart)} at {formatDate(consultationDetails.availabilityEnd)}</span>
+              <span className="text-gray-500 dark:text-gray-400">the available date is {formatDate(consultationDetails.availabilityStart)} </span>
             </div>
             <br />
             

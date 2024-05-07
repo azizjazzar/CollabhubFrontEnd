@@ -25,9 +25,20 @@ const BuyProject = () => {
   const fetchServices = async () => {
     try {
       const response = await axios.get("https://colabhub.onrender.com/services/services");
+      const servicesWithRequests = await Promise.all(response.data.map(async (service) => {
+        try {
+          const totalRequestsResponse = await axios.get(`https://colabhub.onrender.com/requests/total/${service._id}`);
+          const totalRequests = totalRequestsResponse.data.totalRequests || 0;
+          return { ...service, totalRequests };
+        } catch (error) {
+          console.error(`Error fetching total requests for service ${service._id}:`, error);
+          return { ...service, totalRequests: 0 };
+        }
+      }));
 
-      setServices(response.data);
-      localStorage.setItem("services", JSON.stringify(response.data));
+      const sortedServices = servicesWithRequests.sort((a, b) => b.totalRequests - a.totalRequests);
+      setServices(sortedServices);
+      localStorage.setItem("services", JSON.stringify(sortedServices));
 
     } catch (error) {
       console.error("Error fetching services:", error);
