@@ -10,7 +10,7 @@ import ChatPages from "./Components/Chat/Chat/ChatPages";
 function App() {
   const routes = [
     { name: 'Home', path: '/' },
-    { name: 'Find Project', path: '/jobs' },
+    { name: 'Projects', path: '/jobs' },
     { name: 'Collaboration', path: '/collaboration' },
     { name: 'Consultation', path: '/do-a-quick-consultation' },
     { name: 'Service', path: '/buyProject' },

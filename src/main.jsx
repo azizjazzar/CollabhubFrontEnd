@@ -216,7 +216,7 @@ const router = createBrowserRouter([
         element: <JobApllicationsOffers />
       },
       
- 
+
       
     ],
   },
