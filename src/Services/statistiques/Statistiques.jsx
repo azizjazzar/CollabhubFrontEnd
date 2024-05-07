@@ -150,7 +150,32 @@ async geminiwithtext(trans) {
     console.error("Error fetching data from the OpenAI API:", error);
   }
 };
-
+async geminiMoodPrecise(trans) {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/geminiMoodPrecise`,
+      {
+        text: trans
+      }
+    );
+    return res.data.answer;
+  } catch (error) {
+    console.error("Error fetching data from the OpenAI API:", error);
+  }
+};
+async gemini2Client(trans) {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/gemini2Client`,
+      {
+        text: trans
+      }
+    );
+    return res.data.answer;
+  } catch (error) {
+    console.error("Error fetching data from the OpenAI API:", error);
+  }
+};
 
 
 }

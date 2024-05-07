@@ -96,7 +96,7 @@ function QuickConsultationPage() {
     } else if (priceFilter === ">60") {
         return consultation.prixParMinute > 60;
     } else {
-        return true; // Retourne true si aucun filtre n'est appliqué
+        return true; 
     }
 }) : filteredConsultations;
 
