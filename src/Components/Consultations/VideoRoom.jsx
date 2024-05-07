@@ -148,7 +148,6 @@ export const VideoRoom = () => {
                 const isClientAEmpty = await StatistiquesService.isClientAEmptyInDatabase(TOKEN, CHANNEL);
                 if (isClientAEmpty) {
                     const result = await StatistiquesService.geminiMoodPrecise(transcribedText);
-                    alert(result)
                     await StatistiquesService.addStatistique(localStorage.getItem('clientA'), localStorage.getItem('clientB'), transcribedText, 'in Progress ...', TOKEN, CHANNEL, result, "in Progress ...", "in progress");
                 } else {
                     const meetingUpdate = await StatistiquesService.getMetting(TOKEN, CHANNEL);
@@ -158,9 +157,9 @@ export const VideoRoom = () => {
     
                     if (localStorage.getItem('clientA') == meetingUpdate.clientAID) {
                         meetingUpdate.clientB = transcribedText;
-                        const result2 = await StatistiquesService.geminiMoodPrecise(transcribedText);
-                        meetingUpdate.responseClientB = result2[0];
-                        const gem = await StatistiquesService.gemini2Client(`Client A: ${userA.clientA} Client B: ${userB.clientB}`);
+                        const result2 = await StatistiquesService.geminiMoodPrecise(meetingUpdate.clientB);
+                        meetingUpdate.responseClientB = result2;
+                        const gem = await StatistiquesService.gemini2Client(`Client A: ${userA.clientA} \n Client B: ${userB.clientB}`);
                         meetingUpdate.status = gem;
                         await StatistiquesService.updateStatistiqueById(meetingUpdate._id, meetingUpdate);
                         if (gem === "declined") {
