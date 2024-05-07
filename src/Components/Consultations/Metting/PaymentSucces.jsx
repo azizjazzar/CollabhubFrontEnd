@@ -27,14 +27,25 @@ function PaymentSuccess() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (meetingUrl && masterEmail && clientEmail) {
+      sendEmails(masterEmail, clientEmail, meetingUrl);
+    }
+  }, [meetingUrl, masterEmail, clientEmail]);
+
   const sendEmails = async (masterEmail, clientEmail, meetingUrl) => {
     try {
-      const response = await axios.post("https://colabhub.onrender.com/api/auth/email", {
+      const responseMaster = await axios.post("https://colabhub.onrender.com/api/auth/email", {
         masteremail: masterEmail,
+        message: meetingUrl
+      });
+      console.log("Master Email sent successfully:", responseMaster.data);
+
+      const responseClient = await axios.post("https://colabhub.onrender.com/api/auth/email", {
         clientemail: clientEmail,
         message: meetingUrl
       });
-      console.log("Emails sent successfully:", response.data);
+      console.log("Client Email sent successfully:", responseClient.data);
     } catch (error) {
       console.error("Error sending emails:", error);
     }
