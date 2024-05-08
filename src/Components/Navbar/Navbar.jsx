@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { Fragment , useState,useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Navbar as MTNavbar, Typography, IconButton } from "@material-tailwind/react";
@@ -7,6 +7,9 @@ import logoSrc from "/public/img/logoshih.png";
 import { useAuth } from "@/pages/authContext";
 import { AnimatePresence, motion } from "framer-motion"; 
 import { Button } from "flowbite-react";
+import { Menu, Popover, Transition } from '@headlessui/react'
+import classNames from 'classnames'
+import { HiOutlineBell, HiOutlineSearch, HiOutlineChatAlt } from 'react-icons/hi'
 
 function Navbar({ brandName, routes, action }) {
   
@@ -41,7 +44,8 @@ function Navbar({ brandName, routes, action }) {
 
 
   const navList = (
-    <ul className="flex flex-col gap-2 text-inherit justify-center lg:flex-row lg:items-center lg:gap-6">
+    <div className="w-full h-full">
+    <ul className="flex text-inherit justify-center flex-row gap-6 w-full">
       {routes.map(({ name, path, icon, href, target }) => (
         (authData.user && (name === "sign in" || name === "sign up")) ? null : (
           <Typography
@@ -84,20 +88,29 @@ function Navbar({ brandName, routes, action }) {
                     
       
       {authData.user && (
-          <div className="profile relative ml-24" onClick={toggleProfileDropdown}>
-              <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="User Image" className="user-image w-9 h-9 rounded-full" />
+          <div className="profile relative flex row gap-4" >
+               <div className={classNames(
+                   open && 
+                   'group inline-flex items-center rounded-sm p-1.5 text-gray-700 hover:text-opacity-100 focus:outline-none active:bg-gray-100 pl-[80px]' 
+                 )}>
+
+                 <HiOutlineChatAlt fontSize={24} onClick={() => navigate("/messagerie")} />
+
+            </div>
+            <div className="" onClick={toggleProfileDropdown} >
+              <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="User Image" className="user-image w-10 h-10 rounded-full" />
             <AnimatePresence>
               {showProfileDropdown && (
                 <motion.div
-                  className="profile-dropdown absolute bg-blue-gray-50 border border-gray-200 rounded-lg shadow-md p-2 pb top-11 -left-28"
+                  className="profile-dropdown absolute bg-blue-gray-50 border border-gray-200 rounded-lg shadow-md p-2 pb top-11 w-[190px] -left-[1px]"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ul className="text-black w-56">
-                    <li className="flex items-center ml-9 relative pt-2 pb-2">
-                      <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="Logo" className="h-10 w-10 mr-3 rounded-full" />
+                  <ul className="text-black w-full">
+                    <li className="flex items-center  relative pt-2 pb-2">
+                      <img src={`https://colabhub.onrender.com/images/${authData.user?.picture}`} alt="Logo" className="h-8 w-8 mr-3 rounded-full" />
                       <span>{authData.user.nom} {authData.user.prenom}</span>
                     </li>
                     <span className="absolute left-0 w-full h-[1px] bg-black my-1"></span>
@@ -105,7 +118,7 @@ function Navbar({ brandName, routes, action }) {
                       <Button  className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">Profile</Button>
                   </li>
                   
-                    <li className="flex items-center justify-center pt-3" onClick={() => navigate(`/apllication`)}>
+                    <li className="flex items-center justify-center " onClick={() => navigate(`/apllication`)}>
                     <Button  className="hover:text-orange-400 text-black focus:ring-0 focus:outline-none">My Projects</Button>
                     </li>
                     <li className="flex items-center justify-center" >
@@ -118,16 +131,53 @@ function Navbar({ brandName, routes, action }) {
                 </motion.div>
               )}
             </AnimatePresence>
-            
-          </div>
+            </div>
+           
+         
+         {
+          /*
+         <Popover className="relative ">
+           {({ open }) => (
+             <>
+               <Popover.Button
+                 className={classNames(
+                   open && 'bg-gray-100',
+                   'group inline-flex items-center rounded-sm p-1.5 text-gray-700 hover:text-opacity-100 focus:outline-none active:bg-gray-100'
+                 )}
+               >
+                 <HiOutlineBell fontSize={24} />
+               </Popover.Button>
+               <Transition
+                 as={Fragment}
+                 enter="transition ease-out duration-200"
+                 enterFrom="opacity-0 translate-y-1"
+                 enterTo="opacity-100 translate-y-0"
+                 leave="transition ease-in duration-150"
+                 leaveFrom="opacity-100 translate-y-0"
+                 leaveTo="opacity-0 translate-y-1"
+               >
+                 <Popover.Panel className="absolute right-0 z-10 mt-2.5 transform w-80">
+                   <div className="bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5">
+                     <strong className="text-gray-700 font-medium">Notifications</strong>
+                     <div className="mt-2 py-1 text-sm">This is notification panel.</div>
+                   </div>
+                 </Popover.Panel>
+               </Transition>
+             </>
+           )}
+         </Popover>
+         */
+      }
+         
+         </div>
         )}
-        {//Fin
-        }
+       
     </ul>
+    </div>
   );
 
   return (
-    <div className="w-full  fixed z-50 bg-white top-0 flex items-center pl-[200px]">
+    <div className="w-full  fixed z-50 bg-white top-0 flex items-center ">
       <MTNavbar color="transparent">
         <div className="mx-auto flex items-center justify-between text-black">
           <Link to="/">

@@ -17,11 +17,7 @@ export function AddFreelancer({open,handleOpen,projectId}) {
   const [freelancer, setfreelancer] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("le job id est  " +projectId) ; 
-   
-  
-  
+    e.preventDefault();  
     setfreelancer("") ;
   
     try {

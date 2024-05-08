@@ -200,16 +200,17 @@ function Collabolaratuers(props){
             
               <nav className="mt-2 -mb-px flex justify-center space-x-8" aria-label="Tabs">
                   
-                    <button onClick={() => HandleSelected(0)} className={NavSelection(0)} >
-                    Collborators
+                    <button onClick={() => HandleSelected(0)} className={NavSelection(0)}   style={{ color: 'black' }}
+ >
+                    Collaborators 
                       
-                        <span className= {  Selected === 0 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state:on="Current" x-state:off="Default" x-state-description="Current: &quot;bg-purple-100 text-purple-600&quot;, Default: &quot;bg-gray-100 text-gray-900&quot;">{freelancers.length}</span>
+                        <span className= {  Selected === 0 ?   "bg-gray-100 text-orange-50-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state:on="Current" x-state:off="Default" x-state-description="Current: &quot;bg-purple-100 text-purple-600&quot;, Default: &quot;bg-gray-100 text-gray-900&quot;">{freelancers.length}</span>
                       </button>
                   
-                    <button  onClick={() => HandleSelected(1)} className={NavSelection(1)}>
+                    <button  onClick={() => HandleSelected(1)} className={NavSelection(1)}  style={{ color: 'black' }} >
                       Tasks
                       
-                        <span className= {  Selected === 1 ?   "bg-purple-100 text-purple-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state-description="undefined: &quot;bg-purple-100 text-purple-600&quot;, undefined: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
+                        <span className= {  Selected === 1 ?   "bg-gray-100 text-orange-50-600 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" : "bg-gray-100 text-gray-900 hidden ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block" } x-state:on="Current" x-state:off="Default" x-state-description="Current: &quot;bg-purple-100 text-purple-600&quot;, Default: &quot;bg-gray-100 text-gray-900&quot;">{tasks.length}</span>
                       </button>
                     
                  {/*
@@ -235,10 +236,10 @@ function Collabolaratuers(props){
           </ul>
           <div className="flex items-center justify-center mb-5 mt-5">
             {Project.ownerId === authData.user._id ?  <button onClick={()=>{handleClick()}}
-                className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
                 type="button"
               >
-                Add
+{Selected === 0 ? <span>Add New Member to this Project</span> : <span>Add New Task</span>}
         </button> : null}
           
         <div className={openModalTask ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>

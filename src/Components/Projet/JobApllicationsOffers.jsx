@@ -55,8 +55,14 @@ const JobApplicationsOffers = () => {
     setLoading(false);
   };
 
-  const startChatWithApplicant = async (applicantId) => {
+  const startChatWithApplicant = async (applicantId,jobid) => {
     try {
+      const formData = {
+        jobId: jobid,
+        freelancerId : applicantId,
+        
+      };
+      await axios.post(`https://colabhub.onrender.com/jobs/add/${jobid}/${applicantId}`,formData);
       const response = await axios.post(
         `https://colabhub.onrender.com/chat/acceschat`,
         { userId: applicantId },
@@ -117,7 +123,7 @@ const JobApplicationsOffers = () => {
                   </Button>
                 </Tooltip>
               )}
-              <Button onClick={() => startChatWithApplicant(app.applicantId._id)}>Approve & Chat</Button>
+              <Button onClick={() => startChatWithApplicant(app.applicantId._id,selectedJob._id)}>Approve & Chat</Button>
             </div>
           ))
         ) : <p>No applications found for this job.</p>}

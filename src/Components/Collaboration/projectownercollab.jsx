@@ -187,10 +187,10 @@ export function ProjectOwnerCollab(props) {
 
               <button
                 onClick={handleClick}
-                className="flex-shrink-0 bg-teal-300 hover:bg-teal-700 border-teal-300 hover:border-teal-700 text-sm border-4 text-white py-0.5 px-1 rounded"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
                 type="button"
               >
-                Add
+                Add metting now 
               </button>
             </ol>
           </section>
