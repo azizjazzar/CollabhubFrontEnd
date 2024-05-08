@@ -8,7 +8,7 @@ const EndMeetingPage = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
             <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-5xl dark:text-white">
-                Vous avez quitté la réunion 
+                You Left The Meeting! 
             </h1>
             <div style={{ marginTop: '20px' }}>
                 <button
@@ -16,13 +16,13 @@ const EndMeetingPage = () => {
                     className="bg-transparent hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
                     style={{ marginRight: '10px' }}
                 >
-                    Réintégrer à la réunion
+                    Reintegrate The Meeting
                 </button>
                 <button
                     onClick={() => window.location.href = '/'}
                     className="bg-transparent hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
                 >
-                    Revenir à la page d'accueil
+                    Go Back To Home Page
                 </button>
             </div>
         </div>
