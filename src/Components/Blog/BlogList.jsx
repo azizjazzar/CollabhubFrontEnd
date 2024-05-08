@@ -12,6 +12,7 @@ import Fuse from 'fuse.js';
 import Chatbot from './ChatBot';
 
 
+
 const BlogList = () => {
     const { authData } = useAuth();
     const [blogs, setBlogs] = useState([]);
@@ -44,6 +45,21 @@ const BlogList = () => {
                 });
         });
     };
+
+       // Fonction pour exécuter la route de mise à jour dans le backend
+       const handleScrape = async () => {
+        try {
+            const response = await axios.get('https://colabhub.onrender.com/scraping/scrape');
+            console.log('Scraping successful:', response.data);
+            // Rafraîchir la liste des blogs après la mise à jour
+            fetchBlogs();
+        } catch (error) {
+            console.error('Error scraping:', error);
+        }
+    };
+
+
+
 
     const fetchBlogs = async () => {
         try {
@@ -164,18 +180,24 @@ const BlogList = () => {
                 alt="Blog Background"
                 className="w-full h-[450px] mb-8"
             />
+<div className="flex justify-between items-center mb-8">
+    <div className="text-3xl font-bold">Latest Blog Posts</div>
+    <div className="flex items-center">
+        <button
+            onClick={toggleSortOrder}
+            className="bg-gray-800 p-2 rounded text-white hover:bg-orange-600 mr-4"
+        >
+            Sort by Date {sortByDate === 'asc' ? 'Ascending' : 'Descending'}
+        </button>
+        <button
+            onClick={handleScrape}
+            className="bg-gray-800 text-white px-4 py-2 rounded-md"
+        >
+            Update
+        </button>
+    </div>
+</div>
 
-            <div className="flex justify-between items-center mb-8">
-                <div className="text-3xl font-bold">Latest Blog Posts</div>
-                <div>
-                    <button
-                        onClick={toggleSortOrder}
-                        className="bg-orange-500 p-2 rounded text-white hover:bg-orange-600"
-                    >
-                        Sort by Date {sortByDate === 'asc' ? 'Ascending' : 'Descending'}
-                    </button>
-                </div>
-            </div>
 
             <div className="mb-4">
                 <input
@@ -210,7 +232,7 @@ const BlogList = () => {
     </button>
     <button
         onClick={() => setSelectedCategory('Design')}
-        className={`border p-2 rounded-md ${selectedCategory === 'Design' ? 'bg-orange-500 text-white' : 'bg-gray-700'}`}
+        className={`border p-2 rounded-md ${selectedCategory === 'Design' ? 'bg-orange-550 text-white' : 'bg-gray-700'}`}
     >
         Design
     </button>

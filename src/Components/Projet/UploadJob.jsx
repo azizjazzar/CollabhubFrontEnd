@@ -19,6 +19,9 @@ const UploadJob = () => {
       technologies: technologies.split(',').map(tech => tech.trim()),
       freelancersId: authData.user._id
     };
+
+      console.log("data", fullData);
+
  
 
     try {
@@ -26,6 +29,8 @@ const UploadJob = () => {
         headers: { "Content-Type": "application/json" },
       });
       alert('Job posted successfully!');
+
+      console.log("job details", response)
     } catch (error) {
       const errorMessage = error.response?.data.message || 'Failed to post job';
       setErrMsg(errorMessage);
@@ -36,7 +41,8 @@ const UploadJob = () => {
    useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('https://colabhub.onrender.com/jobs/get');
+        const response = await axios.get('https://colabhub.onrender.com/jobs/get/');
+
         setJobs(response.data.slice(0, 4)); // Assuming the API returns an array of jobs
         
       } catch (error) {

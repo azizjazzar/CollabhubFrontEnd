@@ -6,6 +6,7 @@ import axios from "axios";
 import CustomButton from "./CustomButton";
 import ProjectCards from "./ProjectCards";
 import { Footer } from "@/index";
+import ApplyForm from "./ApplyForm";
 
 const ProjectDetail = () => {
     let navigate = useNavigate();
@@ -47,9 +48,7 @@ const ProjectDetail = () => {
         setShowModal(false);
     };
 
-    const redirectToChat = () => {
-        navigate("/messagerie");
-    };
+ 
 
     return (
         <div className="container mx-auto px-4 md:px-20 py-10">
@@ -215,23 +214,18 @@ const ProjectDetail = () => {
                                         <FaUserCircle className="text-blue-600 h-6 w-6" />
                                     </div>
                                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900">Start a Conversation</h3>
+                                        <h3 className="text-lg leading-6 font-medium text-gray-900">Post your Application</h3>
                                         <div className="mt-2">
-                                            <p className="text-sm leading-5 text-gray-500">
-                                                By clicking the button below, you will start a conversation with the client to express your interest in this project.
-                                            </p>
+                                                                  <ApplyForm />
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                    <button onClick={redirectToChat} type="button" className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                        Start Conversation
-                                    </button>
-                                </span>
+                               
                                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                    <button onClick={closeModal} type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                    <button onClick={closeModal} type="button" className="inline-flex justify-center w-full rounded-md border border-gray-900 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Cancel
                                     </button>
                                 </span>

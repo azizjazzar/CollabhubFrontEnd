@@ -3,7 +3,7 @@ import { IoBagHandle, IoPieChart, IoPeople, IoCart } from 'react-icons/io5';
 import Statistiques from '@/Services/statistiques/Statistiques';
 import AuthenticationService from '@/Services/Authentification/AuthentificationService';
 
-const pollingInterval = 5000; // Interval de polling en millisecondes
+const pollingInterval = 5000; 
 
 export default function DashboardStatsGrid() {
     const StatistiquesService = new Statistiques();

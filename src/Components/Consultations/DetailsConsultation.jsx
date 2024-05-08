@@ -7,7 +7,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from "@/pages/authContext";
 import axios from 'axios'; // Importer axios pour les requêtes HTTP
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
-
+import iconFour from '/img/clap.png'; 
+import Statistiques from '@/Services/statistiques/Statistiques';
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
   const [consultationDetails, setConsultationDetails] = useState({});
@@ -15,6 +16,8 @@ function DetailsConsultation() {
   const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
   const navigate = useNavigate();
   const authenticationService = new AuthenticationService();
+  const StatistiquesService = new Statistiques();
+
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
     "60min": consultationDetails.prixParMinute * 2,
@@ -82,11 +85,8 @@ function DetailsConsultation() {
       });
   
       const session = await response.json();
-      localStorage.setItem('master', users[consultationDetails.freelancerId]?.email);
-      localStorage.setItem('client', authData.user.email );
-      localStorage.setItem('clientA', users[consultationDetails.freelancerId]._id);
-      localStorage.setItem('clientB', authData.user._id );
-            const stripe = await stripePromise;
+      await getToken(users[consultationDetails.freelancerId]._id,authData.user._id)
+      const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({
         sessionId: session.sessionId,
       });
@@ -102,7 +102,32 @@ function DetailsConsultation() {
     }
   };
   
-
+  const generateRandomAlphaNumericString = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 12; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+  const getToken = async (clienta,clientb) => {
+    try {
+      const expirationDays = 7;
+      const expirationTimestamp = Math.floor((new Date().getTime() / 1000) + (expirationDays * 24 * 60 * 60));
+      const channel = generateRandomAlphaNumericString();
+      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${expirationTimestamp}`);
+      const token = response.data.token;
+      const encodedToken = encodeURIComponent(token);
+      const message = `http://localhost:5173/meeting?token=${encodedToken}&channel=${channel}`;
+      await StatistiquesService.addStatistique(clienta,clientb, 'in Progress ...' ,'in Progress ...', encodedToken, channel, 'in Progress ...', 'in Progress ...', 'in Progress ...');
+      localStorage.setItem('token', encodedToken);
+      localStorage.setItem('channel', channel);
+      setMeetingUrl(message);
+    } catch (error) {
+      console.error('Error fetching meeting token:', error);
+    }
+  };
 
   
   
@@ -146,7 +171,7 @@ function DetailsConsultation() {
             </p>
             {/* domaineExpertise user details */}
             <br />
-            <p className="font-bold text-black-700 border-b border-gray-200 text-sm pr-2">Get personalized advice on:</p>
+          
             <div className="flex space-x-4">
               {/* Placeholder pour les détails */}
             </div>
@@ -162,14 +187,14 @@ function DetailsConsultation() {
             <div className="flex items-center justify-between my-2">
               <label htmlFor="30min" className="flex items-center">
                 <input type="radio" id="30min" name="duration" value="30min" checked={selectedTier === "30min"} onChange={handleTierChange} className="w-4 h-4" />
-                <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium">30 minutes</span>
+                <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium" style={{ fontFamily: 'Montserrat, sans-serif' }} >30 minutes</span>
               </label>
               <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">${consultationDetails.prixParMinute}</span>
             </div>
             <div className="flex items-center justify-between my-2">
               <label htmlFor="60min" className="flex items-center">
                 <input type="radio" id="60min" name="duration" value="60min" checked={selectedTier === "60min"} onChange={handleTierChange} className="w-4 h-4" />
-                <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium">60 minutes</span>
+                <span className="ml-2 text-gray-800 dark:text-gray-300 font-medium" style={{ fontFamily: 'Montserrat, sans-serif' }}>60 minutes</span>
               </label>
               <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">${consultationDetails.prixParMinute * 2}</span>
             </div>
@@ -180,16 +205,11 @@ function DetailsConsultation() {
                 <FaVideo className="mr-2" />
                 <span style={{ fontSize: '16px' }}>Meet Now</span>
               </label>
-              <span className="text-gray-500 dark:text-gray-400">Next available date {formatDate(consultationDetails.availabilityStart)} at {formatDate(consultationDetails.availabilityEnd)}</span>
+              <span className="text-gray-500 dark:text-gray-400">the available date is {formatDate(consultationDetails.availabilityStart)} </span>
             </div>
             <br />
-            <div>
-              <a href="#moreTimes" className="text-orange-500 underline font-medium">See more times</a>
-            </div>
-            <div className="flex items-center text-base font-normal leading-tight text-gray-500 dark:text-gray-300 ms-3">
-              <i className="fas fa-envelope text-lg mr-2"></i>
-              <span className="line-clamp-1">You can share details with Mariusz </span>
-            </div>
+            
+          
 
             <button
               type="button"
@@ -198,7 +218,8 @@ function DetailsConsultation() {
             >
               Continue (${selectedPrice})
             </button>
-
+            <br></br>
+           
             <br />
             <br />
             <br />

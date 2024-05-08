@@ -18,38 +18,25 @@ export function SideBarConsultations({ setPriceFilter }) {
 
       {/* side bar price 30min */}
       <div className="bg-white p-4 rounded shadow">
-        <p className="font-bold text-lg mb-2 text-blue-500">Price per 30 min</p>
-        <label className="block">
-          <input type="radio" name="price30min" className="form-radio text-blue-500" value="<30" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$30 and below</span>
-        </label>
-        <label className="block mt-2">
-          <input type="radio" name="price30min" className="form-radio text-blue-500" value="30-60" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$30 - $60</span>
-        </label>
-        <label className="block mt-2">
-          <input type="radio" name="price30min" className="form-radio text-blue-500" value=">60" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$60 & above</span>
-        </label>
-      </div>
-
-      {/* side bar price 60min */}
-      <div className="bg-white p-4 rounded shadow">
-        <p className="font-bold text-lg mb-2 text-blue-500">Price per 60 min</p>
-        <label className="block">
-          <input type="radio" name="price60min" className="form-radio text-blue-500" value="<60" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$60 and below</span>
-        </label>
-        <label className="block mt-2">
-          <input type="radio" name="price60min" className="form-radio text-blue-500" value="60-120" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$60 - $120</span>
-        </label>
-        <label className="block mt-2">
-          <input type="radio" name="price60min" className="form-radio text-blue-500" value=">120" onChange={handlePriceFilterChange} />
-          <span className="text-black-600 mb-5 text-sm ml-2">$120 & above</span>
-        </label>
-      </div>
-    </aside>
+      <p className="font-bold text-lg mb-2 text-gray-800">Prices</p>
+      <label className="block">
+        <input type="radio" name="price30min" className="form-radio text-blue-500" style={{ transform: 'scale(1.5)' }} value="all" onChange={handlePriceFilterChange} />
+        <span className="text-gray-800 mb-5 text-base ml-2 " style={{ fontFamily: 'Montserrat, sans-serif' }}>Tous</span>
+      </label>
+      <label className="block mt-2">
+        <input type="radio" name="price30min" className="form-radio text-blue-500" style={{ transform: 'scale(1.5)' }} value="<30" onChange={handlePriceFilterChange} />
+        <span className="text-gray-800 mb-5 text-base ml-2 " style={{ fontFamily: 'Montserrat, sans-serif' }}>$30 and below</span>
+      </label>
+      <label className="block mt-2">
+        <input type="radio" name="price30min" className="form-radio text-blue-500" style={{ transform: 'scale(1.5)' }} value="30-60" onChange={handlePriceFilterChange} />
+        <span className="text-gray-800 mb-5 text-base ml-2 " style={{ fontFamily: 'Montserrat, sans-serif' }}>$30 - $60</span>
+      </label>
+      <label className="block mt-2">
+        <input type="radio" name="price30min" className="form-radio text-blue-500" style={{ transform: 'scale(1.5)' }} value=">60" onChange={handlePriceFilterChange} />
+        <span className="text-gray-800 mb-5 text-base ml-2 " style={{ fontFamily: 'Montserrat, sans-serif' }}>$60 & above</span>
+      </label>
+    </div>
+  </aside>
   );
 }
 

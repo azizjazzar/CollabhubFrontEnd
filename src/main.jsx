@@ -30,6 +30,8 @@ import { UsersSatistique } from "./BackOffice/src/components/usersSatistique";
 import Layout from "./BackOffice/src/components/shared/Layout";
 import Dashboard from "./BackOffice/src/pages/Dashboard";
 import { VideoRoom } from "./Components/Consultations/VideoRoom";
+import JobApllicationsOffers from "./Components/Projet/JobApllicationsOffers";
+import JobsBackOffice from "./BackOffice/src/pages/JobsBackOffice";
 
 
 
@@ -54,7 +56,13 @@ const router = createBrowserRouter([
           {
             path: "usersSatistique", 
             element: <UsersSatistique />
+          },
+
+           {
+            path: "jobsBackOffice", 
+            element: <JobsBackOffice />
           }
+          
         ]
       },
       {
@@ -203,10 +211,14 @@ const router = createBrowserRouter([
         path: "/payment-success",
         element: <PaymentSuccess />
       },
-   
-     
-     
- 
+
+
+      {
+        path: "/apllication",
+        element: <JobApllicationsOffers />
+      },
+      
+
       
     ],
   },

@@ -38,18 +38,26 @@ async isClientAEmptyInDatabase(token, channel) {
 }
 async getMetting(token, channel) {
   try {
-      // Effectuer une requête à la base de données pour vérifier si le champ clientA est vide
-      const response = await axios.post(`${BASE_URL}/meeting-token-channel`, {
-          token,
-          channel
-      });
-      return response.data;
+    // Vérifie si le token contient "%2Fi" avant de le remplacer
+    console.log(token)
+    if (token.includes("%2")) {
+      token = token.replace("%2", "/");
+      console.log("jdid"+token)
+    }
+    // Envoie une requête POST avec les données du token et du canal
+    const response = await axios.post(`${BASE_URL}/meeting-token-channel`, {
+      token: token,
+      channel: channel
+    });
+
+    const meetingData = response.data;
+    return meetingData;
   } catch (error) {
-      console.error("Error checking if clientA is empty in the database:", error);
-      return true; 
+    // Gère les erreurs
+    console.error("Erreur lors de la récupération de la réunion:", error);
+    throw error; // Tu peux choisir de gérer l'erreur ici ou de la relancer pour la gérer ailleurs
   }
 }
-
 
   async getAllStatistiques() {
     try {
@@ -150,7 +158,32 @@ async geminiwithtext(trans) {
     console.error("Error fetching data from the OpenAI API:", error);
   }
 };
-
+async geminiMoodPrecise(trans) {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/geminiMoodPrecise`,
+      {
+        text: trans
+      }
+    );
+    return res.data.answer;
+  } catch (error) {
+    console.error("Error fetching data from the OpenAI API:", error);
+  }
+};
+async gemini2Client(trans) {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/gemini2Client`,
+      {
+        text: trans
+      }
+    );
+    return res.data.answer;
+  } catch (error) {
+    console.error("Error fetching data from the OpenAI API:", error);
+  }
+};
 
 
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsClipboard } from "react-icons/bs";
+import Statistiques from "@/Services/statistiques/Statistiques";
 
 function PaymentSuccess() {
   const [masterEmail, setMasterEmail] = useState("");
@@ -9,32 +10,43 @@ function PaymentSuccess() {
   const [showAlert, setShowAlert] = useState(true);
   const [copied, setCopied] = useState(false);
   const [copyBubble, setCopyBubble] = useState(false); // État pour contrôler l'affichage de la bulle de copie
+  const StatistiqueService =new Statistiques();
+
+
+
 
   useEffect(() => {
-    const masterEmailFromStorage = localStorage.getItem('master');
-    const clientEmailFromStorage = localStorage.getItem('client');
-    setMasterEmail(masterEmailFromStorage);
-    setClientEmail(clientEmailFromStorage);
-    const channelName = generateRandomChannelName();
-    const expirationDays = 7;
-    const expirationTimestamp = Math.floor((new Date().getTime() / 1000) + (expirationDays * 24 * 60 * 60));
-    getToken(channelName, expirationTimestamp);
-    
+    const token = localStorage.getItem('token');
+    const channel = localStorage.getItem('channel');
+    const message = `http://localhost:5173/meeting?token=${token}&channel=${channel}`;
+    setMeetingUrl(message);
+
+  
     const timer = setTimeout(() => {
-      setShowAlert(false);
+        setShowAlert(false);
     }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timer);}, []);
+
+  useEffect(() => {
+    if (meetingUrl && masterEmail && clientEmail) {
+      sendEmails(masterEmail, clientEmail, meetingUrl);
+    }
+  }, [meetingUrl, masterEmail, clientEmail]);
 
   const sendEmails = async (masterEmail, clientEmail, meetingUrl) => {
     try {
-      const response = await axios.post("https://colabhub.onrender.com/api/auth/email", {
+      const responseMaster = await axios.post("https://colabhub.onrender.com/api/auth/email", {
         masteremail: masterEmail,
+        message: meetingUrl
+      });
+      console.log("Master Email sent successfully:", responseMaster.data);
+
+      const responseClient = await axios.post("https://colabhub.onrender.com/api/auth/email", {
         clientemail: clientEmail,
         message: meetingUrl
       });
-      console.log("Emails sent successfully:", response.data);
+      console.log("Client Email sent successfully:", responseClient.data);
     } catch (error) {
       console.error("Error sending emails:", error);
     }
@@ -60,7 +72,6 @@ function PaymentSuccess() {
   // Fonction pour copier l'URL de la réunion dans le presse-papiers
   const copyToClipboard = () => {
     navigator.clipboard.writeText(meetingUrl);
-    // Afficher le message "Copied!" pendant 2 secondes
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
