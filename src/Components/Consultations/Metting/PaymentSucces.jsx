@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsClipboard } from "react-icons/bs";
 import Statistiques from "@/Services/statistiques/Statistiques";
-
+import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 function PaymentSuccess() {
   const [masterEmail, setMasterEmail] = useState("");
   const [clientEmail, setClientEmail] = useState("");
@@ -11,28 +11,42 @@ function PaymentSuccess() {
   const [copied, setCopied] = useState(false);
   const [copyBubble, setCopyBubble] = useState(false); // État pour contrôler l'affichage de la bulle de copie
   const StatistiqueService =new Statistiques();
+const userservice = new AuthenticationService();
 
 
+useEffect(() => {
+  const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      const channel = localStorage.getItem('channel');
+      const message = `http://localhost:5173/meeting?token=${token}&channel=${channel}`;
+      setMeetingUrl(message);
 
+      try {
+          const meetingUpdate = await StatistiqueService.getMetting(token, channel);
+          const master = await userservice.getUserById(meetingUpdate.clientAID);
+          const client = await userservice.getUserById(meetingUpdate.clientBID);
+          setMasterEmail(master.email);
+          setClientEmail(client.email);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const channel = localStorage.getItem('channel');
-    const message = `http://localhost:5173/meeting?token=${token}&channel=${channel}`;
-    setMeetingUrl(message);
+          const timer = setTimeout(() => {
+              setShowAlert(false);
+          }, 3000);
 
-  
-    const timer = setTimeout(() => {
-        setShowAlert(false);
-    }, 3000);
+          return () => clearTimeout(timer);
+      } catch (error) {
+          console.error('Error fetching meeting data or user information:', error);
+      }
+  };
 
-    return () => clearTimeout(timer);}, []);
+  fetchData();
+}, []);
 
-  useEffect(() => {
-    if (meetingUrl && masterEmail && clientEmail) {
+useEffect(() => {
+  if (meetingUrl && masterEmail && clientEmail) {
       sendEmails(masterEmail, clientEmail, meetingUrl);
-    }
-  }, [meetingUrl, masterEmail, clientEmail]);
+  }
+}, [meetingUrl, masterEmail, clientEmail]);
+
 
   const sendEmails = async (masterEmail, clientEmail, meetingUrl) => {
     try {
@@ -50,23 +64,6 @@ function PaymentSuccess() {
     } catch (error) {
       console.error("Error sending emails:", error);
     }
-  };
-
-  const getToken = async (channel, expiration) => {
-    try {
-      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${expiration}`);
-      const token = response.data.token;
-      const encodedToken = encodeURIComponent(token);
-      const message = `http://localhost:5173/meeting?token=${encodedToken}&channel=${channel}`;
-      setMeetingUrl(message);
-    } catch (error) {
-      console.error('Error fetching meeting token:', error);
-    }
-  };
-  
-  const generateRandomChannelName = () => {
-    const randomNumber = Math.floor(Math.random() * 10000);
-    return `collabhub${randomNumber}`;
   };
 
   // Fonction pour copier l'URL de la réunion dans le presse-papiers
