@@ -40,9 +40,18 @@ export function SuggestionComponent() {
 
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-    doc.text(suggestion, 10, 10, { align: 'justify', maxWidth: 190 });
+    
+    // Titre du document
+    doc.setFontSize(16); // Taille de la police
+    doc.text("Voici vos questions ! ", 10, 10); // Texte et position
+    
+    // Vos questions
+    doc.setFontSize(12); // Rétablir la taille de la police
+    doc.text(suggestion, 10, 20, { align: 'justify', maxWidth: 190 }); // Texte et position
+    
+    // Sauvegarder le PDF
     doc.save('meeting_suggestion.pdf');
-  };
+  };;
 
 
 
