@@ -8,7 +8,7 @@ import { useAuth } from "@/pages/authContext";
 import axios from 'axios'; // Importer axios pour les requêtes HTTP
 import AuthenticationService from "@/Services/Authentification/AuthentificationService";
 import iconFour from '/img/clap.png'; 
-
+import Statistiques from '@/Services/statistiques/Statistiques';
 function DetailsConsultation() {
   const [selectedTier, setSelectedTier] = useState("30min");
   const [consultationDetails, setConsultationDetails] = useState({});
@@ -16,6 +16,8 @@ function DetailsConsultation() {
   const stripePromise = loadStripe("pk_test_51OErmACis87pjNWpmR1mA9OY8bC9joB8m3yMTqOlDqonuPHoOla3qdFxRI4l23Rqpn4RjSQjj1H75UgBbpTr2Os800jsLoQ4TE");
   const navigate = useNavigate();
   const authenticationService = new AuthenticationService();
+  const StatistiquesService = new Statistiques();
+
   const tierPrices = {
     "30min": consultationDetails.prixParMinute,
     "60min": consultationDetails.prixParMinute * 2,
@@ -83,11 +85,8 @@ function DetailsConsultation() {
       });
   
       const session = await response.json();
-      localStorage.setItem('master', users[consultationDetails.freelancerId]?.email);
-      localStorage.setItem('client', authData.user.email );
-      localStorage.setItem('clientA', users[consultationDetails.freelancerId]._id);
-      localStorage.setItem('clientB', authData.user._id );
-            const stripe = await stripePromise;
+      await getToken(users[consultationDetails.freelancerId]._id,authData.user._id)
+      const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({
         sessionId: session.sessionId,
       });
@@ -103,7 +102,32 @@ function DetailsConsultation() {
     }
   };
   
-
+  const generateRandomAlphaNumericString = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 12; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+  const getToken = async (clienta,clientb) => {
+    try {
+      const expirationDays = 7;
+      const expirationTimestamp = Math.floor((new Date().getTime() / 1000) + (expirationDays * 24 * 60 * 60));
+      const channel = generateRandomAlphaNumericString();
+      const response = await axios.get(`https://colabhub.onrender.com/rtc/${channel}/${expirationTimestamp}`);
+      const token = response.data.token;
+      const encodedToken = encodeURIComponent(token);
+      const message = `http://localhost:5173/meeting?token=${encodedToken}&channel=${channel}`;
+      await StatistiquesService.addStatistique(clienta,clientb, 'in Progress ...' ,'in Progress ...', encodedToken, channel, 'in Progress ...', 'in Progress ...', 'in Progress ...');
+      localStorage.setItem('token', encodedToken);
+      localStorage.setItem('channel', channel);
+      setMeetingUrl(message);
+    } catch (error) {
+      console.error('Error fetching meeting token:', error);
+    }
+  };
 
   
   
