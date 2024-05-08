@@ -33,6 +33,7 @@ import { VideoRoom } from "./Components/Consultations/VideoRoom";
 
 
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -202,6 +203,9 @@ const router = createBrowserRouter([
         path: "/payment-success",
         element: <PaymentSuccess />
       },
+   
+     
+     
  
       
     ],
