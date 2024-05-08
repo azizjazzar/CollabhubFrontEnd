@@ -1,8 +1,9 @@
 
 import { Footer, Bienvenu, InformationSection, Macarousel,Modal } from "@/index";
-import React, { useState } from 'react';
-
-
+import React, { useState , useEffect } from 'react';
+import { useAuth } from '@/pages/authContext';
+import Agenda from './Agenda';
+import axios from 'axios';
 
 
 
@@ -12,7 +13,23 @@ import React, { useState } from 'react';
 export function Collaboration() {
   const [openModal, setOpenModal] = useState(false);
   const [openRechercheCollab, setopenRechercheCollab] = useState(false);
+  const [tasks, settasks] = useState([]);
+  const { authData, setAuthUserData } = useAuth();
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get(`https://colabhub.onrender.com/tasks/get/freelancer/${authData.user._id}`);
+        settasks(response.data.task);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks();
+
+  }, [authData.user._id]);
+  
 
   return (
     
@@ -45,6 +62,10 @@ export function Collaboration() {
 
                 </section>  
 
+                <section className="relative bg-white py-16">
+                <Agenda events={tasks} />
+                </section>
+              
               
                        
           <Footer/>

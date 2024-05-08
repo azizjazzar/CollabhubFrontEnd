@@ -84,7 +84,7 @@ export function ProjectOwnerCollab(props) {
         <div className={OpenModalmeet ? 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50' : 'hidden'}>
 
 <FormulaireMeet open={OpenModalmeet} onClose={() => setOpenModalmeet(false)} userId={userId} freelancers={freelancers} pId={projectId} />
-{console.log(projectId)}
+
 </div>
           <div className="md:pr-14">
             <div className="flex items-center">

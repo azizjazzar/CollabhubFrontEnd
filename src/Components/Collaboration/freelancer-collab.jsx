@@ -10,8 +10,9 @@ import AddFreelancer from './addFreelancer';
 import {
  
   Typography,
-} from "@material-tailwind/react"
-
+} from "@material-tailwind/react";
+import axios from 'axios';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold} from "https://esm.run/@google/generative-ai";
 export function FreelancerCollab() {
 
 
@@ -25,7 +26,7 @@ export function FreelancerCollab() {
       .then(data => setTasks(data))
       .catch(error => console.error("Error fetching tasks by project  details:", error));
       
-  }, [projectId]);
+  }, [projectId,Tasks]);
 
   useEffect(() => {
     fetch(`https://colabhub.onrender.com/jobs/getFreelancersByJob/${projectId}`)
@@ -186,6 +187,28 @@ function Collabolaratuers(props){
         return Selected === index ? "border-purple-500 text-purple-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
      
     }
+
+    async function fetchEstimation(task) {
+      try {
+        const geminiResponse = await axios.post('https://colabhub.onrender.com/api/auth/geminiAnalyseWithText', {
+          text: `donne moi une estimation de nombre des jours pour faire ${task.description} je veux la réponse un nombre sous cette forme 2`,
+        });
+        const estimation = geminiResponse.data.answer;
+        setEstimation(estimation);
+        const geminiResponse2 = await axios.post('https://colabhub.onrender.com/api/auth/geminiAnalyseWithText', {
+          text: `si ${task.dateStart} plus que ${Estimation} jours est plus grand que ${task.dateStart} répond moi we estimate that the deadline will not be respected sinon répond moi the deadline will be respected`,
+        });
+        const deadlineAnswer = geminiResponse2.data.answer;
+        setdeadline(deadlineAnswer);
+      } catch (error) {
+        console.error('Error fetching or processing Estimation:', error.message);
+        return null;
+      }
+    }
+    const [deadline,  setdeadline] = useState('');
+const [Estimation,  setEstimation] = useState('');
+
+  
     return (
        
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -231,7 +254,9 @@ function Collabolaratuers(props){
 
 
           <ul role="list" className="mt-5 divide-y divide-gray-200 border-t border-gray-200 sm:mt-0 sm:border-t-0">
-              {Selected === 0 ? <Freelancers freelancers={freelancers} start={startIndex} end={endIndex}/> : Selected === 1 ? <Todo tasks={tasks} start={startIndex} end={endIndex}/>  : console.log("page non disponible")}
+              {Selected === 0 ? <Freelancers freelancers={freelancers} start={startIndex} end={endIndex}/> : Selected === 1 ? <Todo fetchE={fetchEstimation} tasks={tasks} start={startIndex} end={endIndex}/>  : console.log("page non disponible")}
+             {Selected === 1 ? <p className={`mt-1 max-w-2xl text-sm text-${deadline === "we estimate that the deadline will not be respected" ? "red-300" : "green-300"} text-center`}>{deadline}</p>
+ : null } 
 
           </ul>
           <div className="flex items-center justify-center mb-5 mt-5">
@@ -294,14 +319,45 @@ function Collabolaratuers(props){
 }
 
 function Todo(props){
-  const tasks = props.tasks;
-  const start=props.start;
-  const end=props.end;
+
+
+//modéle dectation des deadline 
+
+const tasks = props.tasks;
+const start=props.start;
+const end=props.end;
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//fin modéle dectation des deadlines 
+
+
 
    // Extraire les éléments à afficher sur la page actuelle
-   const currentItems = tasks.slice(start, end);
+   const currentItems =tasks.slice(start, end);
     return (
- 
+     
+     
+     
       currentItems.map((task , index )=>(
 
       <li key={index}>
@@ -309,16 +365,27 @@ function Todo(props){
         <div className="flex items-center justify-between">
             <h3 className="text-lg leading-6 font-medium text-gray-900">{task.name}</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">{task.description}</p>
+
         </div>
         <div className="mt-4 flex items-center justify-between">
             <p className="text-sm font-medium text-gray-500">Status: <span className="text-green-600">Active</span></p>
-            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Edit</a>
+            <button  className="font-medium text-indigo-600 hover:text-indigo-500 "onClick={()=>{props.fetchE(task)} }>Generate</button>
         </div>
       </div>
       </li>
+      
 
-    )  ) )
-  }
+
+    )  )
+
+    
+   
+    
+  
+  )}
+  
+  
+  
 
   function Freelancers(props)
   {
